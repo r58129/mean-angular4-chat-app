@@ -7,7 +7,8 @@ var mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect('mongodb://localhost/mean-chat')
+// mongoose.connect('mongodb://localhost/chatService')
+mongoose.connect('mongodb://192.168.0.102/chatService')
   .then(() =>  console.log('connection successful'))
   .catch((err) => console.error(err));
 
