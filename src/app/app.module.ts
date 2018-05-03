@@ -8,16 +8,29 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AppComponent } from './app.component';
 import { ChatService } from './chat.service';
 import { ChatComponent } from './chat/chat.component';
+import { AppheaderComponent } from './components/appheader/appheader.component';
+import { AppfooterComponent } from './components/appfooter/appfooter.component';
+import { AppmenuComponent } from './components/appmenu/appmenu.component';
+import { AppsettingsComponent } from './components/appsettings/appsettings.component';
+// import { ApploginComponent } from './components/applogin/applogin.component';
+// import { ApphovertableComponent } from './components/apphovertable/apphovertable.component';
 
 const ROUTES = [
   { path: '', redirectTo: 'chats', pathMatch: 'full' },
+  // { path: 'login', component: ApploginComponent},
   { path: 'chats', component: ChatComponent }
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
-    ChatComponent
+    ChatComponent,
+    AppheaderComponent,
+    AppfooterComponent,
+    AppmenuComponent,
+    AppsettingsComponent
+    // ApploginComponent
+    // ApphovertableComponent
   ],
   imports: [
     BrowserModule,

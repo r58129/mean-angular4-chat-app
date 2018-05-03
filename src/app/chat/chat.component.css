@@ -14,12 +14,14 @@
 
 .chat li.left .chat-body
 {
-    margin-left: 60px;
+    /*margin-left: 60px;*/
+     margin-left: 0;
 }
 
 .chat li.right .chat-body
 {
-    margin-right: 60px;
+    /*margin-right: 60px;*/
+    margin-right: 0;
 }
 
 
@@ -31,7 +33,9 @@
 
 .panel .slidedown .glyphicon, .chat .glyphicon
 {
-    margin-right: 5px;
+    /*margin-right: 5px;*/
+    margin-right: 0;
+    border-collapse: collapse;
 }
 
 .panel-body
@@ -40,6 +44,7 @@
     /*height: 250px;*/
     height: 80vh;
 }
+
 
 ::-webkit-scrollbar-track
 {
