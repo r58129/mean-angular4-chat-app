@@ -10,6 +10,7 @@ import * as io from "socket.io-client";
 export class ChatComponent implements OnInit, AfterViewChecked {
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  @ViewChild('scrollTable') private myScrollTableContainer: ElementRef;  //Ben
 
   chats: any;
   joinned: boolean = false;
@@ -26,23 +27,32 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       this.msgData = { room: user.room, nickname: user.nickname, message: '' }
       this.joinned = true;
       this.scrollToBottom();
+      this.scrollTableToBottom();
     }
     this.socket.on('new-message', function (data) {
       if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
         this.chats.push(data.message);
         this.msgData = { room: user.room, nickname: user.nickname, message: '' }
         this.scrollToBottom();
+        this.scrollTableToBottom();
       }
     }.bind(this));
   }
 
   ngAfterViewChecked() {
     this.scrollToBottom();
+    this.scrollTableToBottom();
   }
 
   scrollToBottom(): void {
     try {
       this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch(err) { }
+  }
+
+   scrollTableToBottom(): void {
+    try {
+      this.myScrollTableContainer.nativeElement.scrollTop = this.myScrollTableContainer.nativeElement.scrollHeight;
     } catch(err) { }
   }
 
