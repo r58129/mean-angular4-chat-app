@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { ChatService } from '../chat.service';
-import * as io from "socket.io-client";
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-chat',
@@ -17,13 +17,13 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   newUser = { nickname: '', room: '' };
   msgData = { room: '', nickname: '', message: '' };
   // socket = io('http://localhost:4000');
-  socket = io('http://192.168.0.102:4670');
+  socket = io('http://192.168.0.102:3637');
   constructor(private chatService: ChatService) {}
 
   ngOnInit() {
     var user = JSON.parse(localStorage.getItem("user"));
     if(user!==null) {
-      this.getChatByRoom(user.room);
+      this.getChatByRoom(user.room);  //from chatService
       this.msgData = { room: user.room, nickname: user.nickname, message: '' }
       this.joinned = true;
       this.scrollToBottom();
@@ -57,7 +57,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   getChatByRoom(room) {
-    this.chatService.getChatByRoom(room).then((res) => {
+    this.chatService.getChatByRoom(room).then((res) => {  //from chatService
       this.chats = res;
     }, (err) => {
       console.log(err);
