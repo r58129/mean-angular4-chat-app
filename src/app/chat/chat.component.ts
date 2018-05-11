@@ -17,7 +17,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   newUser = { nickname: '', room: '' };
   msgData = { room: '', nickname: '', message: '' };
   // socket = io('http://localhost:4000');
-  socket = io('http://192.168.0.102:3637');
+  socket = io('http://192.168.0.102:3638');
   constructor(private chatService: ChatService) {}
 
   ngOnInit() {

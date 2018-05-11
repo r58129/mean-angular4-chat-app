@@ -10,7 +10,7 @@ import * as $ from 'jquery';
 })
 export class AdminComponent implements OnInit {
 
-  socket = io('http://192.168.0.102:3637');
+  socket = io('http://192.168.0.102:3638');
 
   constructor() { }
 
