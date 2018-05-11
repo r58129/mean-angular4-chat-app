@@ -20,12 +20,17 @@ export class AdminComponent implements OnInit {
 
   this.socket.on('users', function(data){
   	console.log("inside socket.io users" +data);
-  //alert(JSON.stringify(data));
-  $('#users').empty();
+  // alert(JSON.stringify(data));
+  // $('#users').empty();
   for(var i in data){
     $('#users').append('<li>'+data[i]+'</li>');
-		console.log("inside socket.io users" +data[i]);
-  }});
+	console.log("inside socket.io users" +data[i]);
+  }
+  
+ //    $('#users').append('<li>'+data+'</li>');
+	// console.log("inside socket.io users" +data);
+  
+	});
 
   this.socket.on('chat', function(msg){
     $('#messages').append('<li>'+msg+'</li>');

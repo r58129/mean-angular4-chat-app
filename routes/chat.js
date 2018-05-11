@@ -82,6 +82,7 @@ io.on('connection', function (socket) {
       adminSocketID.push(socket.id);
       io.to(socket.id).emit('users',{users:userSocketIDAndUsername});
       console.log("emit socket.on(users)" +socket.id);
+      console.log("emit socket.on(users)" +{users:userSocketIDAndUsername});
     } else if (userid == 'operator') {
       operatorSocketIDOperatorChannel = socket.id;
     } else if (userid == 'operatorSessionUser'){
