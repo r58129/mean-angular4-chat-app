@@ -2,9 +2,23 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var app = express();
-var server = require('http').createServer(app);
-var io = require('socket.io')(server);
+//var server = require('http').createServer(app);
+
+var fs = require('fs');
+var key = fs.readFileSync('routes/encryption/private.key');
+var cert = fs.readFileSync( 'routes/encryption/mydomain.crt' );
+
+var options = {
+key: key,
+cert: cert
+//ca: ca
+};
+
+var server = require('https').createServer(options,app);
+
+var io = require('socket.io')(server,{secure: true});
 var Chat = require('../models/Chat.js');
+
 
 var userSocketID = new Array();
 var userSocketIDAndUsername = new Array();
@@ -13,11 +27,13 @@ var username = new Array();
 var atou = {};
 var utoa = {};
 
+
+
 var userSocketIDOperatorChannel  = {};
 var operatorSocketIDOperatorChannel = {};
 var usernameOperatorChannel = {};
 
-var port=3637;
+var port=3638;
 server.listen(port);
 console.log('Socket.io is listening on port:' + port);
 
@@ -88,11 +104,13 @@ io.on('connection', function (socket) {
     } else if (userid == 'operatorSessionUser'){
       userSocketIDOperatorChannel = socket.id;
     } else {
+        console.log('Lu log userid is '+ userid);   //userid is tel number
       userSocketIDAndUsername.push(userid + ' (' + socket.id + ')');
       userSocketID.push(socket.id);
       username.push(userid);
       for(var i in adminSocketID){
-        io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername});
+        //io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername});
+          io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername},socket.id);
       }
     }
     socket.userid = userid;

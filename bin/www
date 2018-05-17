@@ -6,20 +6,32 @@
 
 var app = require('../app');
 var debug = require('debug')('mean-app:server');
-var http = require('http');
+var http = require('https');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '4080');
+var fs = require('fs');
+var key = fs.readFileSync('routes/encryption/private.key');
+var cert = fs.readFileSync( 'routes/encryption/mydomain.crt' );
+var ca = fs.readFileSync( 'routes/encryption/mydomain.crt' );
+
+var options = {
+key: key,
+cert: cert,
+ca: ca
+};
+
+
+var port = normalizePort(process.env.PORT || '3088');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = http.createServer(options,app);
 
 /**
  * Listen on provided port, on all network interfaces.
