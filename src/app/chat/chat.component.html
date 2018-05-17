@@ -1,71 +1,12 @@
 <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper" style="min-height: 90%">
+<!-- <div class="content-wrapper" style="min-height: 90%"> -->
   <!-- <div class="wrapper"> -->
     <!-- <div class="container"> -->
-      <div class="row no-padding" id="page-content">
-          <div class="col-xs-6 no-padding">
-            <div class="box">
-              <div class="box-header with-border">
-                <h3 class="box-title">Customer Requests</h3>
+      <!-- <div class="row no-padding" id="chat-page"> -->
 
-                <div class="box-tools">
-                  <div class="input-group input-group-sm" style="width: 150px;">
-                    <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
+        <!-- place request table here -->
 
-                    <div class="input-group-btn">
-                      <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- /.box-header -->
-              <div #scrollTable class="box-body no-padding">
-                <table class="table">
-                  <thead>
-                  <tr>
-           <!--          <th>ID</th> -->
-                    <th>Customer</th>
-                    <th>Time</th>
-                    <th>Status</th>
-                    <!-- <th>Reason</th> -->
-                  </tr>
-                </thead>
-
-                <!-- <div #scrollMe class="table-body"> -->
-                <tbody>
-                  <tr *ngFor="let c of chats">
-                    <!-- <td>183</td> -->
-                    <td>{{ c.nickname }}</td>
-                    <td>{{c.updated_at | date: 'medium'}}</td>
-                    <td><span class="label label-success">Done</span></td>
-                    <!-- <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td> -->
-                  </tr>
-                  </tbody>
-                  <!-- </div> -->
-<!--                   <tr>
-                    <td>219</td>
-                    <td>Alexander Pierce</td>
-                    <td>11-7-2014</td>
-                    <td><span class="label label-warning">Working</span></td>
-                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                  </tr>
-                  <tr>
-                    <td>175</td>
-                    <td>Mike Doe</td>
-                    <td>11-7-2014</td>
-                    <td><span class="label label-danger">Pending</span></td>
-                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                  </tr> -->
-                </table>
-              </div>
-              <!-- /.box-body -->
-            </div>
-            <!-- /.box -->
-
-      <!-- /.row -->
-          </div>
-
-          <div class="col-xs-6 no-padding">
+          <div class="col-xs-6 no-padding" id="chat-page">
         <!-- <div class="panel panel-primary" *ngIf="joinned; else joinroom"> -->
               <div class="box" *ngIf="joinned; else joinroom">
                   <div class="box-header with-border">
@@ -130,15 +71,19 @@
                     <h2>Select Chat Room</h2>
                     <form (ngSubmit)="joinRoom()" #joinForm="ngForm">
                       <div class="form-group">
-                        <input type="text" class="form-control" [(ngModel)]="newUser.nickname" name="nickname" placeholder="Nickname" required="" />
+                        
+                        <!-- <input type="text" class="form-control" [(ngModel)]="newUser.nickname" name="nickname" placeholder="Nickname" required="" /> -->
+                      <input type="text" class="form-control" [(ngModel)]="newUser.nickname" name="nickname" required="" />
+
                       </div>
                       <div class="form-group">
-                        <select class="form-control" [(ngModel)]="newUser.room" name="room" required="">
+                        <input type="text" class="form-control" [(ngModel)]="newUser.room" name="room" placeholder="phone number"required="">
+                        <!-- <select class="form-control" [(ngModel)]="newUser.room" name="room" required="">
                           <option>Select Room</option>
                           <option value="room1">room1</option>
-                          <!-- <option value="room2">room2</option> -->
+                         -->  <!-- <option value="room2">room2</option> -->
                           <!-- <option value="Python">Python</option> -->
-                        </select>
+                        <!-- </select> -->
                       </div>
                       <div class="form-group">
                         <button type="submit" class="btn btn-success" [disabled]="!joinForm.form.valid">Join</button>
@@ -150,6 +95,6 @@
           </div>
 
       <!-- </div> -->
-    </div>
+    <!-- </div> -->
   <!-- </div> -->
-</div>
+<!-- </div> -->

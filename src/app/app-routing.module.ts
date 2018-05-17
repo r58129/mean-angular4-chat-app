@@ -12,13 +12,20 @@ import { ApploginComponent } from './components/applogin/applogin.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AdminComponent } from './admin/admin.component';
 import { OperatorComponent } from './operator/operator.component';
+import { RequestComponent } from './request/request.component';
+import { ServiceComponent } from './service/service.component';
 
 const appRoutes: Routes = [
+  { path: '', redirectTo: '/service', pathMatch: 'full' },
   { path: 'login', component: ApploginComponent},
-  { path: 'chats', component: ChatComponent },
+  { path: 'service', component: ServiceComponent, children: [
+      { path: 'request', component: RequestComponent, outlet:'requestOutlet' },
+      { path: 'chat', component: ChatComponent, outlet:'chatOutlet'},
+  ]},
+   // { path: 'request', component: RequestComponent},
+   // { path: 'chats', component: ChatComponent},
   { path: 'admin', component: AdminComponent },
   { path: 'operator', component: OperatorComponent },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', component: PagenotfoundComponent}
 ];
  

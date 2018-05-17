@@ -5,6 +5,7 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var Chat = require('../models/Chat.js');
+var Request = require('../models/Request.js');
 
 var userSocketID = new Array();
 var userSocketIDAndUsername = new Array();
@@ -82,7 +83,7 @@ io.on('connection', function (socket) {
       adminSocketID.push(socket.id);
       io.to(socket.id).emit('users',{users:userSocketIDAndUsername});
       console.log("emit socket.on(users)" +socket.id);
-      console.log("emit socket.on(users)" +{users:userSocketIDAndUsername});
+      // console.log("emit socket.on(users)" +{users:userSocketIDAndUsername});
     } else if (userid == 'operator') {
       operatorSocketIDOperatorChannel = socket.id;
     } else if (userid == 'operatorSessionUser'){
@@ -154,7 +155,7 @@ router.get('/:id', function(req, res, next) {
   });
 });
 
-/* SAVE CHAT */
+/* SAVE CHAT postman POST path:192.168.0.102:4080/chat/*/
 router.post('/', function(req, res, next) {
   Chat.create(req.body, function (err, post) {
     if (err) return next(err);
@@ -173,6 +174,56 @@ router.put('/:id', function(req, res, next) {
 /* DELETE CHAT */
 router.delete('/:id', function(req, res, next) {
   Chat.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
+
+
+/* GET ALL REQUESTS 192.168.0.102:4080/chat/request/human*/ 
+router.get('/request/human', function(req, res, next) {
+  Request.find(req.body, function (err, requests) {
+    if (err) return next(err);
+    res.json(requests);
+  });
+});
+
+/* GET ALL REQUESTS in same room 192.168.0.102:4080/chat/request/room1*/ 
+router.get('/request/:room', function(req, res, next) {
+  Request.find({ room: req.params.room }, function (err, requests) {
+    if (err) return next(err);
+    res.json(requests);
+  });
+});
+
+/* GET SINGLE REQUEST BY ID */
+router.get('/request/:id', function(req, res, next) {
+  Request.findById(req.params.id, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
+/* SAVE REQUEST */
+router.post('/request', function(req, res, next) {
+  Request.create(req.body, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
+/* UPDATE REQUEST */
+router.put('/request/:id', function(req, res, next) {
+  Request.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
+/* DELETE REQUEST */
+router.delete('/request/:id', function(req, res, next) {
+  Request.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
