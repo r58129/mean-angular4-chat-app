@@ -30,7 +30,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 
   ngOnInit() {
 
-    var user = JSON.parse(localStorage.getItem("user"));
+    // var user = JSON.parse(localStorage.getItem("user"));
     // var request = JSON.parse(localStorage.getItem("request"));
 
  //    this.socket.emit('user','admin');
@@ -104,14 +104,14 @@ export class RequestComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  joinRoom() {
-    var date = new Date();
-    localStorage.setItem("user", JSON.stringify(this.newUser));
-    this.getChatByRoom(this.newUser.room);
-    this.msgData = { room: this.newUser.room, nickname: this.newUser.nickname, message: '' };
-    this.joinned = true;
-    this.socket.emit('save-message', { room: this.newUser.room, nickname: this.newUser.nickname, message: 'Join this room', updated_at: date });
-  }
+  // joinRoom() {
+  //   var date = new Date();
+  //   localStorage.setItem("user", JSON.stringify(this.newUser));
+  //   this.getChatByRoom(this.newUser.room);
+  //   this.msgData = { room: this.newUser.room, nickname: this.newUser.nickname, message: '' };
+  //   this.joinned = true;
+  //   this.socket.emit('save-message', { room: this.newUser.room, nickname: this.newUser.nickname, message: 'Join this room', updated_at: date });
+  // }
 
   // sendMessage() {
   //   this.chatService.saveChat(this.msgData).then((result) => {

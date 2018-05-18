@@ -7,7 +7,7 @@ export class ChatService {
 
   constructor(private http: Http) { }
 
-  getChatByRoom(room) {
+  getChatByRoom(room) {    //here we use room as phone_number
     return new Promise((resolve, reject) => {
       this.http.get('/chat/' + room)
         .map(res => res.json())

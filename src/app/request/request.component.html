@@ -1,13 +1,12 @@
 <!-- Content Wrapper. Contains page content -->
-<!-- <div class="content-wrapper" style="min-height: 90%"> -->
+<div class="content-wrapper" style="min-height: 90%">
   <!-- <div class="wrapper"> -->
     <!-- <div class="container"> -->
-      <!-- <div class="row no-padding" id="request-page"> -->
-          <div class="col-xs-6 no-padding" id="request-page">
+      <div class="row no-padding" id="request-page">
+          <div class="col-xs-6 no-padding" >
             <div class="box">
               <div class="box-header with-border">
                 <h3 class="box-title">Customer Requests</h3>
-
                 <div class="box-tools">
                   <div class="input-group input-group-sm" style="width: 150px;">
                     <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
@@ -23,15 +22,11 @@
                 <table class="table">
                   <thead>
                   <tr>
-           <!--          <th>ID</th> -->
                     <th>Customer</th>
                     <th>Time</th>
                     <th>Status</th>
-                    <!-- <th>Reason</th> -->
                   </tr>
                 </thead>
-
-                <!-- <div #scrollMe class="table-body"> -->
                 <tbody>
                   <tr *ngFor="let r of requests">
                     <!-- <tr *ngFor="let c of chats"> -->
@@ -39,48 +34,27 @@
                     <td>{{r.updated_at | date: 'medium'}}</td>
                     <!-- <td><span class="label label-warning">Connect</span></td> -->
                     <td>
-<!-- routerLink="/chats, {data:r.phone_number}" -->
-                 <!--      <button type="button" class="btn btn-default btn-xs" (click)="createRoom({{r.phone_number}})">
-                              Connect
-                          </button> -->
-
-<!--                         <div class="pull-right">
-							<a [routerLink]="['/service', {outlets: {chatOutlet: ['chat']}}]" class="btn btn-default btn-xs">Connect</a> -->
-
-                        
-                  			<a routerLink="/chatroom/{{r.phone_number }}" class="btn btn-default btn-xs">Connect</a>
-                		</div>
+                        <div class="pull-right">
+							<a [routerLink]="['/request', {outlets: { chatOutlet: ['chatbox', r.phone_number]}}]" routerLinkActive="active" class="btn btn-default btn-xs">Connect</a>
+						</div>
                     </td>
-                    <!-- <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td> -->
                   </tr>
-                  </tbody>
+                </tbody>
                   <!-- </div> -->
-<!--                   <tr>
-                    <td>219</td>
-                    <td>Alexander Pierce</td>
-                    <td>11-7-2014</td>
-                    <td><span class="label label-warning">Working</span></td>
-                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                  </tr>
-                  <tr>
-                    <td>175</td>
-                    <td>Mike Doe</td>
-                    <td>11-7-2014</td>
-                    <td><span class="label label-danger">Pending</span></td>
-                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                  </tr> -->
                 </table>
               </div>
               <!-- /.box-body -->
             </div>
             <!-- /.box -->
-
-      <!-- /.row -->
-          </div>
+		</div>
+      	<!-- /.row -->          
 
           <!-- Place chat box here -->
+          <div class="row no-padding" id="chat-page">
+          	<router-outlet name="chatOutlet"></router-outlet>
+          </div>
 
       <!-- </div> -->
-    <!-- </div> -->
+    </div>
   <!-- </div> -->
-<!-- </div> -->
+</div>

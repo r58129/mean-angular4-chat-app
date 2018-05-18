@@ -16,14 +16,15 @@ import { RequestComponent } from './request/request.component';
 import { ServiceComponent } from './service/service.component';
 
 const appRoutes: Routes = [
-  { path: '', redirectTo: '/service', pathMatch: 'full' },
+  { path: '', redirectTo: '/request', pathMatch: 'full' },
   { path: 'login', component: ApploginComponent},
-  { path: 'service', component: ServiceComponent, children: [
-      { path: 'request', component: RequestComponent, outlet:'requestOutlet' },
-      { path: 'chat', component: ChatComponent, outlet:'chatOutlet'},
+  // { path: 'service', component: ServiceComponent, children: [
+  //     { path: 'request', component: RequestComponent, outlet:'requestOutlet' },
+  //     { path: 'chat', component: ChatComponent, outlet:'chatOutlet'},
+  // ]},
+  { path: 'request', component: RequestComponent, children:[
+      { path: 'chatbox/:id', component: ChatComponent, outlet:'chatOutlet'},
   ]},
-   // { path: 'request', component: RequestComponent},
-   // { path: 'chats', component: ChatComponent},
   { path: 'admin', component: AdminComponent },
   { path: 'operator', component: OperatorComponent },
   { path: '**', component: PagenotfoundComponent}

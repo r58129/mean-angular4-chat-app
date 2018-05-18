@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { ChatService } from '../chat.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
 
@@ -25,23 +25,24 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   // socket = io('http://localhost:4000');
   socket = io('http://192.168.0.102:3637');
   
-  constructor(private chatService: ChatService, router: Router) {
-
-    route.params.subscribe(
-
-        params=>{
-
-          this.newUser.room = parseInt(params['']);
-        }
-
-      )
+  constructor(private chatService: ChatService, private route: ActivatedRoute) {
+    // console.log("inside chat constructor" +this.route.snapshot.params);
   }
 
   ngOnInit() {
 
+    this.route.params.subscribe(params =>{
+      console.log(params);
+      this.newUser.room = params['id'];
+      console.log(this.newUser.room);
+      
+      
+    });
+
     var user = JSON.parse(localStorage.getItem("user"));
     // var request = JSON.parse(localStorage.getItem("request"));
 
+//  from johnson
  //    this.socket.emit('user','admin');
 
  //    this.socket.on('users', function(data){
@@ -65,29 +66,31 @@ export class ChatComponent implements OnInit, AfterViewChecked {
  //  this.socket.on('disconnect', function(msg){
  //    $('#messages').append('<li>'+msg+'</li>');
  //  });
+ //  end of from johnson
 
 
     if(user!==null) {
-      this.getChatByRoom(user.room);  //from chatService
+      // this.getChatByRoom(user.room);  //from chatService
       // this.getRequestByRoom(request.phone_number);  //testing
       this.msgData = { room: user.room, nickname: user.nickname, message: '' }
       this.joinned = true;
       this.scrollToBottom();
-      this.scrollTableToBottom();
+      // this.scrollTableToBottom();
     }
+    
     this.socket.on('new-message', function (data) {
       if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
         this.chats.push(data.message);
         this.msgData = { room: user.room, nickname: user.nickname, message: '' }
         this.scrollToBottom();
-        this.scrollTableToBottom();
+        // this.scrollTableToBottom();
       }
     }.bind(this));
   }
 
   ngAfterViewChecked() {
     this.scrollToBottom();
-    this.scrollTableToBottom();
+    // this.scrollTableToBottom();
   }
 
   scrollToBottom(): void {
@@ -96,13 +99,14 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     } catch(err) { }
   }
 
-   scrollTableToBottom(): void {
-    try {
-      this.myScrollTableContainer.nativeElement.scrollTop = this.myScrollTableContainer.nativeElement.scrollHeight;
-    } catch(err) { }
-  }
+  //  scrollTableToBottom(): void {
+  //   try {
+  //     this.myScrollTableContainer.nativeElement.scrollTop = this.myScrollTableContainer.nativeElement.scrollHeight;
+  //   } catch(err) { }
+  // }
 
   getChatByRoom(room) {
+     console.log("inside getChatbyRoom" +room);
     this.chatService.getChatByRoom(room).then((res) => {  //from chatService
       this.chats = res;
     }, (err) => {
