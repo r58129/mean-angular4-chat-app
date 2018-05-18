@@ -28,14 +28,14 @@
 
     
       <div id="chatform" class="input-group">
-        <input id="m" type="text" name="message" placeholder="Type Message ..." class="form-control">
+        <input id="m" type="text" name="message" placeholder="Type Message ..." class="form-control" (keydown.enter)="SendForm()">
           <span class="input-group-btn">
             <button type="button" class="btn btn-primary btn-flat" (click)="SendForm()">  Send  </button>
           </span>
       </div>
 
       <div id="userform" class="input-group">
-        <input id="u" type="text" name="message" placeholder="input session ID ..." class="form-control">
+        <input id="u" type="text" name="message" placeholder="Input Session ID ..." class="form-control" (keydown.enter)="Connect()">
           <span class="input-group-btn">
             <button type="button" class="btn btn-primary btn-flat" (click)="Connect()">Connect</button>
           </span>
