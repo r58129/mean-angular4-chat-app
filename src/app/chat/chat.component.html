@@ -6,7 +6,7 @@
 
         <!-- place request table here -->
 
-          <div class="col-xs-6 no-padding" id="chat-page">
+          <div class="col-xs-6 no-padding" >
         <!-- <div class="panel panel-primary" *ngIf="joinned; else joinroom"> -->
               <div class="box" *ngIf="joinned; else joinroom">
                   <div class="box-header with-border">
@@ -15,7 +15,7 @@
                       {{ msgData.room }}
                       <div class="btn-group pull-right">
                           <button type="button" class="btn btn-default btn-xs" (click)="logout()">
-                              Logout
+                              Disconnect
                           </button>
                       </div>
                   </div>
@@ -68,7 +68,7 @@
               <ng-template #joinroom>
                 <div class="panel panel-primary">
                   <div class="panel-body">
-                    <h2>Select Chat Room</h2>
+                    <h2>Select Customer</h2>
                     <form (ngSubmit)="joinRoom()" #joinForm="ngForm">
                       <div class="form-group">
                         
