@@ -18,6 +18,8 @@ import { ApploginComponent } from './components/applogin/applogin.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AdminComponent } from './admin/admin.component';
 import { OperatorComponent } from './operator/operator.component';
+import { RequestComponent } from './request/request.component';
+import { ServiceComponent } from './service/service.component';
 // import { ApphovertableComponent } from './components/apphovertable/apphovertable.component';
 
 // const ROUTES = [
@@ -38,7 +40,9 @@ import { OperatorComponent } from './operator/operator.component';
     ApploginComponent,
     PagenotfoundComponent,
     AdminComponent,
-    OperatorComponent
+    OperatorComponent,
+    RequestComponent,
+    ServiceComponent
     // ApphovertableComponent
   ],
   imports: [
