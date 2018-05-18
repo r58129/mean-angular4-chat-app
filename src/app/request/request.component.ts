@@ -25,7 +25,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   newRequest = { room:'', admin_name:'', phone_number: '', message: '', session_id:'',updated_at:'' };
   // chatRequest = { room: '', admin_name:'', phone_number: '', message: '', updated_at:'' };
   // socket = io('http://localhost:4000');
-  socket = io('http://192.168.0.102:3637');
+  socket = io('https://192.168.0.102:3638',{secure: true});
   constructor(private chatService: ChatService) {}
 
   ngOnInit() {
