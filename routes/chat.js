@@ -173,6 +173,9 @@ router.get('/:id', function(req, res, next) {
   });
 });
 
+
+
+
 /* SAVE CHAT postman POST path:192.168.0.102:4080/chat/*/
 router.post('/', function(req, res, next) {
   Chat.create(req.body, function (err, post) {

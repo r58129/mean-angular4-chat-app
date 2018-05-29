@@ -30,6 +30,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnInit() {
+      history.pushState({},"Edit","");
 
     this.route.params.subscribe(params =>{
       console.log(params);

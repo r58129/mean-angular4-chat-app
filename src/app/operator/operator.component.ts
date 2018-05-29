@@ -17,6 +17,8 @@ export class OperatorComponent implements OnInit {
 
   ngOnInit() {
 
+      history.pushState({},"Edit","");
+      
   // var socket = io('http://192.168.0.102:3637');
   
   this.socket.emit('user','operator');

@@ -22,6 +22,21 @@ app.use(bodyParser.urlencoded({'extended':'false'}));
 app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use('/chat', chat);
+//app.use('/callback', chat);
+
+
+ //New test from Lewis
+ //GET route for reading data
+
+//app.set('views', __dirname + '/dist');
+//app.engine('html', require('ejs').renderFile);
+
+
+//app.get('/a', function (req, res) {
+//    console.log('hihi hello lewis tse for home page!!!');
+//  return res.sendFile('index.html');
+//});
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -29,6 +29,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   constructor(private chatService: ChatService) {}
 
   ngOnInit() {
+      history.pushState({},"Edit","");
 
     // var user = JSON.parse(localStorage.getItem("user"));
     // var request = JSON.parse(localStorage.getItem("request"));

@@ -52,6 +52,8 @@ export class AdminComponent implements OnInit {
     
     
   ngOnInit() {
+      
+      history.pushState({},"Edit","");
 
   this.socket.emit('user','admin');
 

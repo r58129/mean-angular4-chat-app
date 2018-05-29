@@ -3,12 +3,15 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 // import { RouterModule } from '@angular/router';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+//import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { PathLocationStrategy, LocationStrategy } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module'
 
 import { ChatService } from './chat.service';
+import { AuthguardGuard } from './authguard.guard';
+import { AuthserviceService } from './authservice.service';
 import { ChatComponent } from './chat/chat.component';
 import { AppheaderComponent } from './components/appheader/appheader.component';
 import { AppfooterComponent } from './components/appfooter/appfooter.component';
@@ -20,6 +23,7 @@ import { AdminComponent } from './admin/admin.component';
 import { OperatorComponent } from './operator/operator.component';
 import { RequestComponent } from './request/request.component';
 import { ServiceComponent } from './service/service.component';
+
 // import { ApphovertableComponent } from './components/apphovertable/apphovertable.component';
 
 // const ROUTES = [
@@ -43,6 +47,7 @@ import { ServiceComponent } from './service/service.component';
     OperatorComponent,
     RequestComponent,
     ServiceComponent
+    //CallbackComponent
     // ApphovertableComponent
   ],
   imports: [
@@ -53,8 +58,10 @@ import { ServiceComponent } from './service/service.component';
     // RouterModule.forRoot(ROUTES)
   ],
   providers: [
+      AuthserviceService,
+      AuthguardGuard,
     ChatService,
-    {provide: LocationStrategy, useClass: HashLocationStrategy}
+    {provide: LocationStrategy, useClass: PathLocationStrategy}
   ],
   bootstrap: [AppComponent]
 })
