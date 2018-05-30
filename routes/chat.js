@@ -49,7 +49,7 @@ io.on('connection', function (socket) {
 
 // start of "from johnson"
   socket.on('connectuser', function(SocketID){
-    console.log(username[userSocketID.indexOf(SocketID)]+' connected to ' + socket.userid);
+    console.log(username[userSocketID.indexOf(SocketID)]+' connected to ' + socket.userid); //where is this socket.userid comes from???
     atou[socket.id] = SocketID;
     utoa[SocketID] = socket.id;
     io.to(atou[socket.id]).emit('adminConnected',SocketID);
@@ -130,6 +130,7 @@ io.on('connection', function (socket) {
 
   socket.on('chat message', function(msg){
     console.log('chatting...');
+    console.log('socket.id:' + socket.id);
     if(atou[socket.id]){  //admin message
       console.log('Admin sending msg "' + msg + '" to ' + username[userSocketID.indexOf(atou[socket.id])]);
       // io.to(socket.id).emit('chat',socket.userid +': '+ msg);
@@ -169,7 +170,15 @@ io.on('connection', function (socket) {
 
 /* GET ALL CHATS */
 router.get('/:room', function(req, res, next) {
-  Chat.find({ room: req.params.room }, function (err, chats) {
+  // Chat.find({ room: req.params.room }, function (err, chats) {
+    Chat.find({ $and:
+    [
+      { room: req.params.room },
+      { socket_id: { $exists: true } }, 
+      { nickname: {$exists:true, $ne:"robot" } }  //filter robot reply
+    
+    ]
+    }, function (err, chats) {
     if (err) return next(err);
     res.json(chats);
   });

@@ -38,7 +38,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     });
 
     this.route.params.subscribe(params =>{
-      console.log(params);
+      // console.log(params);
       this.newUser.socket_id = params['id2'];
       console.log(this.newUser.socket_id);     
     });
@@ -46,35 +46,22 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     var user = JSON.parse(localStorage.getItem("user"));
     // var request = JSON.parse(localStorage.getItem("request"));
 
-//  from johnson
- //    this.socket.emit('user','admin');
-
- //    this.socket.on('users', function(data){
- //      console.log("inside socket.io users" +data);
- //  // alert(JSON.stringify(data));
- //  // $('#users').empty();
- //      for(var i in data){
- //      $('#users').append('<li>'+data[i]+'</li>');
- //    console.log("inside socket.io users" +data[i]);
- //    }
-  
- // //    $('#users').append('<li>'+data+'</li>');
- //  // console.log("inside socket.io users" +data);
-  
- //  });
-
   this.socket.on('chat', (msg) =>{
   // this.socket.on('chat', (userid, msg) =>{
     var date = new Date();
-    console.log("print customer message:" +msg);
+    console.log("print customer message object:" +msg);
 
-    // modify this to json object ben
-    // var obj = JSON.parse(yourJSONString);
-    // var mm = obj.mm;
-    
+    // modify this to json object
+    var obj = JSON.parse(msg);
+    var phoneNum = obj.sessionID;
+    var message = obj.message;
+
+    console.log("print customer phoneNum:" +phoneNum);
+    console.log("print customer message:" +message);
+
     if (msg !== 'undefined'){
     
-    this.CusMsgData = { phone_number: '85260261976', socket_id: 'socket_id', room:'85260261976' , nickname:'85260261976' , message: msg };
+    this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
       console.log(this.CusMsgData.room);
       console.log(this.CusMsgData.phone_number);
       console.log(this.CusMsgData.socket_id);
@@ -166,8 +153,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   SendForm(message){
     console.log("admin is sending a message: " +message);
-    this.socket.emit('chat message',message);  //from admin to customer
-    
+    // this.socket.emit('chat message',message);  //from admin to customer
+    var obj = { type:"text", path:"null", message: message };
+    this.socket.emit('chat message', obj);  //send json object from admin to customer
+    console.log("admin is sending object: " +obj);
     // return false;
   }
 
