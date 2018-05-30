@@ -16,11 +16,11 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   chats: any;
   joinned: boolean = false;
-  newUser = { nickname: '', room: '' };
-  msgData = { room: '', nickname: '', message: '' };
+  newUser = { nickname: '', room: '' ,socket_id: ''};
+  msgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   //new request
-  requests: any;  //new request
-  newRequest = { room:'', admin_name:'', phone_number: '', message: '', session_id:'',updated_at:'' };
+  // requests: any;  //new request
+  CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // chatRequest = { room: '', admin_name:'', phone_number: '', message: '', updated_at:'' };
   // socket = io('http://localhost:4000');
   socket = io('https://192.168.0.102:3637',{secure: true});
@@ -34,9 +34,13 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.route.params.subscribe(params =>{
       console.log(params);
       this.newUser.room = params['id'];
-      console.log(this.newUser.room);
-      
-      
+      console.log(this.newUser.room);     
+    });
+
+    this.route.params.subscribe(params =>{
+      console.log(params);
+      this.newUser.socket_id = params['id2'];
+      console.log(this.newUser.socket_id);     
     });
 
     var user = JSON.parse(localStorage.getItem("user"));
@@ -59,31 +63,51 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   
  //  });
 
- //  this.socket.on('chat', function(msg){
- //    $('#messages').append('<li>'+msg+'</li>');
- //  });
+  this.socket.on('chat', (msg) =>{
+  // this.socket.on('chat', (userid, msg) =>{
+    var date = new Date();
+    console.log("print customer message:" +msg);
 
- //  this.socket.on('disconnect', function(msg){
- //    $('#messages').append('<li>'+msg+'</li>');
- //  });
- //  end of from johnson
+    // modify this to json object ben
+    // var obj = JSON.parse(yourJSONString);
+    // var mm = obj.mm;
+    
+    if (msg !== 'undefined'){
+    
+    this.CusMsgData = { phone_number: '85260261976', socket_id: 'socket_id', room:'85260261976' , nickname:'85260261976' , message: msg };
+      console.log(this.CusMsgData.room);
+      console.log(this.CusMsgData.phone_number);
+      console.log(this.CusMsgData.socket_id);
+      console.log(this.CusMsgData.message);
+      
+      this.chatService.saveChat(this.CusMsgData).then((result) => {
+      this.socket.emit('save-message', result);
+      }, (err) => {
+        console.log(err);
+      });
+    }
+  });
+
+  this.socket.on('disconnect', function(msg){
+    console.log('Disconnect: ' +msg);
+ 
+  });
+  // end of from johnson
 
 
     if(user!==null) {
       // this.getChatByRoom(user.room);  //from chatService
       // this.getRequestByRoom(request.phone_number);  //testing
-      this.msgData = { room: user.room, nickname: user.nickname, message: '' }
+      this.msgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
       this.joinned = true;
       this.scrollToBottom();
-      // this.scrollTableToBottom();
     }
     
     this.socket.on('new-message', function (data) {
       if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
         this.chats.push(data.message);
-        this.msgData = { room: user.room, nickname: user.nickname, message: '' }
+        this.msgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
         this.scrollToBottom();
-        // this.scrollTableToBottom();
       }
     }.bind(this));
   }
@@ -99,12 +123,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     } catch(err) { }
   }
 
-  //  scrollTableToBottom(): void {
-  //   try {
-  //     this.myScrollTableContainer.nativeElement.scrollTop = this.myScrollTableContainer.nativeElement.scrollHeight;
-  //   } catch(err) { }
-  // }
-
   getChatByRoom(room) {
      console.log("inside getChatbyRoom" +room);
     this.chatService.getChatByRoom(room).then((res) => {  //from chatService
@@ -115,86 +133,50 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   joinRoom() {
+    var socket_id =this.newUser.socket_id;
+    console.log('joinRoom using socket_id: ' +socket_id);
+    this.Connect(socket_id);  //connect to customer socket
     var date = new Date();
     localStorage.setItem("user", JSON.stringify(this.newUser));
     this.getChatByRoom(this.newUser.room);
-    this.msgData = { room: this.newUser.room, nickname: this.newUser.nickname, message: '' };
+    this.msgData = {phone_number:this.newUser.room, socket_id: this.newUser.socket_id, room: this.newUser.room, nickname: this.newUser.nickname, message: '' };
     this.joinned = true;
-    this.socket.emit('save-message', { room: this.newUser.room, nickname: this.newUser.nickname, message: 'Join this room', updated_at: date });
+    this.socket.emit('save-message', { phone_number:this.newUser.room, socket_id: this.newUser.socket_id, room: this.newUser.room, nickname: this.newUser.nickname, message: 'Join this room', updated_at: date });
   }
 
   sendMessage() {
+    var message = this.msgData.message;
+
     this.chatService.saveChat(this.msgData).then((result) => {
       this.socket.emit('save-message', result);
     }, (err) => {
       console.log(err);
     });
+    this.SendForm(message);
   }
 
   logout() {
+    console.log("disconnect customer and logout the room");
     var date = new Date();
     var user = JSON.parse(localStorage.getItem("user"));
-    this.socket.emit('save-message', { room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
+    this.socket.emit('save-message', { phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
     localStorage.removeItem("user");
     this.joinned = false;
   }
 
-  SendForm(){
-    console.log("admin is sending a message");
-    this.socket.emit('chat message', $('#m').val());
-    $('#m').val('');
+  SendForm(message){
+    console.log("admin is sending a message: " +message);
+    this.socket.emit('chat message',message);  //from admin to customer
+    
     // return false;
   }
 
-  Connect(){
-    console.log("admin pressed connect button");
-     this.socket.emit('connectuser', $('#u').val());
-    $('#u').val('');
+  Connect(socket_id){
+    console.log("admin join the room with socket_id: " +socket_id);
+     this.socket.emit('connectuser', socket_id);
+   
     // return false;
   }
 
-  createRoom() {
-    var date = new Date();
-    console.log("create Room");
-    // this.getSingleRequest(id);
-    console.log("get Single Request");
-    // localStorage.setItem("request", JSON.stringify(this.newRequest));
-    this.getRequestByRoom(this.newRequest.phone_number);
-    // this.msgData = { room: this.newUser.room, nickname: this.newUser.nickname, message: '' };
-    this.newRequest = { room: this.newRequest.phone_number, phone_number: this.newRequest.phone_number, admin_name: this.newRequest.admin_name, message: '',  session_id: this.newRequest.session_id,  updated_at: this.newRequest.updated_at };
-    // this.newRequest = { room: '85292445713', phone_number: '85292445713', admin_name: 'admin', message: '',  session_id: 'this.newRequest.session_id',  updated_at: 'date' };
-    this.joinned = true;
-    console.log(this.newRequest.phone_number);
-    console.log(this.newRequest.admin_name);
-    console.log("before socket emit");
-
-    this.socket.emit('save-message', { room: this.newRequest.phone_number, nickname: this.newRequest.admin_name, message: 'Join this room', updated_at: date });
-
-  }
-
-  getAllRequest() {
-    var human = "human";
-    this.chatService.getAllRequest(human).then((res) => {  //from chatService, 
-      this.requests = res;
-    }, (err) => {
-      console.log(err);
-    });
-  }
-
-  getRequestByRoom(room) {
-    this.chatService.getRequestByRoom(room).then((res) => {  //from chatService, here room=phone number
-      this.requests = res;
-    }, (err) => {
-      console.log(err);
-    });
-  }
-
-  getSingleRequest(id) {
-    this.chatService.showRequest(id).then((res) => {  //from chatService, here room=phone number
-      this.requests = res;
-    }, (err) => {
-      console.log(err);
-    });
-  }
 
 }

@@ -1,12 +1,12 @@
 var mongoose = require('mongoose');
 
 var RequestSchema = new mongoose.Schema({
-	human:String,
-  	room: String,
-  	admin_name: String,
+	customer_service:String,	//human or robot
+  	room: String,				//phone #
+  	// admin_name: String,
   	phone_number: Number,
-  	message: String,
-  	session_id: String,
+  	message: String,			//pass the stored message when join room
+  	socket_id: String,
   	updated_at: { type: Date, default: Date.now },
 });
 

@@ -18,7 +18,8 @@ var server = require('https').createServer(options,app);
 
 var io = require('socket.io')(server,{secure: true});
 var Chat = require('../models/Chat.js');
-var Request = require('../models/Request.js');
+var User = require('../models/User.js');
+// var Request = require('../models/Request.js');
 
 
 var userSocketID = new Array();
@@ -95,23 +96,31 @@ io.on('connection', function (socket) {
   });
 
   socket.on('user', function(userid){
+    console.log("socket.on(users)" +userid);
     if(userid=='admin'){
       adminSocketID.push(socket.id);
-      io.to(socket.id).emit('users',{users:userSocketIDAndUsername});
+      // io.to(socket.id).emit('users',{users:userSocketIDAndUsername});  //orginal
+      io.to(socket.id).emit('users', userid, socket.id); //Ben
       console.log("emit socket.on(users)" +socket.id);
       // console.log("emit socket.on(users)" +{users:userSocketIDAndUsername});
     } else if (userid == 'operator') {
+      console.log("emit socket.on(operator)" +socket.id);
       operatorSocketIDOperatorChannel = socket.id;
     } else if (userid == 'operatorSessionUser'){
+      console.log("emit socket.on(operatorSessionUser)" +socket.id);
       userSocketIDOperatorChannel = socket.id;
     } else {
-        console.log('Lu log userid is '+ userid);   //userid is tel number
+      console.log(' Customer Lu log userid is '+ userid);   //userid is tel number
+      
       userSocketIDAndUsername.push(userid + ' (' + socket.id + ')');
       userSocketID.push(socket.id);
       username.push(userid);
       for(var i in adminSocketID){
         //io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername});
-          io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername},socket.id);
+          // orginal
+          // io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername},socket.id);
+          io.to(adminSocketID[i]).emit('users',userid,socket.id);
+          console.log("emit customer socket.on(users)" +socket.id);
       }
     }
     socket.userid = userid;
@@ -121,14 +130,15 @@ io.on('connection', function (socket) {
 
   socket.on('chat message', function(msg){
     console.log('chatting...');
-    if(atou[socket.id]){
+    if(atou[socket.id]){  //admin message
       console.log('Admin sending msg "' + msg + '" to ' + username[userSocketID.indexOf(atou[socket.id])]);
-      io.to(socket.id).emit('chat',socket.userid +': '+ msg);
-      io.to(atou[socket.id]).emit('adminchat',msg);
-    } else {
+      // io.to(socket.id).emit('chat',socket.userid +': '+ msg);
+      // io.to(socket.id).emit('chat',socket.userid +': '+ msg); // this is for original admin page demo
+      io.to(atou[socket.id]).emit('adminchat',msg); //to android
+    } else {  //customer message
       console.log(username[userSocketID.indexOf(socket.id)] + ' sending msg "' + msg + '" to admin');
-      io.to(socket.id).emit('chat',msg);
-      io.to(utoa[socket.id]).emit('chat',msg);
+      // io.to(socket.id).emit('chat',msg); // this is for original admin page demo
+      io.to(utoa[socket.id]).emit('chat',msg);  //to android
     }
   });
 
@@ -199,17 +209,34 @@ router.delete('/:id', function(req, res, next) {
 
 
 
-/* GET ALL REQUESTS 192.168.0.102:4080/chat/request/human*/ 
-router.get('/request/human', function(req, res, next) {
-  Request.find(req.body, function (err, requests) {
+/* GET ALL REQUESTS 192.168.0.102:4080/chat/request/all*/ 
+router.get('/request/all', function(req, res, next) {
+  Chat.find(req.body, function (err, requests) {
     if (err) return next(err);
     res.json(requests);
   });
 });
 
+/* GET ALL REQUESTS with phone# and socket id 192.168.0.102:4080/chat/requests/human*/ 
+router.get('/request/human', function(req, res, next) { 
+  Chat.find({ $and: 
+    [ 
+      { phone_number: {  $exists: true } }, 
+      { socket_id: { $exists: true } }, 
+      { nickname: { $exists: false } }
+      // { status: "New" } 
+    ]
+  }, function (err, requests) {
+    if (err) return next(err);
+    res.json(requests);
+  });
+});
+
+// db.inventory.find( { $and: [ { price: { $ne: 1.99 } }, { price: { $exists: true } } ] } )
+
 /* GET ALL REQUESTS in same room 192.168.0.102:4080/chat/request/room1*/ 
 router.get('/request/:room', function(req, res, next) {
-  Request.find({ room: req.params.room }, function (err, requests) {
+  Chat.find({ room: req.params.room }, function (err, requests) {
     if (err) return next(err);
     res.json(requests);
   });
@@ -217,7 +244,7 @@ router.get('/request/:room', function(req, res, next) {
 
 /* GET SINGLE REQUEST BY ID */
 router.get('/request/:id', function(req, res, next) {
-  Request.findById(req.params.id, function (err, post) {
+  Chat.findById(req.params.id, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
@@ -225,7 +252,7 @@ router.get('/request/:id', function(req, res, next) {
 
 /* SAVE REQUEST */
 router.post('/request', function(req, res, next) {
-  Request.create(req.body, function (err, post) {
+  Chat.create(req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
@@ -233,7 +260,7 @@ router.post('/request', function(req, res, next) {
 
 /* UPDATE REQUEST */
 router.put('/request/:id', function(req, res, next) {
-  Request.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
+  Chat.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
@@ -241,7 +268,74 @@ router.put('/request/:id', function(req, res, next) {
 
 /* DELETE REQUEST */
 router.delete('/request/:id', function(req, res, next) {
-  Request.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+  Chat.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
+
+/* GET ALL USERS in same room 192.168.0.102:4080/chat/user/all*/ 
+router.get('/user/all', function(req, res, next) {
+  User.find( req.body, function (err, users) {
+    if (err) return next(err);
+    res.json(users);
+  });
+});
+
+/* GET SINGLE user BY ID */
+router.get('/user/:id', function(req, res, next) {
+  User.findById(req.params.id, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
+
+/* GET ALL REQUESTS in same room 192.168.0.102:4080/chat/request/room1*/ 
+// router.get('/request/:room', function(req, res, next) {
+//   Chat.find({ room: req.params.room }, function (err, requests) {
+//     if (err) return next(err);
+//     res.json(requests);
+//   });
+// });
+
+/* GET SINGLE user BY phone_number */
+router.get('/userphone/:phone_number', function(req, res, next) {
+  User.find({phone_number:req.params.phone_number}, function (err, users) {
+    if (err) return next(err);
+    res.json(users);
+  });
+});
+
+/* SAVE user */
+router.post('/user', function(req, res, next) {
+  User.create(req.body, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
+/* UPDATE REQUEST */
+router.put('/user/:id', function(req, res, next) {
+  User.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
+/* UPDATE REQUEST by user phone number*/
+router.put('/userupdate/:phone_number', function(req, res, next) {
+  User.findOneAndUpdate({phone_number:req.params.phone_number}, req.body, function (err, users) {
+    if (err) return next(err);
+    res.json(users);
+  });
+});
+
+
+/* DELETE REQUEST */
+router.delete('/user/:id', function(req, res, next) {
+  User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });

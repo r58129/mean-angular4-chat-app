@@ -23,7 +23,7 @@ const appRoutes: Routes = [
   //     { path: 'chat', component: ChatComponent, outlet:'chatOutlet'},
   // ]},
   { path: 'request', component: RequestComponent, children:[
-      { path: 'chatbox/:id', component: ChatComponent, outlet:'chatOutlet'},
+      { path: 'chatbox/:id/:id2', component: ChatComponent, outlet:'chatOutlet'},
   ]},
   { path: 'admin', component: AdminComponent },
   { path: 'operator', component: OperatorComponent },
@@ -34,7 +34,7 @@ const appRoutes: Routes = [
   imports: [
     RouterModule.forRoot(
       appRoutes,
-      { enableTracing: true } // <-- debugging purposes only
+      { enableTracing: false } // <-- debugging purposes only
     )
   ],
   exports: [
