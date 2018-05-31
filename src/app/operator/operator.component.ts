@@ -10,13 +10,15 @@ import * as $ from 'jquery';
 })
 export class OperatorComponent implements OnInit {
 
-  socket = io('https://192.168.0.102:3637',{secure: true});
+  socket = io('https://192.168.0.102:3638',{secure: true});
   connected = false;
 
   constructor() { }
 
   ngOnInit() {
 
+      history.pushState({},"Edit","");
+      
   // var socket = io('http://192.168.0.102:3637');
   
   this.socket.emit('user','operator');

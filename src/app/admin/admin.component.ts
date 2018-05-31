@@ -17,7 +17,7 @@ export class AdminComponent implements OnInit {
   //socket = io('https://192.168.0.102:3638');
     
    // socket = io('192.168.0.102:3638',{secure: true});
-    socket = io('https://192.168.0.102:3637',{secure: true});
+    socket = io('https://192.168.0.102:3638',{secure: true});
 
   constructor() {
       
@@ -52,6 +52,8 @@ export class AdminComponent implements OnInit {
     
     
   ngOnInit() {
+      
+      history.pushState({},"Edit","");
 
   this.socket.emit('user','admin');
 

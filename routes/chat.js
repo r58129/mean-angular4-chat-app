@@ -35,7 +35,7 @@ var userSocketIDOperatorChannel  = {};
 var operatorSocketIDOperatorChannel = {};
 var usernameOperatorChannel = {};
 
-var port=3637;
+var port=3638;
 server.listen(port);
 console.log('Socket.io is listening on port:' + port);
 
@@ -191,6 +191,9 @@ router.get('/:id', function(req, res, next) {
     res.json(post);
   });
 });
+
+
+
 
 /* SAVE CHAT postman POST path:192.168.0.102:4080/chat/*/
 router.post('/', function(req, res, next) {

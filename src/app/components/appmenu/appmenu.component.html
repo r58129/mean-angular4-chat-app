@@ -3,7 +3,7 @@
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
       <!-- Sidebar user panel -->
-      <div class="user-panel">
+      <div class="user-panel" *ngIf="authService.isAuthenticated()">
         <div class="pull-left image">
           <img src="assets/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
         </div>
@@ -26,19 +26,19 @@
       <!-- /.search form -->
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
-        <li class="header">MAIN NAVIGATION</li>
-        <li class="active treeview menu-open">
+        <li class="header" *ngIf="authService.isAuthenticated()">MAIN NAVIGATION </li>
+        <li class="active treeview menu-open" *ngIf="authService.isAuthenticated()">
           <a href="#">
             <i class="fa fa-dashboard"></i> <span>Operation</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
-          <ul class="treeview-menu">
+          <ul class="treeview-menu" >
             <!-- <li class="active"> -->
-            <li><a routerLink="/admin" routerLinkActive="active" href="index.html"><i class="fa fa-circle-o"></i> Administrator </a></li>
-            <li ><a routerLink="/operator" routerLinkActive="active" href="index2.html"><i class="fa fa-circle-o"></i> Operator</a></li>
-            <li ><a routerLink="/request" routerLinkActive="active" href="index2.html"><i class="fa fa-circle-o"></i> Chat Service</a></li>
+            <li ><a routerLink="/admin" routerLinkActive="active-link" href=""><i class="fa fa-circle-o"></i> Administrator </a></li>
+            <li ><a routerLink="/operator" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Operator</a></li>
+            <li ><a routerLink="/request" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Chat Service</a></li>
           </ul>
         </li>
        <!--  <li class="treeview">
