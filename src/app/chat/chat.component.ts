@@ -23,7 +23,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // chatRequest = { room: '', admin_name:'', phone_number: '', message: '', updated_at:'' };
   // socket = io('http://localhost:4000');
-  socket = io('https://192.168.0.102:3638',{secure: true});
+  socket = io('https://192.168.0.102:3637',{secure: true});
   
   constructor(private chatService: ChatService, private route: ActivatedRoute) {
     // console.log("inside chat constructor" +this.route.snapshot.params);
@@ -92,6 +92,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     }
     
     this.socket.on('new-message', function (data) {
+      console.log("data.message.room: " + data.message.room);
+      console.log("JSON.parse(localStorage.getItem('user')).room: " + (JSON.parse(localStorage.getItem("user")).room));
+      
       if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
         this.chats.push(data.message);
         this.msgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }

@@ -35,7 +35,7 @@ var userSocketIDOperatorChannel  = {};
 var operatorSocketIDOperatorChannel = {};
 var usernameOperatorChannel = {};
 
-var port=3638;
+var port=3637;
 server.listen(port);
 console.log('Socket.io is listening on port:' + port);
 
