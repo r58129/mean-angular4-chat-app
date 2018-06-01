@@ -29,14 +29,12 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let r of requests">
-                    <!-- <tr *ngFor="let c of chats"> -->
       				<td>{{r.phone_number }}</td>
                     <td>{{r.updated_at | date: 'medium'}}</td>
-                    <!-- <td><span class="label label-warning">Connect</span></td> -->
                     <td>
-                        <div class="pull-right">
-							<a [routerLink]="['/request', {outlets: { chatOutlet: ['chatbox', r.phone_number]}}]" routerLinkActive="active" class="btn btn-default btn-xs">Connect</a>
-						</div>
+                    	<div class="pull-right">   	
+							<a [routerLink]="['/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id]}}]" routerLinkActive="active" class="btn btn-danger btn-xs">Connect</a>
+						</div>						
                     </td>
                   </tr>
                 </tbody>

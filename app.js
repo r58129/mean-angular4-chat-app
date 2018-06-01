@@ -10,7 +10,7 @@ const Auth0Strategy = require('passport-auth0');
 mongoose.Promise = global.Promise;
 
 // mongoose.connect('mongodb://localhost/chatService')
-mongoose.connect('mongodb://192.168.0.102/luChatService')
+mongoose.connect('mongodb://192.168.0.102/chatService')
   .then(() =>  console.log('connection successful'))
   .catch((err) => console.error(err));
 

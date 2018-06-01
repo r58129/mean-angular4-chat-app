@@ -81,6 +81,20 @@ export class ChatService {
         });
     });
   }
+
+ // get all Request by phone number and only display phone number once
+  getRequestByRooms(){
+        return new Promise((resolve, reject) => {
+      this.http.get('/chat/request')
+        .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
   // Request, room refer to phone number
   getRequestByRoom(room) {
     return new Promise((resolve, reject) => {
@@ -97,6 +111,18 @@ export class ChatService {
   showRequest(id) {
     return new Promise((resolve, reject) => {
         this.http.get(this.serverUrl+'/chat/request' + id)
+          .map(res => res.json())
+          .subscribe(res => {
+            resolve(res)
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
+   showRequestSocket(id) {
+    return new Promise((resolve, reject) => {
+        this.http.get('/chat/request' + id)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -133,6 +159,70 @@ export class ChatService {
   deleteRequest(id) {
     return new Promise((resolve, reject) => {
         this.http.delete(this.serverUrl+'/chat/request/'+id)
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }
+
+  //get all users
+
+  getAllUser() {
+    return new Promise((resolve, reject) => {
+      this.http.get('/chat/user/all')
+        .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
+
+  showUser(id) {
+    return new Promise((resolve, reject) => {
+        this.http.get('/chat/user' + id)
+          .map(res => res.json())
+          .subscribe(res => {
+            resolve(res)
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
+
+
+  saveUser(data) {
+    return new Promise((resolve, reject) => {
+        this.http.post('/chat/user', data)
+          .map(res => res.json())
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }
+
+  updateUser(id, data) {
+    return new Promise((resolve, reject) => {
+        this.http.put('/chat/user'+id, data)
+          .map(res => res.json())
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }
+
+  deleteUser(id) {
+    return new Promise((resolve, reject) => {
+        this.http.delete('/chat/user/'+id)
           .subscribe(res => {
             resolve(res);
           }, (err) => {
