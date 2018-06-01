@@ -200,6 +200,12 @@ router.delete('/:id', function(req, res, next) {
   });
 });
 
+/* GET home page. */   /* Lewis */
+router.get('/', function(req, res) {
+  //  res.send("Hello world 2 !!!");
+  //res.send('index');
+    res.sendFile(path.join(distDir,'index.html'));
+});
 
 
 /* GET ALL REQUESTS 192.168.0.102:4080/chat/request/human*/ 
