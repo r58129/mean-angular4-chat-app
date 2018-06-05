@@ -8,6 +8,7 @@ var ChatSchema = new mongoose.Schema({
   	nickname: String,			//name of admin
   	message: String,
   	Request_status: String,
+  	filename: String,
   	updated_at: { type: Date, default: Date.now },
 });
 

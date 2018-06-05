@@ -10,7 +10,7 @@ import * as $ from 'jquery';
 })
 export class OperatorComponent implements OnInit {
 
-  socket = io('https://192.168.0.102:3638',{secure: true});
+  socket = io('https://192.168.0.102:3637',{secure: true});
   connected = false;
 
   constructor() { }

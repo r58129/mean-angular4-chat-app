@@ -21,6 +21,7 @@
     "@angular/platform-browser": "^5.2.10",
     "@angular/platform-browser-dynamic": "^5.2.10",
     "@angular/router": "^5.2.10",
+    "angular-emoji": "^0.1.45",
     "auth0-js": "^9.5.1",
     "body-parser": "^1.17.1",
     "core-js": "^2.4.1",

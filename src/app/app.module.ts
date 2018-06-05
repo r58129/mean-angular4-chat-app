@@ -24,6 +24,8 @@ import { OperatorComponent } from './operator/operator.component';
 import { RequestComponent } from './request/request.component';
 import { ServiceComponent } from './service/service.component';
 
+// import { EmojiModule } from 'angular-emoji/dist';
+
 // import { ApphovertableComponent } from './components/apphovertable/apphovertable.component';
 
 // const ROUTES = [
@@ -55,6 +57,7 @@ import { ServiceComponent } from './service/service.component';
     FormsModule,
     HttpModule,
     AppRoutingModule
+    // EmojiModule
     // RouterModule.forRoot(ROUTES)
   ],
   providers: [

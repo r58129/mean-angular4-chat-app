@@ -115,11 +115,13 @@ io.on('connection', function (socket) {
       userSocketIDAndUsername.push(userid + ' (' + socket.id + ')');
       userSocketID.push(socket.id);
       username.push(userid);
+     
       for(var i in adminSocketID){
         //io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername});
           // orginal
           // io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername},socket.id);
           io.to(adminSocketID[i]).emit('users',userid,socket.id);
+          // io.to(adminSocketID[i]).emit('logRequest',userid,socket.id);
           console.log("emit customer socket.on(users)" +socket.id);
       }
     }
@@ -303,15 +305,6 @@ router.get('/user/:id', function(req, res, next) {
   });
 });
 
-
-/* GET ALL REQUESTS in same room 192.168.0.102:4080/chat/request/room1*/ 
-// router.get('/request/:room', function(req, res, next) {
-//   Chat.find({ room: req.params.room }, function (err, requests) {
-//     if (err) return next(err);
-//     res.json(requests);
-//   });
-// });
-
 /* GET SINGLE user BY phone_number */
 router.get('/userphone/:phone_number', function(req, res, next) {
   User.find({phone_number:req.params.phone_number}, function (err, users) {
@@ -328,7 +321,7 @@ router.post('/user', function(req, res, next) {
   });
 });
 
-/* UPDATE REQUEST */
+/* UPDATE user */
 router.put('/user/:id', function(req, res, next) {
   User.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
@@ -336,7 +329,7 @@ router.put('/user/:id', function(req, res, next) {
   });
 });
 
-/* UPDATE REQUEST by user phone number*/
+/* UPDATE user by user phone number*/
 router.put('/userupdate/:phone_number', function(req, res, next) {
   User.findOneAndUpdate({phone_number:req.params.phone_number}, req.body, function (err, users) {
     if (err) return next(err);
@@ -344,13 +337,50 @@ router.put('/userupdate/:phone_number', function(req, res, next) {
   });
 });
 
-
-/* DELETE REQUEST */
+/* DELETE user */
 router.delete('/user/:id', function(req, res, next) {
   User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
 });
+
+
+// Get image
+/* GET ALL USERS in same room 192.168.0.102:4080/chat/image/all*/ 
+router.get('/image/all', function(req, res, next) {
+  Image.find( req.body, function (err, images) {
+    if (err) return next(err);
+    res.json(images);
+  });
+});
+
+/* GET SINGLE image BY ID */
+router.get('/image/:id', function(req, res, next) {
+  Image.findById(req.params.id, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
+
+/* SAVE image */
+router.post('/image', function(req, res, next) {
+  User.create(req.body, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
+
+
+/* DELETE image */
+router.delete('/image/:id', function(req, res, next) {
+  User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
 
 module.exports = router;

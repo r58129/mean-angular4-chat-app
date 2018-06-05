@@ -16,8 +16,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   chats: any;
   joinned: boolean = false;
+  notSelected: boolean = true;
   newUser = { nickname: '', room: '' ,socket_id: ''};
   msgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
+  imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'' };
   //new request
   // requests: any;  //new request
   CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
@@ -169,6 +171,56 @@ export class ChatComponent implements OnInit, AfterViewChecked {
      this.socket.emit('connectuser', socket_id);
    
     // return false;
+  }
+
+  selectPhoto() {
+    console.log('inside select Photo' );
+    this.notSelected = false;
+    
+  }
+
+// export class MyFileUploadComponent {
+  onFileSelected(event) {    
+    let file = event.target.files[0];
+    let name = file.name;
+    console.log("onFileSelected: " +name);
+  }
+// }
+ 
+  SendPhoto(filename){
+
+    // this.chatService.saveImage();
+
+
+    console.log("admin is sending a photo: " +filename );
+    console.log("nickname: " + this.newUser.nickname);
+    console.log("room: " + this.newUser.room);
+    console.log("socket_id: " + this.newUser.socket_id);
+    console.log("socket_id: " + this.msgData.message);
+  
+    // this.socket.emit('chat message',message);  //from admin to customer
+    // var obj = { type:"photo", path:"null", message: message };
+    // this.socket.emit('chat message', obj);  //send json object from admin to customer
+    // console.log("admin is sending object: " +obj);
+    // return false;
+    
+    // console.log("admin is sending a photo: " +onFileSelected.fileName);
+    var jsonMesg = {type:'', path:'', message:''};
+    jsonMesg.type = "image";
+    jsonMesg.path = "/storage/emulated/0/" +filename;
+    // jsonMesg.message = msg;
+    jsonMesg.message = this.msgData.message;
+    console.log('jsonMesg.type: ' +jsonMesg.type);
+    console.log('jsonMesg.path: ' +jsonMesg.path);
+    console.log('jsonMesg.message: ' +jsonMesg.message);
+    // io.to(userSocketIDOperatorChannel).emit('operatorToUser',jsonMesg);
+    this.socket.emit('operatorToUser',jsonMesg);
+    this.notSelected = true;
+  }
+
+  CancelPhoto(){
+    console.log('clicked cancel Photo' );
+    this.notSelected = true;
   }
 
 

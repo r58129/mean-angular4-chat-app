@@ -39,6 +39,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 
     // this.socket.on('users', function(data){
     this.socket.on('users', (userid, socket_id) => {
+      // this.socket.on('logRequest', (userid, socket_id) => {
     // this.socket.on('users', function(userid, socket_id){
       var date = new Date();
       // console.log("inside users socket.on");
