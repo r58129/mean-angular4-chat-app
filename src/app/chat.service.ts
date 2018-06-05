@@ -8,7 +8,7 @@ export class ChatService {
 
   constructor(private http : Http) { }
 
-    private serverUrl = 'https://192.168.0.102:3088';
+    private serverUrl = 'https://airpoint.com.hk:3088';
     
   getChatByRoom(room) {    //here we use room as phone_number
     return new Promise((resolve, reject) => {

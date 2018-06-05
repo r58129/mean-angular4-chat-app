@@ -17,14 +17,30 @@
   <!-- <body> -->
     <ul id="users"></ul>
     <ul id="messages"></ul>
-    <form id="chatform" action="">
+    
+          <div id="chatform" class="input-group">
+        <input id="m" type="text" name="message" placeholder="Type Message ..." class="form-control" (keydown.enter)="SendForm()">
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-primary btn-flat" (click)="SendForm()">  Send  </button>
+          </span>
+      </div>
+
+      <div id="userform" class="input-group">
+        <input id="u" type="text" name="message" placeholder="Connect Number ..." class="form-control" (keydown.enter)="ConnectNumber()">
+          <span class="input-group-btn">
+            <button type="button" id="btnConnect" class="btn btn-primary btn-flat" (click)="ConnectNumber()">Connect Number</button>
+          </span>
+      </div>
+    
+<!--    <form id="chatform" action="">
       <input id="m" autocomplete="off" /><button type="button" class="btn btn-default btn-xs" (click)="SendForm()">Send</button>
-      <!-- <button>Send</button> -->
+       <button>Send</button> 
     </form>
     <form id="userform" action="">
       <input id="u" autocomplete="off" /><button id="btnConnect" type="button" class="btn btn-default btn-xs" (click)="ConnectNumber()">Connect Number</button>
-  <!-- <button id='btnConnect'>Connect Number</button> -->
-</form>
+        
+   <button id='btnConnect'>Connect Number</button> 
+</form>-->
   <!-- </body> -->
 </div>
 

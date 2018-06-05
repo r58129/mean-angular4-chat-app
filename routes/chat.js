@@ -35,9 +35,15 @@ var userSocketIDOperatorChannel  = {};
 var operatorSocketIDOperatorChannel = {};
 var usernameOperatorChannel = {};
 
-var port=3637;
+var port=3087;
 server.listen(port);
 console.log('Socket.io is listening on port:' + port);
+
+
+ const bodyParser = require('body-parser');
+
+ app.use(bodyParser.json());
+
 
 // socket io
 io.on('connection', function (socket) {
@@ -83,8 +89,8 @@ io.on('connection', function (socket) {
 
   socket.on('chatMessageOperatorSession', function(msg){
     if (operatorSocketIDOperatorChannel == socket.id){
-      console.log('Operator sending msg "' + msg + '" to ' + usernameOperatorChannel);
-      io.to(socket.id).emit('chat',socket.userid + ' (' + usernameOperatorChannel + '): '+ ': '+ msg);
+      console.log('Operator sending msg "' + JSON.stringify(msg.message) + '" to ' + usernameOperatorChannel);
+      io.to(socket.id).emit('chat',socket.userid + ' (' + usernameOperatorChannel + '): '+ ': '+ JSON.stringify(msg.message));
       io.to(userSocketIDOperatorChannel).emit('operatorToUser',msg);
     }
     if (userSocketIDOperatorChannel == socket.id) {
@@ -132,9 +138,14 @@ io.on('connection', function (socket) {
     console.log('chatting...');
     console.log('socket.id:' + socket.id);
     if(atou[socket.id]){  //admin message
-      console.log('Admin sending msg "' + msg + '" to ' + username[userSocketID.indexOf(atou[socket.id])]);
+      //console.log('Admin sending msg "' + msg + '" to ' + username[userSocketID.indexOf(atou[socket.id])]);
       // io.to(socket.id).emit('chat',socket.userid +': '+ msg);
       // io.to(socket.id).emit('chat',socket.userid +': '+ msg); // this is for original admin page demo
+        
+        console.log('Admin sending msg "' + JSON.stringify(msg.message) + '" to ' + username[userSocketID.indexOf(atou[socket.id])]);
+      // io.to(socket.id).emit('chat',socket.userid +': '+ msg);
+    io.to(socket.id).emit('chat',socket.userid +': '+ JSON.stringify(msg.message)); // this is for original admin page demo
+        
       io.to(atou[socket.id]).emit('adminchat',msg); //to android
     } else {  //customer message
       console.log(username[userSocketID.indexOf(socket.id)] + ' sending msg "' + msg + '" to admin');
