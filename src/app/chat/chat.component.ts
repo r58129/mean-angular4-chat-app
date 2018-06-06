@@ -27,14 +27,14 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // chatRequest = { room: '', admin_name:'', phone_number: '', message: '', updated_at:'' };
   // socket = io('http://localhost:4000');
-  socket = io('https://192.168.0.102:3637',{secure: true});
+  socket = io('https://airpoint.com.hk:3087',{secure: true});
   
   constructor(private chatService: ChatService, private route: ActivatedRoute) {
     // console.log("inside chat constructor" +this.route.snapshot.params);
   }
 
   ngOnInit() {
-      history.pushState({},"Edit","");
+//      history.pushState({},"Edit","");
 
     this.route.params.subscribe(params =>{
       console.log(params);

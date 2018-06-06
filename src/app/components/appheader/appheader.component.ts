@@ -12,5 +12,8 @@ export class AppheaderComponent implements OnInit {
 
   ngOnInit() {
   }
-
+logout() {
+    this.authService.logout();
+ //   this.setMessage();
+  }
 }

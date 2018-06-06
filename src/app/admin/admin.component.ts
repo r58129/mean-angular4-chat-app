@@ -17,7 +17,7 @@ export class AdminComponent implements OnInit {
   //socket = io('https://192.168.0.102:3638');
     
    // socket = io('192.168.0.102:3638',{secure: true});
-    socket = io('https://192.168.0.102:3637',{secure: true});
+    socket = io('https://airpoint.com.hk:3087',{secure: true});
 
   constructor() {
       
@@ -53,7 +53,7 @@ export class AdminComponent implements OnInit {
     
   ngOnInit() {
       
-      history.pushState({},"Edit","");
+//      history.pushState({},"Edit","");
 
   this.socket.emit('user','admin');
 
@@ -139,11 +139,19 @@ export class AdminComponent implements OnInit {
   }
 
     
-    
+    ngOnDestroy(){
+        
+        //socket.emit('forceDisconnect');
+        this.socket.disconnect();
+        
+    }
     
   SendForm(){
   	console.log("admin is sending a message");
-  	this.socket.emit('chat message', $('#m').val());
+      
+    var obj = { type:"text", path:"null", message: $('#m').val() };
+      this.socket.emit('chat message', obj);
+  	//this.socket.emit('chat message', $('#m').val());
     $('#m').val('');
     // return false;
   }

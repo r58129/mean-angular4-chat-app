@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 
 @Injectable()
 export class ChatService {
 
-  constructor(private http: Http) { }
+  constructor(private http : Http) { }
 
+    private serverUrl = 'https://airpoint.com.hk:3088';
+    
   getChatByRoom(room) {    //here we use room as phone_number
     return new Promise((resolve, reject) => {
-      this.http.get('/chat/' + room)
+      this.http.get(this.serverUrl+'/chat/' + room)
         .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -21,7 +24,7 @@ export class ChatService {
 
   showChat(id) {
     return new Promise((resolve, reject) => {
-        this.http.get('/chat/' + id)
+        this.http.get(this.serverUrl+'/chat/' + id)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -33,7 +36,7 @@ export class ChatService {
 
   saveChat(data) {
     return new Promise((resolve, reject) => {
-        this.http.post('/chat', data)
+        this.http.post(this.serverUrl+'/chat', data)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -45,7 +48,7 @@ export class ChatService {
 
   updateChat(id, data) {
     return new Promise((resolve, reject) => {
-        this.http.put('/chat/'+id, data)
+        this.http.put(this.serverUrl+'/chat/'+id, data)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -57,7 +60,7 @@ export class ChatService {
 
   deleteChat(id) {
     return new Promise((resolve, reject) => {
-        this.http.delete('/chat/'+id)
+        this.http.delete(this.serverUrl+'/chat/'+id)
           .subscribe(res => {
             resolve(res);
           }, (err) => {
@@ -69,7 +72,7 @@ export class ChatService {
  // get all human Request
   getAllRequest(human) {
     return new Promise((resolve, reject) => {
-      this.http.get('/chat/request/' + human )
+      this.http.get(this.serverUrl+'/chat/request/human' )
         .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -82,7 +85,7 @@ export class ChatService {
   // Request, room refer to phone number
   getRequestByRoom(room) {
     return new Promise((resolve, reject) => {
-      this.http.get('/chat/request/' + room)
+      this.http.get(this.serverUrl+'/chat/request/' + room)
         .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -94,7 +97,7 @@ export class ChatService {
 
   showRequest(id) {
     return new Promise((resolve, reject) => {
-        this.http.get('/chat/request' + id)
+        this.http.get(this.serverUrl+'/chat/request' + id)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -118,7 +121,7 @@ export class ChatService {
 
   saveRequest(data) {
     return new Promise((resolve, reject) => {
-        this.http.post('/chat/request', data)
+        this.http.post(this.serverUrl+'/chat/request', data)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -130,7 +133,7 @@ export class ChatService {
 
   updateRequest(id, data) {
     return new Promise((resolve, reject) => {
-        this.http.put('/chat/request'+id, data)
+        this.http.put(this.serverUrl+'/chat/request'+id, data)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -142,7 +145,7 @@ export class ChatService {
 
   deleteRequest(id) {
     return new Promise((resolve, reject) => {
-        this.http.delete('/chat/request/'+id)
+        this.http.delete(this.serverUrl+'/chat/request/'+id)
           .subscribe(res => {
             resolve(res);
           }, (err) => {

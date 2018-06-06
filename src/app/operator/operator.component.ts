@@ -10,14 +10,14 @@ import * as $ from 'jquery';
 })
 export class OperatorComponent implements OnInit {
 
-  socket = io('https://192.168.0.102:3637',{secure: true});
+  socket = io('https://airpoint.com.hk:3087',{secure: true});
   connected = false;
 
   constructor() { }
 
   ngOnInit() {
 
-      history.pushState({},"Edit","");
+//      history.pushState({},"Edit","");
       
   // var socket = io('http://192.168.0.102:3637');
   
@@ -32,13 +32,24 @@ export class OperatorComponent implements OnInit {
 
   this.socket.on('chat', function(msg){
     $('#messages').append('<li>'+msg+'</li>');
+      //$('#messages').append('<li>'+msg[3]+'</li>');
   });
 
 }
 
+    ngOnDestroy(){
+        
+        //socket.emit('forceDisconnect');
+        this.socket.disconnect();
+        
+    }
+    
   SendForm(){
   	console.log("operator is sending a message");
-    this.socket.emit('chatMessageOperatorSession', $('#m').val());
+      var obj = { type:"text", path:"null", message: $('#m').val() };
+      this.socket.emit('chatMessageOperatorSession', obj);
+    //this.socket.emit('chatMessageOperatorSession', $('#m').val());
+      
     $('#m').val('');
     // return false;
   }

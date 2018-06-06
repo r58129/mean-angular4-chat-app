@@ -4,26 +4,70 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+const passport = require('passport');
+const Auth0Strategy = require('passport-auth0');
 
 mongoose.Promise = global.Promise;
 
 // mongoose.connect('mongodb://localhost/chatService')
-mongoose.connect('mongodb://192.168.0.102/chatService')
+mongoose.connect('mongodb://192.168.0.102/luChatService')
   .then(() =>  console.log('connection successful'))
   .catch((err) => console.error(err));
 
 var chat = require('./routes/chat');
 var app = express();
 
+
 app.set('view engine', 'html');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({'extended':'false'}));
-app.use(express.static(path.join(__dirname, 'dist')));
+
+app.get('/a', function (req, res) {
+    console.log('hihi hello lewis tse for home page!!!');
+  //return res.sendFile('index.html');
+    return res.sendFile(path.join(distDir,'index.html'));
+});
+//app.use('/', chat);
+
+
+//app.use(express.static(path.join(__dirname, 'dist')));
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 app.use('/chat', chat);
-//app.use('/callback', chat);
 
+
+
+const strategy = new Auth0Strategy(
+  {
+    domain: 'aptcmai0.auth0.com',
+    clientID: 'QHj13LadXiKO4qLoj7IQaJWv3Z0s3j5D',
+    clientSecret: 'xxx',
+    callbackURL: 'https://192.168.0.102:3089/'
+  },
+  (accessToken, refreshToken, extraParams, profile, done) => {
+    return done(null, profile);
+  }
+);
+passport.use(strategy);
+
+// This can be used to keep a smaller payload
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+// ...
+app.use(passport.initialize());
+app.use(passport.session());
 
  //New test from Lewis
  //GET route for reading data
@@ -32,10 +76,7 @@ app.use('/chat', chat);
 //app.engine('html', require('ejs').renderFile);
 
 
-//app.get('/a', function (req, res) {
-//    console.log('hihi hello lewis tse for home page!!!');
-//  return res.sendFile('index.html');
-//});
+
 
 
 // catch 404 and forward to error handler
