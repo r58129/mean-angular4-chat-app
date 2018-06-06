@@ -84,13 +84,12 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 
 
      this.getAllRequest();
-     // this.getRequestByRooms();
      this.scrollTableToBottom();
 
   }
 
   ngAfterViewChecked() {
-    // this.scrollToBottom();
+  
     this.scrollTableToBottom();
   }
 

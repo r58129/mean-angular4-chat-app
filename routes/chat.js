@@ -168,9 +168,17 @@ io.on('connection', function (socket) {
     console.log(data);
     io.emit('new-message', { message: data });
   });
-});
 
-/* GET ALL CHATS */
+  // save-image
+  socket.on('save-image', function (data) {
+    console.log(data);
+    io.emit('new-image', data);
+  });
+
+}); //io.on
+
+
+/* GET ALL CHATS, THIS IS THE REAL ROOM */
 router.get('/:room', function(req, res, next) {
   // Chat.find({ room: req.params.room }, function (err, chats) {
     Chat.find({ $and:
@@ -250,7 +258,15 @@ router.get('/request/human', function(req, res, next) {
 
 /* GET ALL REQUESTS in same room 192.168.0.102:4080/chat/request/room1*/ 
 router.get('/request/:room', function(req, res, next) {
-  Chat.find({ room: req.params.room }, function (err, requests) {
+  // Chat.find({ room: req.params.room }, function (err, requests) {
+    Chat.find({ $and:
+    [
+      { room: req.params.room },
+      { socket_id: { $exists: true } }, 
+      { nickname: {$exists:true, $ne:"robot" } }  //filter robot reply
+    
+    ]
+  }, function (err, requests) {
     if (err) return next(err);
     res.json(requests);
   });
@@ -349,7 +365,15 @@ router.delete('/user/:id', function(req, res, next) {
 // Get image
 /* GET ALL USERS in same room 192.168.0.102:4080/chat/image/all*/ 
 router.get('/image/all', function(req, res, next) {
-  Image.find( req.body, function (err, images) {
+  // Chat.find( req.body, function (err, images) {
+   Chat.find({ $and:
+    [
+      // { room: req.params.room },
+      { filename: { $exists: true } }, 
+      { nickname: { $exists:true, $ne:"robot" } }  //filter robot reply
+    
+    ]
+  }, function (err, images) {  
     if (err) return next(err);
     res.json(images);
   });
@@ -357,7 +381,7 @@ router.get('/image/all', function(req, res, next) {
 
 /* GET SINGLE image BY ID */
 router.get('/image/:id', function(req, res, next) {
-  Image.findById(req.params.id, function (err, post) {
+  Chat.findById(req.params.id, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
@@ -366,7 +390,7 @@ router.get('/image/:id', function(req, res, next) {
 
 /* SAVE image */
 router.post('/image', function(req, res, next) {
-  User.create(req.body, function (err, post) {
+  Chat.create(req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
@@ -376,7 +400,7 @@ router.post('/image', function(req, res, next) {
 
 /* DELETE image */
 router.delete('/image/:id', function(req, res, next) {
-  User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+  Chat.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });

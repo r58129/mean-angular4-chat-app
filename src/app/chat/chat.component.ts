@@ -12,14 +12,16 @@ import * as $ from 'jquery';
 export class ChatComponent implements OnInit, AfterViewChecked {
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
-  @ViewChild('scrollTable') private myScrollTableContainer: ElementRef;  //Ben
+  // @ViewChild('scrollTable') private myScrollTableContainer: ElementRef;  //Ben
 
+  url = '';
+  selectedFile: File;
   chats: any;
   joinned: boolean = false;
   notSelected: boolean = true;
   newUser = { nickname: '', room: '' ,socket_id: ''};
   msgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
-  imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'' };
+  imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image:'' };
   //new request
   // requests: any;  //new request
   CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
@@ -94,8 +96,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     }
     
     this.socket.on('new-message', function (data) {
-      console.log("data.message.room: " + data.message.room);
-      console.log("JSON.parse(localStorage.getItem('user')).room: " + (JSON.parse(localStorage.getItem("user")).room));
+      // console.log("data.message.room: " + data.message.room);
+      // console.log("JSON.parse(localStorage.getItem('user')).room: " + (JSON.parse(localStorage.getItem("user")).room));
       
       if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
         this.chats.push(data.message);
@@ -103,6 +105,17 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         this.scrollToBottom();
       }
     }.bind(this));
+
+
+    this.socket.on('new-image', function (data) {
+      console.log("new-image: " + data.message.room);
+      
+        this.chats.push(data.message, data.filename);
+        // this.imgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
+        this.scrollToBottom();
+      
+    }.bind(this));
+
   }
 
   ngAfterViewChecked() {
@@ -179,41 +192,69 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     
   }
 
-// export class MyFileUploadComponent {
+
   onFileSelected(event) {    
-    let file = event.target.files[0];
-    let name = file.name;
-    console.log("onFileSelected: " +name);
+
+    // let file = event.target.files[0];
+    // let name = file.name;
+    this.selectedFile = event.target.files[0];
+    console.log("event.target.files[0]: " +this.selectedFile);
+    console.log("onFileSelected: " +this.selectedFile.name);
+
+    if (event.target.files && event.target.files[0]) {
+      var reader = new FileReader();
+
+      reader.readAsDataURL(event.target.files[0]); // read file as data url
+
+      reader.onload = (event:any) => { // called once readAsDataURL is completed
+        this.url = event.target.result;
+        console.log("url: " +this.url);
+      }
+    }
   }
-// }
  
   SendPhoto(filename){
 
-    // this.chatService.saveImage();
-
-
-    console.log("admin is sending a photo: " +filename );
+    console.log("admin is sending a photo: " +this.selectedFile );
+    console.log("filename: " +this.selectedFile.name );
     console.log("nickname: " + this.newUser.nickname);
     console.log("room: " + this.newUser.room);
     console.log("socket_id: " + this.newUser.socket_id);
-    console.log("socket_id: " + this.msgData.message);
+    console.log("message: " + this.msgData.message);
   
-    // this.socket.emit('chat message',message);  //from admin to customer
-    // var obj = { type:"photo", path:"null", message: message };
-    // this.socket.emit('chat message', obj);  //send json object from admin to customer
-    // console.log("admin is sending object: " +obj);
-    // return false;
-    
     // console.log("admin is sending a photo: " +onFileSelected.fileName);
     var jsonMesg = {type:'', path:'', message:''};
     jsonMesg.type = "image";
-    jsonMesg.path = "/storage/emulated/0/" +filename;
+    jsonMesg.path = "/storage/emulated/0/" +this.selectedFile.name;
     // jsonMesg.message = msg;
     jsonMesg.message = this.msgData.message;
     console.log('jsonMesg.type: ' +jsonMesg.type);
     console.log('jsonMesg.path: ' +jsonMesg.path);
     console.log('jsonMesg.message: ' +jsonMesg.message);
     // io.to(userSocketIDOperatorChannel).emit('operatorToUser',jsonMesg);
+
+    //save to DB
+    this.imgData = {phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
+      room: this.newUser.room, nickname: this.newUser.nickname, 
+      message: this.msgData.message, filename: this.selectedFile.name, image:this.url };  //image:this.url doesn't work 
+
+    // this.chatService.saveImage(this.imgData).then((result) => {
+    //   console.log('inside saveImage');
+    //   this.socket.emit('save-Image', result);
+    // }, (err) => {
+    //   console.log(err);
+    // });
+    
+
+    //save to tinker
+    var jsonImage = { sessionID:'', imagefilename :'', imagefile: '' };
+    jsonImage.sessionID = this.newUser.room;  //this has to be the login session ID
+
+    jsonImage.imagefilename = "/storage/emulated/0/" +this.selectedFile.name;
+    jsonImage.imagefile = this.url;
+    this.chatService.postImage2Node(jsonImage);
+
+    //emit ti android
     this.socket.emit('operatorToUser',jsonMesg);
     this.notSelected = true;
   }
