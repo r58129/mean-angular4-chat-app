@@ -28,6 +28,21 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import * as auth0 from 'auth0-js';
+import { HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { catchError, retry } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { BrowserModule }    from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type':  'application/json'
+    //  'Content-Type':'application/x-www-form-urlencoded'
+    //'Authorization': 'my-auth-token'
+  })
+};
 
 (window as any).global = window;
 
@@ -45,7 +60,7 @@ export class AuthserviceService {
 
 //  redirectUrl: string;
     
-  constructor(public router: Router) {}
+  constructor(public router: Router, public http: HttpClient) {}
 
   public login(): void {
     this.auth0.authorize();
@@ -57,6 +72,11 @@ export class AuthserviceService {
        window.location.hash = '';
         this.setSession(authResult);
         this.router.navigate(['']);
+        //TODO
+        //login to tinker board and register admin
+        //console.log(this.loginTinker());
+        this.loginTinker();
+        
       } else if (err) {
         this.router.navigate(['']);
         console.log(err);
@@ -64,6 +84,97 @@ export class AuthserviceService {
     });
   }
 
+  private tinkerUrl = 'https://192.168.0.156:8011/api/user/login';
+  private tinkerUrlOut = 'https://192.168.0.156:8011/api/user/logout';
+
+  //public sID ='111' ;
+  
+  private handleErrorObservable (error: Response | any) {
+	console.error(error.message || error);
+	return Observable.throw(error.message || error);
+    }
+
+  private logoutTinker(){
+      
+//      console.log('~~~ now will unreg Tinker board!!! ~~~');
+      
+      var sID2 = '222';
+      sID2=localStorage.getItem('res.data.sessionID');
+      
+      this.http.post ('https://192.168.0.156:8011/api/csp/unregister?action=unregister&sessionID='+sID2, 
+    {}, httpOptions)
+    .pipe(
+      catchError(this.handleErrorObservable)
+    )
+    .subscribe(
+        res => {
+ //           var sID = '111';
+ //         console.log(res);
+//            console.log(res.data.sessionID);
+//            sID=res.data.sessionID;
+//            console.log('sID is ' + sID); 
+            //return sID;
+            //'https://192.168.0.156:8011/api/csp/register?action=register'
+            //'https://httpbin.org/post?sessionID='
+            //this.tinkerUrlOut
+            this.http.post (this.tinkerUrlOut+'?sessionID='+sID2, 
+      //action: 'register',
+      {}
+      , httpOptions)
+      .pipe(
+      catchError(this.handleErrorObservable)
+      )
+      .subscribe(
+        res => {
+//            console.log(sID2);
+//          console.log(res);
+        });
+  });
+      localStorage.removeItem('res.data.sessionID');
+  }
+  
+  private loginTinker() {
+      
+ //     console.log('~~~ now will login and reg Tinker board!!! ~~~');
+      //this.tinkerUrl
+      this.http.post (this.tinkerUrl, {
+      userID: 'admin',
+      Password: 'admin'
+    }, httpOptions)
+    .pipe(
+      catchError(this.handleErrorObservable)
+    )
+    .subscribe(
+        res => {
+            var sID = '111';
+//          console.log(res);
+//            console.log(res.data.sessionID);
+            //sID=res.data.sessionID;
+            localStorage.setItem('res.data.sessionID', res.data.sessionID);  //Lu test storage
+            
+            sID=localStorage.getItem('res.data.sessionID');
+//            console.log('localStorage sID is ' + sID); 
+            //return sID;
+            //'https://192.168.0.156:8011/api/csp/register?action=register&sessionID='+sID
+            //'https://httpbin.org/post?sessionID='
+            this.http.post ('https://192.168.0.156:8011/api/csp/register?action=register&sessionID='+sID, 
+      //action: 'register',
+      {}
+    , httpOptions)
+            .pipe(
+      catchError(this.handleErrorObservable)
+    )
+    .subscribe(
+        res => {
+//          console.log(res);
+        });
+  });
+   
+      
+  }
+              
+          
+  
   private setSession(authResult): void {
     // Set the time that the Access Token will expire at
     const expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
@@ -73,6 +184,8 @@ export class AuthserviceService {
   }
 
   public logout(): void {
+      
+      this.logoutTinker();
     // Remove tokens and expiry time from localStorage
     localStorage.removeItem('access_token');
     localStorage.removeItem('id_token');
