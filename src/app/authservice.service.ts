@@ -39,7 +39,8 @@ export class AuthserviceService {
     domain: 'aptcmai0.auth0.com',
     responseType: 'token id_token',
     audience: 'https://aptcmai0.auth0.com/userinfo',
-    redirectUri: 'https://airpoint.com.hk:3089',
+    // redirectUri: 'https://airpoint.com.hk:3089',
+    redirectUri: 'https://192.168.0.102:4080',
     scope: 'openid'
   });
 
