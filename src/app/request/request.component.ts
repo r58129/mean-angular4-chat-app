@@ -59,12 +59,14 @@ export class RequestComponent implements OnInit, AfterViewChecked {
  	console.log(this.newRequest.Request_status);
  	// console.log(this.newRequest.updated_at);
 
+       if (this.newRequest.socket_id!=undefined){
 	// this.chatService.saveRequest(this.newRequest).then( function(result)  {
 	this.chatService.saveRequest(this.newRequest).then((result) => {
       this.socket.emit('save-message', result);
 	    }, (err) => {
 	      console.log(err);
 	    });
+       }
   	}	
   });
 

@@ -14,7 +14,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   @ViewChild('scrollTable') private myScrollTableContainer: ElementRef;  //Ben
 
-  chats: any;
+  chats: any=[];
   joinned: boolean = false;
   newUser = { nickname: '', room: '' ,socket_id: ''};
   msgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
@@ -54,6 +54,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
     // modify this to json object
     var obj = JSON.parse(msg);
+    //var obj =null;
     var phoneNum = obj.sessionID;
     var message = obj.message;
 
@@ -93,12 +94,15 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     
     this.socket.on('new-message', function (data) {
       console.log("data.message.room: " + data.message.room);
-      console.log("JSON.parse(localStorage.getItem('user')).room: " + (JSON.parse(localStorage.getItem("user")).room));
-      
-      if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
-        this.chats.push(data.message);
-        this.msgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
-        this.scrollToBottom();
+//lu      console.log("JSON.parse(localStorage.getItem('user')).room: " + (JSON.parse(localStorage.getItem("user")).room));
+      if (localStorage.getItem("user")!=null){
+          console.log("JSON.parse(localStorage.getItem('user')).room: " + (JSON.parse(localStorage.getItem("user")).room));
+            if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
+            user=JSON.parse(localStorage.getItem("user"));
+            this.chats.push(data.message);
+            this.msgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
+            this.scrollToBottom();
+            }
       }
     }.bind(this));
   }

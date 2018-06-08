@@ -35,6 +35,7 @@ import { catchError, retry } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { BrowserModule }    from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
+import 'rxjs/add/observable/throw';
 
 const httpOptions = {
   headers: new HttpHeaders({
