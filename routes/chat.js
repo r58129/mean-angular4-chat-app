@@ -5,8 +5,8 @@ var app = express();
 //var server = require('http').createServer(app);
 
 var fs = require('fs');
-var key = fs.readFileSync('routes/encryption/private.key');
-var cert = fs.readFileSync( 'routes/encryption/mydomain.crt' );
+var key = fs.readFileSync('routes/encryption/pk.pem');
+var cert = fs.readFileSync( 'routes/encryption/cert2.pem' );
 
 var options = {
 key: key,
