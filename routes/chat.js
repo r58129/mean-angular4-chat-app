@@ -35,7 +35,7 @@ var userSocketIDOperatorChannel  = {};
 var operatorSocketIDOperatorChannel = {};
 var usernameOperatorChannel = {};
 
-var port=3087;
+var port=3637;
 server.listen(port);
 console.log('Socket.io is listening on port:' + port);
 
@@ -121,11 +121,13 @@ io.on('connection', function (socket) {
       userSocketIDAndUsername.push(userid + ' (' + socket.id + ')');
       userSocketID.push(socket.id);
       username.push(userid);
+     
       for(var i in adminSocketID){
         //io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername});
           // orginal
           // io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername},socket.id);
           io.to(adminSocketID[i]).emit('users',userid,socket.id);
+          // io.to(adminSocketID[i]).emit('logRequest',userid,socket.id);
           console.log("emit customer socket.on(users)" +socket.id);
       }
     }
@@ -174,12 +176,25 @@ io.on('connection', function (socket) {
 
   // save-message
   socket.on('save-message', function (data) {
-    console.log(data);
+    console.log("save-message: " +data);
     io.emit('new-message', { message: data });
   });
-});
 
-/* GET ALL CHATS */
+  // save-image
+  socket.on('save-image', function (data) {
+    // console.log(data);
+    console.log("new image in room: " +data.room);
+    console.log("new message in image: " +data.message);
+    console.log("new filename: " +data.filename);
+    // io.emit('new-image', {message: data.message, filename: data.filename});
+    io.emit('new-image', data);
+
+  });
+
+}); //io.on
+
+
+/* GET ALL CHATS, THIS IS THE REAL ROOM */
 router.get('/:room', function(req, res, next) {
   // Chat.find({ room: req.params.room }, function (err, chats) {
     Chat.find({ $and:
@@ -265,7 +280,15 @@ router.get('/request/human', function(req, res, next) {
 
 /* GET ALL REQUESTS in same room 192.168.0.102:4080/chat/request/room1*/ 
 router.get('/request/:room', function(req, res, next) {
-  Chat.find({ room: req.params.room }, function (err, requests) {
+  // Chat.find({ room: req.params.room }, function (err, requests) {
+    Chat.find({ $and:
+    [
+      { room: req.params.room },
+      { socket_id: { $exists: true } }, 
+      { nickname: {$exists:true, $ne:"robot" } }  //filter robot reply
+    
+    ]
+  }, function (err, requests) {
     if (err) return next(err);
     res.json(requests);
   });
@@ -320,15 +343,6 @@ router.get('/user/:id', function(req, res, next) {
   });
 });
 
-
-/* GET ALL REQUESTS in same room 192.168.0.102:4080/chat/request/room1*/ 
-// router.get('/request/:room', function(req, res, next) {
-//   Chat.find({ room: req.params.room }, function (err, requests) {
-//     if (err) return next(err);
-//     res.json(requests);
-//   });
-// });
-
 /* GET SINGLE user BY phone_number */
 router.get('/userphone/:phone_number', function(req, res, next) {
   User.find({phone_number:req.params.phone_number}, function (err, users) {
@@ -345,7 +359,7 @@ router.post('/user', function(req, res, next) {
   });
 });
 
-/* UPDATE REQUEST */
+/* UPDATE user */
 router.put('/user/:id', function(req, res, next) {
   User.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
@@ -353,7 +367,7 @@ router.put('/user/:id', function(req, res, next) {
   });
 });
 
-/* UPDATE REQUEST by user phone number*/
+/* UPDATE user by user phone number*/
 router.put('/userupdate/:phone_number', function(req, res, next) {
   User.findOneAndUpdate({phone_number:req.params.phone_number}, req.body, function (err, users) {
     if (err) return next(err);
@@ -361,13 +375,74 @@ router.put('/userupdate/:phone_number', function(req, res, next) {
   });
 });
 
-
-/* DELETE REQUEST */
+/* DELETE user */
 router.delete('/user/:id', function(req, res, next) {
   User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
 });
+
+
+// Get image
+/* GET ALL USERS in same room 192.168.0.102:4080/chat/image/all*/ 
+router.get('/image/all', function(req, res, next) {
+  // Chat.find( req.body, function (err, images) {
+   Chat.find({ $and:
+    [
+      // { room: req.params.room },
+      { filename: { $exists: true } }, 
+      { nickname: { $exists:true, $ne:"robot" } }  //filter robot reply
+    
+    ]
+  }, function (err, images) {  
+    if (err) return next(err);
+    res.json(images);
+  });
+});
+
+/* GET IMAGE BY ROOM, THIS IS THE REAL ROOM */
+router.get('/image/:room', function(req, res, next) {
+  // Chat.find({ room: req.params.room }, function (err, chats) {
+    Chat.find({ $and:
+    [
+      { room: req.params.room },
+      { filename: { $exists: true } },  //image filename exist
+      { nickname: {$exists:true, $ne:"robot" } }  //filter robot reply
+    
+    ]
+    }, function (err, chats) {
+    if (err) return next(err);
+    res.json(chats);
+  });
+});
+
+/* GET SINGLE image BY ID */
+router.get('/image/:id', function(req, res, next) {
+  Chat.findById(req.params.id, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
+
+/* SAVE image */
+router.post('/image', function(req, res, next) {
+  Chat.create(req.body, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
+
+
+/* DELETE image */
+router.delete('/image/:id', function(req, res, next) {
+  Chat.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
 
 module.exports = router;

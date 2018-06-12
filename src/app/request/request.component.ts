@@ -20,7 +20,6 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   newUser = { nickname: '', room: '' };
   // msgData = { room: '', nickname: '', message: '' };
   //new request
-  // newRequest.phone_number = "85260261976";
   requests: any;  //new request
   joinned: boolean = false;
   newRequest = { phone_number: '', socket_id: '', room:'', message: '', Request_status:'' };
@@ -28,7 +27,8 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   // chatRequest = { room: '', admin_name:'', phone_number: '', message: '', updated_at:'' };
   // socket = io('http://localhost:4000');
   // socket = io('https://192.168.0.102:3637');
-    socket = io('https://airpoint.com.hk:3087',{secure: true});
+  socket = io('https://192.168.0.102:3637',{secure: true});
+  
   constructor(private chatService: ChatService) {}
 
   ngOnInit() {
@@ -39,6 +39,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 
     // this.socket.on('users', function(data){
     this.socket.on('users', (userid, socket_id) => {
+      // this.socket.on('logRequest', (userid, socket_id) => {
     // this.socket.on('users', function(userid, socket_id){
       var date = new Date();
       // console.log("inside users socket.on");
@@ -85,7 +86,6 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 
 
      this.getAllRequest();
-     // this.getRequestByRooms();
      this.scrollTableToBottom();
 
   }
@@ -98,7 +98,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
     }
     
   ngAfterViewChecked() {
-    // this.scrollToBottom();
+  
     this.scrollTableToBottom();
   }
 

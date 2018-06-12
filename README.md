@@ -68,6 +68,7 @@ Check mongoDB command
 - Show collections
 - use dbs
 - Db.collectionName.find().pretty()
+- db.collection.drop()
 - db.user.remove({})
 
 Execute on server side:

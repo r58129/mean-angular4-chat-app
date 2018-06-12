@@ -55,7 +55,8 @@ export class AuthserviceService {
     domain: 'aptcmai0.auth0.com',
     responseType: 'token id_token',
     audience: 'https://aptcmai0.auth0.com/userinfo',
-    redirectUri: 'https://airpoint.com.hk:3089',
+    // redirectUri: 'https://airpoint.com.hk:3089',
+    redirectUri: 'https://192.168.0.102:4080',
     scope: 'openid'
   });
 
@@ -85,8 +86,8 @@ export class AuthserviceService {
     });
   }
 
-  private tinkerUrl = 'https://192.168.0.156:8011/api/user/login';
-  private tinkerUrlOut = 'https://192.168.0.156:8011/api/user/logout';
+  private tinkerUrl = 'https://192.168.0.157:8011/api/user/login';
+  private tinkerUrlOut = 'https://192.168.0.157:8011/api/user/logout';
 
   //public sID ='111' ;
   
@@ -102,7 +103,7 @@ export class AuthserviceService {
       var sID2 = '222';
       sID2=localStorage.getItem('res.data.sessionID');
       
-      this.http.post ('https://192.168.0.156:8011/api/csp/unregister?action=unregister&sessionID='+sID2, 
+      this.http.post ('https://192.168.0.157:8011/api/csp/unregister?action=unregister&sessionID='+sID2, 
     {}, httpOptions)
     .pipe(
       catchError(this.handleErrorObservable)
@@ -154,11 +155,11 @@ export class AuthserviceService {
             localStorage.setItem('res.data.sessionID', res.data.sessionID);  //Lu test storage
             
             sID=localStorage.getItem('res.data.sessionID');
-//            console.log('localStorage sID is ' + sID); 
+           console.log('localStorage sID is ' + sID); 
             //return sID;
             //'https://192.168.0.156:8011/api/csp/register?action=register&sessionID='+sID
             //'https://httpbin.org/post?sessionID='
-            this.http.post ('https://192.168.0.156:8011/api/csp/register?action=register&sessionID='+sID, 
+            this.http.post ('https://192.168.0.157:8011/api/csp/register?action=register&sessionID='+sID, 
       //action: 'register',
       {}
     , httpOptions)

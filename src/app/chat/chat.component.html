@@ -15,14 +15,24 @@
                     <!-- <div class="panel-heading"> -->
                       <span class="glyphicon glyphicon-comment"></span> 
                       {{ msgData.room }}
-                      <div class="btn-group pull-right">
+                      <!-- <input class="btn-group pull-right" type="file" (change)="onFileSelected($event)"  /> -->
+
+                      <div class="btn-group pull-right">   
                           <button type="button" class="btn btn-default btn-xs" (click)="logout()">
                               Disconnect
                           </button>
                       </div>
+
+                      <!-- pass parameters to selecPhoto components? -->
+                      <div class="btn-group pull-right" >
+                        <button type="button" class="btn btn-warning btn-xs" id="btn-photo" (click)="selectPhoto()">
+                          <!-- <button type="button" class="btn btn-warning btn-xs" id="btn-photo" (click)="selectPhoto()" >
+                           --> <span class = "glyphicon glyphicon-paperclip"></span>
+                         </button>
+                       </div>
                   </div>
                   <!-- /.box-body -->
-                  <div #scrollMe class="box-body">
+                  <div #scrollMe class="box-body" *ngIf="notSelected; else selectphoto">
                     <!-- <ul class="chat"> -->
                       <!-- <li *ngFor="let c of chats"> -->
                     <div *ngFor="let c of chats">
@@ -32,6 +42,7 @@
                             <!-- Message. Default to the left -->
                             <div class="direct-chat-msg">
                               <div class="direct-chat-info clearfix" *ngIf="c.nickname!==msgData.nickname; else rightchat">
+
                                 <!-- <span class="direct-chat-name pull-left">{{ c.nickname }}</span> -->
                                 <!-- <span class="direct-chat-timestamp pull-left">{{ c.updated_at | date: 'medium' }}</span> -->
                              
@@ -41,16 +52,6 @@
                                 <small class="direct-chat-timestamp pull-right">{{ c.updated_at | date: 'medium' }}</small>
                                 </div>
                               </div>
-                                <!-- <span class="chat-img pull-left">
-                                  <img src="http://placehold.it/50/55C1E7/fff&text=ME" alt="User Avatar" class="img-circle" />
-                                </span> -->
-                          <!--       <div class="chat-body clearfix">
-                                    <div class="header">
-                                        <strong class="primary-font">{{ c.nickname }}</strong> <small class="pull-right text-muted">
-                                            <span class="glyphicon glyphicon-time"></span>{{ c.updated_at | date: 'medium' }}</small>
-                                    </div>
-                                    <p>{{ c.message }}</p>
-                                </div> -->
                             </div>
                             <!-- </div> -->
                               <ng-template #rightchat>
@@ -62,10 +63,20 @@
                                   
                                   <img class="direct-chat-img" src="../assets/dist/img/user1-128x128.jpg" alt="Message User Image"><!-- /.direct-chat-img -->
                                   <div class="direct-chat-text pull-right">
-                                  <span class="direct-chat-name pull-right">{{ c.nickname }}</span><br>
-                                  <div class="pull-right">{{ c.message }}
-                                  </div><br>
-                                  <small class="direct-chat-timestamp pull-left">{{ c.updated_at | date: 'medium' }}</small>
+                                    <span class="direct-chat-name pull-right">{{ c.nickname }}</span><br>
+                                    <div  *ngIf="c.filename!==undefine" >
+                                     <!--  <input type="hidden" [(ngModel)]="{{c.image}}" name="imageObject" /> -->
+                                      <!-- <div [ImageObject]= "c.filename"> -->
+                                      <!-- <button class="pull-right" id="displayImage"  (click) = "getImage(c.image)">{{c.filename}}</button><br> -->
+                                      <div class="pull-right">
+                                      <img id="displayImage" [src]="c.image">
+                                      </div><br>
+                                      
+                                    </div>
+
+                                    <div class="pull-right">{{ c.message }}
+                                    </div><br>
+                                    <small class="direct-chat-timestamp pull-left">{{ c.updated_at | date: 'medium' }}</small>
                                   </div>
                                   <!-- <span class="chat-img pull-right">
                                     <img src="http://placehold.it/50/FA6F57/fff&text=U" alt="User Avatar" class="img-circle" />
@@ -84,13 +95,14 @@
                           <!-- </li> -->
                         <!-- </ul> -->
                   </div>
-                  <div class="box-footer">
+                  <div class="box-footer" *ngIf="notSelected">
                     <form (ngSubmit)="sendMessage()" #msgForm="ngForm">
                       <div class="input-group">
                         <input type="hidden" [(ngModel)]="msgData.phone_numebr" name="phone_numebr" />
                         <input type="hidden" [(ngModel)]="msgData.socket_id" name="socket_id" />
                           <input type="hidden" [(ngModel)]="msgData.room" name="room" />
                           <input type="hidden" [(ngModel)]="msgData.nickname" name="nickname" />
+
                           <input id="btn-input" type="text" [(ngModel)]="msgData.message" name="message" class="form-control input-sm" placeholder="Type your message here..." required="" />
                           <span class="input-group-btn">
                               <button class="btn btn-warning btn-sm" id="btn-chat" [disabled]="!msgForm.form.valid">
@@ -124,9 +136,64 @@
                   </div>
                 </div>
               </ng-template>
+
+              <ng-template #selectphoto>
+                  <div class="box-body">
+                    <!-- <h3 class="box-title"> Select Photo </h3> -->
+                     <button type="button" class="btn btn-box-tool pull-right" data-widget="remove" (click)="CancelPhoto()"><i class="fa fa-times"></i>
+                    </button>
+                    <form (ngSubmit)="SendPhoto()" #joinForm="ngForm">
+                      
+                      <div class="form-group">
+                        <input type="text" class="form-control" [(ngModel)]="newUser.nickname" placeholder="Input user name" name="nickname" required="" >
+                      </div>
+
+                      <div class="form-group">
+                        <input type="text" class="form-control" [(ngModel)]="newUser.room" name="room" placeholder="Input phone number"required="" >
+                      </div>
+
+                      <div class="form-group">
+                        <input type="text" class="form-control" [(ngModel)]="newUser.socket_id" name="socket_id" required="" >
+                      </div>
+
+                      <div class="form-group">
+                        <img [src]="url" height="300px"><br/>
+                        <input style = "display: none" type="file" class="form-control" (change)="onFileSelected($event)" #fileInput [(ngModel)]="filename" name="filename" required="">
+                        <button type="button" class="btn btn-success btn-sm" (click)="fileInput.click()">Select Photo</button>
+                      </div>
+
+                      <div class="form-group">
+                        <input id="btn-input" type="text" [(ngModel)]="msgData.message" name="message" class="form-control input-sm" placeholder="Type your message here..." >
+                         <span class="input-group-btn">
+                        <button type="submit" class="btn btn-success btn-sm" [disabled]="!joinForm.form.valid">Send</button>
+                      </span>
+                      </div>
+                    </form>
+           
+                </div>
+              </ng-template>
           </div>
 
       <!-- </div> -->
     <!-- </div> -->
   <!-- </div> -->
 <!-- </div> -->
+
+<!-- <script src="./browser_build/bson.js"></script>
+ 
+<script>
+  function getImage() {
+    // Get the Long type
+    var Long = BSON.Long;
+    // Create a bson parser instance
+    var bson = new BSON();
+ 
+    // Serialize document
+    var doc = { long: Long.fromNumber(100) }
+ 
+    // Serialize a document
+    var data = bson.serialize(doc)
+    // De serialize it again
+    var doc2 = bson.deserialize(data)
+  }
+</script>  -->
