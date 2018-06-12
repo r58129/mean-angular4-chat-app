@@ -176,14 +176,19 @@ io.on('connection', function (socket) {
 
   // save-message
   socket.on('save-message', function (data) {
-    console.log(data);
+    console.log("save-message: " +data);
     io.emit('new-message', { message: data });
   });
 
   // save-image
   socket.on('save-image', function (data) {
-    console.log(data);
+    // console.log(data);
+    console.log("new image in room: " +data.room);
+    console.log("new message in image: " +data.message);
+    console.log("new filename: " +data.filename);
+    // io.emit('new-image', {message: data.message, filename: data.filename});
     io.emit('new-image', data);
+
   });
 
 }); //io.on
@@ -393,6 +398,22 @@ router.get('/image/all', function(req, res, next) {
   }, function (err, images) {  
     if (err) return next(err);
     res.json(images);
+  });
+});
+
+/* GET IMAGE BY ROOM, THIS IS THE REAL ROOM */
+router.get('/image/:room', function(req, res, next) {
+  // Chat.find({ room: req.params.room }, function (err, chats) {
+    Chat.find({ $and:
+    [
+      { room: req.params.room },
+      { filename: { $exists: true } },  //image filename exist
+      { nickname: {$exists:true, $ne:"robot" } }  //filter robot reply
+    
+    ]
+    }, function (err, chats) {
+    if (err) return next(err);
+    res.json(chats);
   });
 });
 

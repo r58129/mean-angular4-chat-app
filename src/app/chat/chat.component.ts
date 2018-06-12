@@ -1,8 +1,10 @@
-import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild, Input } from '@angular/core';
 import { ChatService } from '../chat.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
+// import { BSON } from 'bsonfy';
+import { Buffer } from 'buffer';
 
 @Component({
   selector: 'app-chat',
@@ -15,17 +17,18 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   // @ViewChild('scrollTable') private myScrollTableContainer: ElementRef;  //Ben
 
   url = '';
+  ImageObject = {};
+  displayImage = '';
   selectedFile: File;
   chats: any;
   joinned: boolean = false;
   notSelected: boolean = true;
+
   newUser = { nickname: '', room: '' ,socket_id: ''};
   msgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
-  imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image:'' };
-  //new request
-  // requests: any;  //new request
+  // imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: { data:Buffer, contentType:'' }};
+  imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
   CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
-  // chatRequest = { room: '', admin_name:'', phone_number: '', message: '', updated_at:'' };
   // socket = io('http://localhost:4000');
   // socket = io('https://airpoint.com.hk:3087',{secure: true});
   socket = io('https://192.168.0.102:3637',{secure: true});
@@ -38,7 +41,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 //      history.pushState({},"Edit","");
 
     this.route.params.subscribe(params =>{
-      console.log(params);
+      // console.log(params);
       this.newUser.room = params['id'];
       console.log(this.newUser.room);     
     });
@@ -99,7 +102,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.socket.on('new-message', function (data) {
       // console.log("data.message.room: " + data.message.room);
       // console.log("JSON.parse(localStorage.getItem('user')).room: " + (JSON.parse(localStorage.getItem("user")).room));
-      
+      console.log("new-message: " + data.message.room);
       if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
         this.chats.push(data.message);
         this.msgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
@@ -109,13 +112,25 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
 
     this.socket.on('new-image', function (data) {
-      console.log("new-image: " + data.message.room);
+      console.log("new-image: " + data.room);
       
-        this.chats.push(data.message, data.filename);
-        // this.imgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
+      if(data.room === JSON.parse(localStorage.getItem("user")).room) {
+      console.log("new-image inside if: " + data.room);
+
+        if (data.filename !== 'undefined'){
+        // this.chats.push(data.message, data.filename);
+        console.log("new-image: " + data.filename);
+        this.chats.push(data);
+        this.imgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '', 
+        filename: user.filename, image: user.image}
+        // this.RetrievePhoto(data);
         this.scrollToBottom();
+        }
+      }
       
     }.bind(this));
+
+    console.log(this.ImageObject);
 
   }
 
@@ -146,9 +161,11 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     var date = new Date();
     localStorage.setItem("user", JSON.stringify(this.newUser));
     this.getChatByRoom(this.newUser.room);
-    this.msgData = {phone_number:this.newUser.room, socket_id: this.newUser.socket_id, room: this.newUser.room, nickname: this.newUser.nickname, message: '' };
+    this.msgData = {phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
+      room: this.newUser.room, nickname: this.newUser.nickname, message: '' };
     this.joinned = true;
-    this.socket.emit('save-message', { phone_number:this.newUser.room, socket_id: this.newUser.socket_id, room: this.newUser.room, nickname: this.newUser.nickname, message: 'Join this room', updated_at: date });
+    this.socket.emit('save-message', { phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
+      room: this.newUser.room, nickname: this.newUser.nickname, message: 'Join this room', updated_at: date });
   }
 
   sendMessage() {
@@ -196,25 +213,24 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   onFileSelected(event) {    
 
-    // let file = event.target.files[0];
-    // let name = file.name;
     this.selectedFile = event.target.files[0];
     console.log("event.target.files[0]: " +this.selectedFile);
     console.log("onFileSelected: " +this.selectedFile.name);
+    // console.log("event.target.files: " +event.target.files);  //file list
 
     if (event.target.files && event.target.files[0]) {
       var reader = new FileReader();
-
       reader.readAsDataURL(event.target.files[0]); // read file as data url
-
+      // reader.readAsArrayBuffer(event.target.files[0]);  //read as Array buffer
       reader.onload = (event:any) => { // called once readAsDataURL is completed
         this.url = event.target.result;
-        console.log("url: " +this.url);
+        console.log("url: " +this.url);    //base64
+
       }
     }
   }
  
-  SendPhoto(filename){
+  SendPhoto(){
 
     console.log("admin is sending a photo: " +this.selectedFile );
     console.log("filename: " +this.selectedFile.name );
@@ -222,42 +238,111 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     console.log("room: " + this.newUser.room);
     console.log("socket_id: " + this.newUser.socket_id);
     console.log("message: " + this.msgData.message);
-  
-    // console.log("admin is sending a photo: " +onFileSelected.fileName);
-    var jsonMesg = {type:'', path:'', message:''};
-    jsonMesg.type = "image";
-    jsonMesg.path = "/storage/emulated/0/" +this.selectedFile.name;
-    // jsonMesg.message = msg;
-    jsonMesg.message = this.msgData.message;
-    console.log('jsonMesg.type: ' +jsonMesg.type);
-    console.log('jsonMesg.path: ' +jsonMesg.path);
-    console.log('jsonMesg.message: ' +jsonMesg.message);
-    // io.to(userSocketIDOperatorChannel).emit('operatorToUser',jsonMesg);
+
+
+    // var imageString = ((this.url).split(",")[1]);
+    // console.log("imageString: " + imageString);
+
+    // var imageType = ((this.url).split(",")[0]);
+    // console.log("imageType: " + imageType);  //  data:image/png;base64
+
+    // var bindata = new Buffer(string.split(",")[1],"base64");
+
+    // var imageBuffer = Buffer.from(imageString, 'base64');
+    // console.log ("buffer: " +imageBuffer);
+
+    // // convert file to bson    
+    // var imageBuffer = BSON.serialize(this.selectedFile);  //uint8array
+    // // var imageBuffer = BSON.Binary(this.selectedFile);  //uint8array
+    // console.log('imageBuffer:', imageBuffer);
+
+    // // var imageSize = BSON.getElementSize(this.selectedFile);  //uint8array
+    // // console.log('imageSize:', imageSize);
+
+    // // var bufferImage = Buffer.from(new Uint8Array(bsonImage));
+    // var imageArray = Array.from (imageBuffer);
+    // console.log('imageArray:', imageArray);
+
+    // var uploadImage =  {
+    //   data: imageString,
+    //   contentType: imageType
+    // }
 
     //save to DB
     this.imgData = {phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
       room: this.newUser.room, nickname: this.newUser.nickname, 
-      message: this.msgData.message, filename: this.selectedFile.name, image:this.url };  //image:this.url doesn't work 
+      // message: this.msgData.message, filename: this.selectedFile.name, image:uploadImage }; 
+            message: this.msgData.message, filename: this.selectedFile.name, image:this.url }; 
 
-    // this.chatService.saveImage(this.imgData).then((result) => {
-    //   console.log('inside saveImage');
-    //   this.socket.emit('save-Image', result);
-    // }, (err) => {
-    //   console.log(err);
-    // });
+    this.chatService.saveImage(this.imgData).then((result) => {
+      console.log('inside saveImage');
+      this.socket.emit('save-image', result);
+    }, (err) => {
+      console.log(err);
+    });
     
 
-    //save to tinker
-    var jsonImage = { sessionID:'', imagefilename :'', imagefile: '' };
-    jsonImage.sessionID = this.newUser.room;  //this has to be the login session ID
+    // get admin sessionID
+    var sID=localStorage.getItem('res.data.sessionID');
+    
+    //construct form data
+    var formDataImage = new FormData();
+    formDataImage.append('sessionID', sID);
+    formDataImage.append('imagefilename', this.selectedFile.name);
+    formDataImage.append('imagefile', this.selectedFile);
 
-    jsonImage.imagefilename = "/storage/emulated/0/" +this.selectedFile.name;
-    jsonImage.imagefile = this.url;
-    this.chatService.postImage2Node(jsonImage);
+    console.log('formDataImage.sessionID: ' +sID);
+    console.log('formDataImage.imagefilename: ' +this.selectedFile.name);
+    // console.log('formDataImage.imagefile: ' +this.url);  //base64
+    
+    //post formdata to tinker
+    this.chatService.postImage2Node(formDataImage);
 
-    //emit ti android
-    this.socket.emit('operatorToUser',jsonMesg);
+    //emit socket to android
+    // console.log("admin is sending a photo: " +onFileSelected.fileName);
+    var jsonMesg = {type:'', path:'', message:''};
+    jsonMesg.type = "image";
+    jsonMesg.path = "/storage/emulated/0/" +this.selectedFile.name;
+    jsonMesg.message = this.msgData.message;
+    console.log('jsonMesg.type: ' +jsonMesg.type);
+    console.log('jsonMesg.path: ' +jsonMesg.path);
+    console.log('jsonMesg.message: ' +jsonMesg.message);
+    
+    // this.socket.emit('operatorToUser',jsonMesg);
+    this.socket.emit('adminchat',jsonMesg);
     this.notSelected = true;
+  }
+
+  RetrievePhoto(data){
+
+    console.log("RetrievePhoto binary");
+    console.log("filename: " +data.filename );
+    console.log("nickname: " + data.nickname);
+    console.log("room: " + data.room);
+    console.log("socket_id: " + data.socket_id);
+    console.log("message: " + data.message);
+
+    // var imageString = ((this.url).split(",")[1]);
+    // console.log("imageString: " + imageString);
+    // var bindata = new Buffer(string.split(",")[1],"base64");
+
+    var image = Buffer.from(data.image, 'base64');
+    console.log ("buffer: " +image);
+
+  }
+
+  getImage(base64image){
+
+    console.log ("displayImage");
+    // var imageString = ((this.url).split(",")[1]);
+    // console.log("imageString: " + imageString);
+    // var bindata = new Buffer(string.split(",")[1],"base64");
+
+    var image = Buffer.from(base64image, 'base64');
+    console.log ("buffer: " +image);
+
+    this.displayImage = "data:image/png;base64" + image;
+
   }
 
   CancelPhoto(){

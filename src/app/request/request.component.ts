@@ -20,7 +20,6 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   newUser = { nickname: '', room: '' };
   // msgData = { room: '', nickname: '', message: '' };
   //new request
-  // newRequest.phone_number = "85260261976";
   requests: any;  //new request
   joinned: boolean = false;
   newRequest = { phone_number: '', socket_id: '', room:'', message: '', Request_status:'' };

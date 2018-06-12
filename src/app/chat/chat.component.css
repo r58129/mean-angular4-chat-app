@@ -86,6 +86,11 @@
     margin-left: 10px;
 }
 
+#displayImage{
+    
+    max-height: 20vw;
+    max-width: 30vw;
+}
 
 ::-webkit-scrollbar-track
 {

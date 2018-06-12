@@ -3,6 +3,17 @@ import { Http, Headers } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 
+// let httpOptions = {
+//   headers: new Headers({
+//     // 'Content-Type':  'multipart/form-data'
+//     'Content-Type':  'application/form-data'
+//     'Content-Type':  'undefined'
+//     // 'Content-Type':  'application/json'
+//     //  'Content-Type':'application/x-www-form-urlencoded'
+//     //'Authorization': 'my-auth-token'
+//   })
+// };
+
 @Injectable()
 export class ChatService {
 
@@ -110,7 +121,7 @@ export class ChatService {
 
    showRequestSocket(id) {
     return new Promise((resolve, reject) => {
-        this.http.get('/chat/request' + id)
+        this.http.get(this.serverUrl+'/chat/request' + id)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -159,7 +170,7 @@ export class ChatService {
 
   getAllUser() {
     return new Promise((resolve, reject) => {
-      this.http.get('/chat/user/all')
+      this.http.get(this.serverUrl+'/chat/user/all')
         .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -172,7 +183,7 @@ export class ChatService {
 
   showUser(id) {
     return new Promise((resolve, reject) => {
-        this.http.get('/chat/user' + id)
+        this.http.get(this.serverUrl+'/chat/user' + id)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -186,7 +197,7 @@ export class ChatService {
 
   saveUser(data) {
     return new Promise((resolve, reject) => {
-        this.http.post('/chat/user', data)
+        this.http.post(this.serverUrl+'/chat/user', data)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -198,7 +209,7 @@ export class ChatService {
 
   updateUser(id, data) {
     return new Promise((resolve, reject) => {
-        this.http.put('/chat/user'+id, data)
+        this.http.put(this.serverUrl+'/chat/user'+id, data)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -210,7 +221,7 @@ export class ChatService {
 
   deleteUser(id) {
     return new Promise((resolve, reject) => {
-        this.http.delete('/chat/user/'+id)
+        this.http.delete(this.serverUrl+'/chat/user/'+id)
           .subscribe(res => {
             resolve(res);
           }, (err) => {
@@ -219,11 +230,10 @@ export class ChatService {
     });
   }
 
-    //get all images
-
+//get all images
   getAllImage() {
     return new Promise((resolve, reject) => {
-      this.http.get('/chat/image/all')
+      this.http.get(this.serverUrl+'/chat/image/all')
         .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -233,10 +243,23 @@ export class ChatService {
     });
   }
 
+  //get image by room
+  getImageByRoom(room) {    //here we use room as phone_number
+    return new Promise((resolve, reject) => {
+      this.http.get(this.serverUrl+'/chat/image' + room)
+        .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
 
+// Show signle image by ID
   showImage(id) {
     return new Promise((resolve, reject) => {
-        this.http.get('/chat/image' + id)
+        this.http.get(this.serverUrl+'/chat/image' + id)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -246,10 +269,10 @@ export class ChatService {
     });
   }
 
-// Save to DB
-  saveImage(data) {
+// Save image to DB
+  saveImage(object) {
     return new Promise((resolve, reject) => {
-        this.http.post('/chat/image', data)
+        this.http.post(this.serverUrl+'/chat/image', object)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -261,7 +284,7 @@ export class ChatService {
 
   deleteImage(id) {
     return new Promise((resolve, reject) => {
-        this.http.delete('/chat/image/'+id)
+        this.http.delete(this.serverUrl+'/chat/image/'+id)
           .subscribe(res => {
             resolve(res);
           }, (err) => {
@@ -270,15 +293,22 @@ export class ChatService {
     });
   }
 
-  //post to tinker
-  postImage2Node(data) {
+  //post formdata image to tinker
+  postImage2Node(formdata) {
     return new Promise((resolve, reject) => {
-        this.http.post('https://192.168.0.157:8011/api/csp/postimage', data)
-          .map(res => res.json())
+      console.log("formdata: " +formdata);
+      console.log("formdata.sessionID: " +formdata.sessionID);
+      console.log("formdata.imagefilename: " +formdata.imagefilename);
+
+      // this.http.post('https://192.168.0.157:8011/api/csp/postimage', formdata, httpOptions )
+      this.http.post('https://192.168.0.157:8011/api/csp/postimage', formdata )
+          // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
+            console.log("post successful");
           }, (err) => {
             reject(err);
+            console.log("post failed");
           });
     });
   }

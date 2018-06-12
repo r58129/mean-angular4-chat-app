@@ -52,16 +52,6 @@
                                 <small class="direct-chat-timestamp pull-right">{{ c.updated_at | date: 'medium' }}</small>
                                 </div>
                               </div>
-                                <!-- <span class="chat-img pull-left">
-                                  <img src="http://placehold.it/50/55C1E7/fff&text=ME" alt="User Avatar" class="img-circle" />
-                                </span> -->
-                          <!--       <div class="chat-body clearfix">
-                                    <div class="header">
-                                        <strong class="primary-font">{{ c.nickname }}</strong> <small class="pull-right text-muted">
-                                            <span class="glyphicon glyphicon-time"></span>{{ c.updated_at | date: 'medium' }}</small>
-                                    </div>
-                                    <p>{{ c.message }}</p>
-                                </div> -->
                             </div>
                             <!-- </div> -->
                               <ng-template #rightchat>
@@ -73,10 +63,20 @@
                                   
                                   <img class="direct-chat-img" src="../assets/dist/img/user1-128x128.jpg" alt="Message User Image"><!-- /.direct-chat-img -->
                                   <div class="direct-chat-text pull-right">
-                                  <span class="direct-chat-name pull-right">{{ c.nickname }}</span><br>
-                                  <div class="pull-right">{{ c.message }}
-                                  </div><br>
-                                  <small class="direct-chat-timestamp pull-left">{{ c.updated_at | date: 'medium' }}</small>
+                                    <span class="direct-chat-name pull-right">{{ c.nickname }}</span><br>
+                                    <div  *ngIf="c.filename!==undefine" >
+                                     <!--  <input type="hidden" [(ngModel)]="{{c.image}}" name="imageObject" /> -->
+                                      <!-- <div [ImageObject]= "c.filename"> -->
+                                      <!-- <button class="pull-right" id="displayImage"  (click) = "getImage(c.image)">{{c.filename}}</button><br> -->
+                                      <div class="pull-right">
+                                      <img id="displayImage" [src]="c.image">
+                                      </div><br>
+                                      
+                                    </div>
+
+                                    <div class="pull-right">{{ c.message }}
+                                    </div><br>
+                                    <small class="direct-chat-timestamp pull-left">{{ c.updated_at | date: 'medium' }}</small>
                                   </div>
                                   <!-- <span class="chat-img pull-right">
                                     <img src="http://placehold.it/50/FA6F57/fff&text=U" alt="User Avatar" class="img-circle" />
@@ -142,7 +142,7 @@
                     <!-- <h3 class="box-title"> Select Photo </h3> -->
                      <button type="button" class="btn btn-box-tool pull-right" data-widget="remove" (click)="CancelPhoto()"><i class="fa fa-times"></i>
                     </button>
-                    <form (ngSubmit)="SendPhoto(filename)" #joinForm="ngForm">
+                    <form (ngSubmit)="SendPhoto()" #joinForm="ngForm">
                       
                       <div class="form-group">
                         <input type="text" class="form-control" [(ngModel)]="newUser.nickname" placeholder="Input user name" name="nickname" required="" >
@@ -178,3 +178,22 @@
     <!-- </div> -->
   <!-- </div> -->
 <!-- </div> -->
+
+<!-- <script src="./browser_build/bson.js"></script>
+ 
+<script>
+  function getImage() {
+    // Get the Long type
+    var Long = BSON.Long;
+    // Create a bson parser instance
+    var bson = new BSON();
+ 
+    // Serialize document
+    var doc = { long: Long.fromNumber(100) }
+ 
+    // Serialize a document
+    var data = bson.serialize(doc)
+    // De serialize it again
+    var doc2 = bson.deserialize(data)
+  }
+</script>  -->

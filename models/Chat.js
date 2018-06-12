@@ -9,7 +9,8 @@ var ChatSchema = new mongoose.Schema({
   	message: String,
   	Request_status: String,
   	filename: String,
-  	image: {data: Buffer, contentType: String},
+  	// image: {data: Buffer, contentType: String},
+  	image: String,
   	updated_at: { type: Date, default: Date.now }
 });
 
