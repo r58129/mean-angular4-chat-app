@@ -19,8 +19,8 @@ export class ChatService {
 
   constructor(private http : Http) { }
 
-    // private serverUrl = 'https://airpoint.com.hk:3088';
-    private serverUrl = 'https://192.168.0.102:4060';
+    private serverUrl = 'https://airpoint.com.hk:3088';
+    // private serverUrl = 'https://192.168.0.102:4060';
     
   getChatByRoom(room) {    //here we use room as phone_number
     return new Promise((resolve, reject) => {
@@ -301,15 +301,15 @@ export class ChatService {
       console.log("formdata.imagefilename: " +formdata.imagefilename);
 
       // this.http.post('https://192.168.0.157:8011/api/csp/postimage', formdata, httpOptions )
-      this.http.post('https://192.168.0.157:8011/api/csp/postimage', formdata )
-          // .map(res => res.json())
-          .subscribe(res => {
-            resolve(res);
-            console.log("post successful");
-          }, (err) => {
-            reject(err);
-            console.log("post failed");
-          });
+//      this.http.post('https://192.168.0.156:8011/api/csp/postimage', formdata )
+//          // .map(res => res.json())
+//          .subscribe(res => {
+//            resolve(res);
+//            console.log("post successful");
+//          }, (err) => {
+//            reject(err);
+//            console.log("post failed");
+//          });
     });
   }
 

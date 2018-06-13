@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var app = express();
+
 //var server = require('http').createServer(app);
 
 var fs = require('fs');
@@ -35,12 +36,13 @@ var userSocketIDOperatorChannel  = {};
 var operatorSocketIDOperatorChannel = {};
 var usernameOperatorChannel = {};
 
-var port=3637;
+var port=3087;
 server.listen(port);
 console.log('Socket.io is listening on port:' + port);
 
 
  const bodyParser = require('body-parser');
+
 
  app.use(bodyParser.json());
 

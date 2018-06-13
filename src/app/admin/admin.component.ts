@@ -17,8 +17,8 @@ export class AdminComponent implements OnInit {
   //socket = io('https://192.168.0.102:3638');
     
    // socket = io('192.168.0.102:3638',{secure: true});
-   // socket = io('https://airpoint.com.hk:3087',{secure: true});
-    socket = io('https://192.168.0.102:3637',{secure: true});
+   socket = io('https://airpoint.com.hk:3087',{secure: true});
+   // socket = io('https://192.168.0.102:3637',{secure: true});
 
   constructor() {
       
