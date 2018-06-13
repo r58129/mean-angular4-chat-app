@@ -311,8 +311,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     console.log('jsonMesg.path: ' +jsonMesg.path);
     console.log('jsonMesg.message: ' +jsonMesg.message);
     
-    // this.socket.emit('operatorToUser',jsonMesg);
-    this.socket.emit('adminchat',jsonMesg);
+    this.socket.emit('chat message', jsonMesg);
     this.notSelected = true;
   }
 
