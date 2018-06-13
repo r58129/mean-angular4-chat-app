@@ -29,17 +29,17 @@
         <li class="header" *ngIf="authService.isAuthenticated()">MAIN NAVIGATION </li>
         <li class="active treeview menu-open" *ngIf="authService.isAuthenticated()">
           <a href="#">
-            <i class="fa fa-dashboard"></i> <span>Operation</span>
+            <i class="fa fa-dashboard"></i> <span>Chat Service</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
           <ul class="treeview-menu" >
             <!-- <li class="active"> -->
-            <li ><a routerLink="/admin" routerLinkActive="active-link" href=""><i class="fa fa-circle-o"></i> Administrator </a></li>
-            <li ><a routerLink="/operator" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Operator</a></li>
-            <li ><a routerLink="/request" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Chat Service</a></li>
-          </ul>
+            <!-- <li ><a routerLink="/admin" routerLinkActive="active-link" href=""><i class="fa fa-circle-o"></i> Administrator </a></li> -->
+            <li ><a routerLink="/operator" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Operator </a></li>
+            <li ><a routerLink="/request" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Administrator </a></li>
+            </ul>
         </li>
        <!--  <li class="treeview">
           <a href="#">

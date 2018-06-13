@@ -36,7 +36,7 @@ export class ChatService {
 
   showChat(id) {
     return new Promise((resolve, reject) => {
-        this.http.get(this.serverUrl+'/chat/' + id)
+        this.http.get(this.serverUrl+'/chat/id/' + id)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -81,8 +81,21 @@ export class ChatService {
     });
   }
 
+  // get all Request
+  getAllRequest() {
+    return new Promise((resolve, reject) => {
+      this.http.get(this.serverUrl+'/chat/request/all' )
+        .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
  // get all human Request
-  getAllRequest(human) {
+  getHumanRequest(human) {
     return new Promise((resolve, reject) => {
       this.http.get(this.serverUrl+'/chat/request/human' )
         .map(res => res.json())
@@ -97,7 +110,7 @@ export class ChatService {
   // Request, room refer to phone number
   getRequestByRoom(room) {
     return new Promise((resolve, reject) => {
-      this.http.get(this.serverUrl+'/chat/request/' + room)
+      this.http.get(this.serverUrl+'/chat/requestroom/' + room)
         .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -121,7 +134,7 @@ export class ChatService {
 
    showRequestSocket(id) {
     return new Promise((resolve, reject) => {
-        this.http.get(this.serverUrl+'/chat/request' + id)
+        this.http.get(this.serverUrl+'/chat/requestsid' + id)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -192,7 +205,6 @@ export class ChatService {
         });
     });
   }
-
 
 
   saveUser(data) {

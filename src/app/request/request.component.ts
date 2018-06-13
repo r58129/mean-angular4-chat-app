@@ -22,7 +22,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   //new request
   requests: any;  //new request
   joinned: boolean = false;
-  newRequest = { phone_number: '', socket_id: '', room:'', message: '', Request_status:'' };
+  newRequest = { phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
   // newRequest = { room:'', phone_number: '', message: '', socket_id:'',updated_at:'' };
   // chatRequest = { room: '', admin_name:'', phone_number: '', message: '', updated_at:'' };
   // socket = io('http://localhost:4000');
@@ -50,14 +50,14 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   	 	console.log("print userid before saveChat: " +userid);
    		console.log("print socket_id before saveChat: " +socket_id);
    // use status field to classify the new and old request
-   this.newRequest = {phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer service request', Request_status:'New' };
+   this.newRequest = {phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer service request', request_status:'New' };
    // this.newRequest = { room: this.newRequest.room, phone_number: this.newRequest.phone_number, socket_id: this.newRequest.socket_id, message: 'Join this room', updated_at:date };
    // this.newRequest = Object.assign({ room: userid, phone_number: userid, socket_id: socket_id, message: 'Join this room', updated_at:date }, this.newRequest);
  	console.log(this.newRequest.room);
  	console.log(this.newRequest.phone_number);
  	console.log(this.newRequest.socket_id);
  	console.log(this.newRequest.message);
- 	console.log(this.newRequest.Request_status);
+ 	console.log(this.newRequest.request_status);
  	// console.log(this.newRequest.updated_at);
 
 	// this.chatService.saveRequest(this.newRequest).then( function(result)  {
@@ -66,7 +66,11 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 	    }, (err) => {
 	      console.log(err);
 	    });
-  	}	
+  
+  this.getHumanRequest();
+
+  	}	  //if 
+
   });
 
 
@@ -83,7 +87,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 // }
 
 
-     this.getAllRequest();
+     this.getHumanRequest();
      this.scrollTableToBottom();
 
   }
@@ -120,9 +124,9 @@ export class RequestComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  getAllRequest() {
+  getHumanRequest() {
     var customer_service = "human";
-    this.chatService.getAllRequest(customer_service).then((res) => {  //from chatService, 
+    this.chatService.getHumanRequest(customer_service).then((res) => {  //from chatService, 
       this.requests = res;
     }, (err) => {
       console.log(err);

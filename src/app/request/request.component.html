@@ -33,7 +33,7 @@
                     <td>{{r.updated_at | date: 'medium'}}</td>
                     <td>
                     	<div class="pull-right">   	
-							<a [routerLink]="['/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id]}}]" routerLinkActive="active" class="btn btn-danger btn-xs">Connect</a>
+							<a [routerLink]="['/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id]}}]" routerLinkActive="active" class="btn btn-danger btn-xs">{{r.request_status}}</a>
 						</div>						
                     </td>
                   </tr>

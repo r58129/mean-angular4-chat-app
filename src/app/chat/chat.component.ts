@@ -24,7 +24,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   joinned: boolean = false;
   notSelected: boolean = true;
 
-  newUser = { nickname: '', room: '' ,socket_id: ''};
+  newUser = { nickname: '', room: '' ,socket_id: '', db_id:''};
   msgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: { data:Buffer, contentType:'' }};
   imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
@@ -50,6 +50,12 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       // console.log(params);
       this.newUser.socket_id = params['id2'];
       console.log(this.newUser.socket_id);     
+    });
+
+        this.route.params.subscribe(params =>{
+      // console.log(params);
+      this.newUser.db_id = params['id3'];
+      console.log(this.newUser.db_id);     
     });
 
     var user = JSON.parse(localStorage.getItem("user"));
@@ -130,7 +136,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       
     }.bind(this));
 
-    console.log(this.ImageObject);
+    // console.log(this.ImageObject);
 
   }
 
@@ -166,6 +172,27 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.joinned = true;
     this.socket.emit('save-message', { phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
       room: this.newUser.room, nickname: this.newUser.nickname, message: 'Join this room', updated_at: date });
+
+    //get db id
+    var db_id = this.newUser.db_id;
+    var updateStatus = { request_status:"Working"};
+    // console.log('request_id: ' +db_id);
+
+    // get request status but there is error...
+    // this.chatService.showChat(db_id).then((res) =>{
+    //   this.chats = res;
+    //   console.log("this.chats: " +this.chats.request_status);
+    // }, (err) => {
+    //   console.log(err);
+    // });
+
+    //update request_status to working when admin has joined the room
+    this.chatService.updateChat(db_id, updateStatus).then((res) => {  //from chatService
+      console.log("status updated");
+    }, (err) => {
+      console.log(err);
+    });
+
   }
 
   sendMessage() {
@@ -186,6 +213,17 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.socket.emit('save-message', { phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
     localStorage.removeItem("user");
     this.joinned = false;
+
+    //update request_status to Done after logout
+    var db_id = this.newUser.db_id;
+    console.log('request_id: ' +db_id);
+    var updateStatus = { request_status:"Done"};
+    this.chatService.updateChat(db_id, updateStatus).then((res) => {  //from chatService
+      console.log("status Done");
+    }, (err) => {
+      console.log(err);
+    });
+
   }
 
   SendForm(message){
@@ -296,7 +334,11 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     // console.log('formDataImage.imagefile: ' +this.url);  //base64
     
     //post formdata to tinker
-    this.chatService.postImage2Node(formDataImage);
+    this.chatService.postImage2Node(formDataImage).then((res) => {  //from chatService
+      console.log("Image posted to tinker");
+    }, (err) => {
+      console.log(err);
+    });
 
     //emit socket to android
     // console.log("admin is sending a photo: " +onFileSelected.fileName);

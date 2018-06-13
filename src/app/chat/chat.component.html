@@ -17,11 +17,22 @@
                       {{ msgData.room }}
                       <!-- <input class="btn-group pull-right" type="file" (change)="onFileSelected($event)"  /> -->
 
-                      <div class="btn-group pull-right">   
+               <!--        <div class="btn-group pull-right">   
                           <button type="button" class="btn btn-default btn-xs" (click)="logout()">
                               Disconnect
                           </button>
+                      </div> -->
+                      <div class="btn-group pull-right no-padding"> 
+                        <form (ngSubmit)="logout()">
+              
+                      <div class="form-group btn-group pull-right">
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.db_id" name="db_id"  >
                       </div>
+                      <div class="form-group btn-group pull-right no-margin ">
+                        <button type="submit" class="btn btn-default btn-xs" >Disconnect</button>
+                      </div>
+                    </form>
+                  </div>
 
                       <!-- pass parameters to selecPhoto components? -->
                       <div class="btn-group pull-right" >
@@ -100,8 +111,8 @@
                       <div class="input-group">
                         <input type="hidden" [(ngModel)]="msgData.phone_numebr" name="phone_numebr" />
                         <input type="hidden" [(ngModel)]="msgData.socket_id" name="socket_id" />
-                          <input type="hidden" [(ngModel)]="msgData.room" name="room" />
-                          <input type="hidden" [(ngModel)]="msgData.nickname" name="nickname" />
+                        <input type="hidden" [(ngModel)]="msgData.room" name="room" />
+                        <input type="hidden" [(ngModel)]="msgData.nickname" name="nickname" />
 
                           <input id="btn-input" type="text" [(ngModel)]="msgData.message" name="message" class="form-control input-sm" placeholder="Type your message here..." required="" />
                           <span class="input-group-btn">
@@ -121,13 +132,16 @@
                     <!-- <h2>Select Customer</h2> -->
                     <form (ngSubmit)="joinRoom()" #joinForm="ngForm">
                       <div class="form-group">
-                        <input type="text" class="form-control" [(ngModel)]="newUser.nickname" placeholder="Input user name" name="nickname" required="" />
+                        <input type="text" class="form-control" [(ngModel)]="newUser.nickname" placeholder="Input user name" name="nickname" required="" >
                       </div>
                       <div class="form-group">
                         <input type="text" class="form-control" [(ngModel)]="newUser.room" name="room" placeholder="Input phone number"required="">
                       </div>
                       <div class="form-group">
-                        <input type="text" class="form-control" [(ngModel)]="newUser.socket_id" name="socket_id" />
+                        <input type="text" class="form-control" [(ngModel)]="newUser.socket_id" name="socket_id" >
+                      </div>
+                      <div class="form-group">
+                        <input type="text" class="form-control" [(ngModel)]="newUser.db_id" name="db_id"  >
                       </div>
                       <div class="form-group">
                         <button type="submit" class="btn btn-success" [disabled]="!joinForm.form.valid">Join</button>

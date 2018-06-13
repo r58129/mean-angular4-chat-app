@@ -20,7 +20,7 @@ import { AuthserviceService } from './authservice.service';
 const appRoutes: Routes = [
    { path: '', component: ApploginComponent, pathMatch: 'full'},
    { path: 'request', component: RequestComponent, children:[
-      { path: 'chatbox/:id/:id2', component: ChatComponent, outlet:'chatOutlet'},
+      { path: 'chatbox/:id/:id2/:id3', component: ChatComponent, outlet:'chatOutlet'},
   ], canActivate: [AuthguardGuard]},
   { path: 'admin', component: AdminComponent , canActivate: [AuthguardGuard]},
   { path: 'operator', component: OperatorComponent, canActivate: [AuthguardGuard] },

@@ -211,15 +211,12 @@ router.get('/:room', function(req, res, next) {
 });
 
 /* GET SINGLE CHAT BY ID */
-router.get('/:id', function(req, res, next) {
+router.get('/id/:id', function(req, res, next) {
   Chat.findById(req.params.id, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
 });
-
-
-
 
 /* SAVE CHAT postman POST path:192.168.0.102:4080/chat/*/
 router.post('/', function(req, res, next) {
@@ -255,9 +252,9 @@ router.get('/', function(req, res) {
 
 /* GET ALL REQUESTS 192.168.0.102:4080/chat/request/all*/ 
 router.get('/request/all', function(req, res, next) {
-  Chat.find(req.body, function (err, requests) {
+  Chat.find(req.body, function (err, chats) {
     if (err) return next(err);
-    res.json(requests);
+    res.json(chats);
   });
 });
 
@@ -270,16 +267,16 @@ router.get('/request/human', function(req, res, next) {
       { nickname: { $exists: false } }
       // { status: "New" } 
     ]
-  }, function (err, requests) {
+  }, function (err, chats) {
     if (err) return next(err);
-    res.json(requests);
+    res.json(chats);
   });
 });
 
 // db.inventory.find( { $and: [ { price: { $ne: 1.99 } }, { price: { $exists: true } } ] } )
 
 /* GET ALL REQUESTS in same room 192.168.0.102:4080/chat/request/room1*/ 
-router.get('/request/:room', function(req, res, next) {
+router.get('/requestroom/:room', function(req, res, next) {
   // Chat.find({ room: req.params.room }, function (err, requests) {
     Chat.find({ $and:
     [
@@ -288,9 +285,9 @@ router.get('/request/:room', function(req, res, next) {
       { nickname: {$exists:true, $ne:"robot" } }  //filter robot reply
     
     ]
-  }, function (err, requests) {
+  }, function (err, chats) {
     if (err) return next(err);
-    res.json(requests);
+    res.json(chats);
   });
 });
 
@@ -299,6 +296,14 @@ router.get('/request/:id', function(req, res, next) {
   Chat.findById(req.params.id, function (err, post) {
     if (err) return next(err);
     res.json(post);
+  });
+});
+
+/* GET SINGLE REQUEST BY socket ID */
+router.get('/requestsid/:socket_id', function(req, res, next) {
+  Chat.find({socket_id:req.params.socket_id}, function (err, chats) {
+    if (err) return next(err);
+    res.json(chats);
   });
 });
 
@@ -343,13 +348,6 @@ router.get('/user/:id', function(req, res, next) {
   });
 });
 
-/* GET SINGLE user BY phone_number */
-router.get('/userphone/:phone_number', function(req, res, next) {
-  User.find({phone_number:req.params.phone_number}, function (err, users) {
-    if (err) return next(err);
-    res.json(users);
-  });
-});
 
 /* SAVE user */
 router.post('/user', function(req, res, next) {
@@ -367,6 +365,22 @@ router.put('/user/:id', function(req, res, next) {
   });
 });
 
+/* DELETE user */
+router.delete('/user/:id', function(req, res, next) {
+  User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
+/* GET SINGLE user BY phone_number */
+router.get('/userphone/:phone_number', function(req, res, next) {
+  User.find({phone_number:req.params.phone_number}, function (err, users) {
+    if (err) return next(err);
+    res.json(users);
+  });
+});
+
 /* UPDATE user by user phone number*/
 router.put('/userupdate/:phone_number', function(req, res, next) {
   User.findOneAndUpdate({phone_number:req.params.phone_number}, req.body, function (err, users) {
@@ -375,13 +389,6 @@ router.put('/userupdate/:phone_number', function(req, res, next) {
   });
 });
 
-/* DELETE user */
-router.delete('/user/:id', function(req, res, next) {
-  User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
-    if (err) return next(err);
-    res.json(post);
-  });
-});
 
 
 // Get image
@@ -418,7 +425,7 @@ router.get('/image/:room', function(req, res, next) {
 });
 
 /* GET SINGLE image BY ID */
-router.get('/image/:id', function(req, res, next) {
+router.get('/imageid/:id', function(req, res, next) {
   Chat.findById(req.params.id, function (err, post) {
     if (err) return next(err);
     res.json(post);
