@@ -14,24 +14,25 @@ import { Buffer } from 'buffer';
 export class ChatComponent implements OnInit, AfterViewChecked {
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  // @ViewChild('image') private myInputImage: any;
   // @ViewChild('scrollTable') private myScrollTableContainer: ElementRef;  //Ben
 
   url = '';
   ImageObject = {};
   displayImage = '';
   selectedFile: File;
-  chats: any;
+  chats: any =[];
   joinned: boolean = false;
   notSelected: boolean = true;
 
-  newUser = { nickname: '', room: '' ,socket_id: '', db_id:''};
+  newUser = { nickname: '', room: '' ,socket_id: '', db_id:'', request_status:''};
   msgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: { data:Buffer, contentType:'' }};
   imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
   CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // socket = io('http://localhost:4000');
-  // socket = io('https://airpoint.com.hk:3087',{secure: true});
-  socket = io('https://192.168.0.102:3637',{secure: true});
+  socket = io('https://airpoint.com.hk:3637',{secure: true});
+  //socket = io('https://192.168.0.102:3637',{secure: true});
   
   constructor(private chatService: ChatService, private route: ActivatedRoute) {
     // console.log("inside chat constructor" +this.route.snapshot.params);
@@ -52,10 +53,16 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       console.log(this.newUser.socket_id);     
     });
 
-        this.route.params.subscribe(params =>{
+    this.route.params.subscribe(params =>{
       // console.log(params);
       this.newUser.db_id = params['id3'];
       console.log(this.newUser.db_id);     
+    });
+
+    this.route.params.subscribe(params =>{
+      // console.log(params);
+      this.newUser.request_status = params['id4'];
+      console.log(this.newUser.request_status);     
     });
 
     var user = JSON.parse(localStorage.getItem("user"));
@@ -109,11 +116,14 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       // console.log("data.message.room: " + data.message.room);
       // console.log("JSON.parse(localStorage.getItem('user')).room: " + (JSON.parse(localStorage.getItem("user")).room));
       console.log("new-message: " + data.message.room);
+    if (localStorage.getItem("user")!=null){
       if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
+          user=JSON.parse(localStorage.getItem("user"));
         this.chats.push(data.message);
         this.msgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
         this.scrollToBottom();
-      }
+            }
+        }
     }.bind(this));
 
 
@@ -175,23 +185,22 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
     //get db id
     var db_id = this.newUser.db_id;
+    var currentStatus = this.newUser.request_status;
     var updateStatus = { request_status:"Working"};
     // console.log('request_id: ' +db_id);
-
-    // get request status but there is error...
-    // this.chatService.showChat(db_id).then((res) =>{
-    //   this.chats = res;
-    //   console.log("this.chats: " +this.chats.request_status);
-    // }, (err) => {
-    //   console.log(err);
-    // });
+    console.log('request status: ' +currentStatus)
 
     //update request_status to working when admin has joined the room
-    this.chatService.updateChat(db_id, updateStatus).then((res) => {  //from chatService
-      console.log("status updated");
-    }, (err) => {
-      console.log(err);
-    });
+    if (currentStatus !== "Done")
+    {
+      this.chatService.updateChat(db_id, updateStatus).then((res) => {  //from chatService
+        console.log("status updated");
+      }, (err) => {
+        console.log(err);
+      });
+
+    }
+    console.log("status is NOT updated");
 
   }
 
@@ -216,13 +225,25 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
     //update request_status to Done after logout
     var db_id = this.newUser.db_id;
+    var currentStatus = this.newUser.request_status;
     console.log('request_id: ' +db_id);
     var updateStatus = { request_status:"Done"};
-    this.chatService.updateChat(db_id, updateStatus).then((res) => {  //from chatService
-      console.log("status Done");
-    }, (err) => {
-      console.log(err);
-    });
+
+   if (currentStatus !== "Done")
+    {
+      this.chatService.updateChat(db_id, updateStatus).then((res) => {  //from chatService
+        console.log("status updated");
+      }, (err) => {
+        console.log(err);
+      });
+
+    }
+    console.log("status is NOT updated");
+
+    //send goodbye message when logout()
+    var goodbye = "goodbye";
+    this.SendForm(goodbye);
+    console.log("goodbye");
 
   }
 
@@ -258,7 +279,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
     if (event.target.files && event.target.files[0]) {
       var reader = new FileReader();
-      reader.readAsDataURL(event.target.files[0]); // read file as data url
+      reader.readAsDataURL(this.selectedFile); // read file as data url
       // reader.readAsArrayBuffer(event.target.files[0]);  //read as Array buffer
       reader.onload = (event:any) => { // called once readAsDataURL is completed
         this.url = event.target.result;
@@ -352,6 +373,13 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     
     this.socket.emit('chat message', jsonMesg);
     this.notSelected = true;
+
+
+
+      // console.log(this.selectedFile.value);
+      // this.selectedFile.value = '';
+      // console.log(this.selectedFile.value);
+    
   }
 
   RetrievePhoto(data){

@@ -55,6 +55,19 @@
    height: 80vh;
 }
 
+.Red{
+    color: red;
+
+}
+
+.Orange{
+    color: yellow;
+
+}
+
+.Green{
+    color: green;
+}
 
 #request-page, #chat-page
 {

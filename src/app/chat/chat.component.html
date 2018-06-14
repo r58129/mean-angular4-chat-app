@@ -144,6 +144,9 @@
                         <input type="text" class="form-control" [(ngModel)]="newUser.db_id" name="db_id"  >
                       </div>
                       <div class="form-group">
+                        <input type="text" class="form-control" [(ngModel)]="newUser.request_status" name="request_status"  >
+                      </div>
+                      <div class="form-group">
                         <button type="submit" class="btn btn-success" [disabled]="!joinForm.form.valid">Join</button>
                       </div>
                     </form>
@@ -171,7 +174,7 @@
                       </div>
 
                       <div class="form-group">
-                        <img [src]="url" height="300px"><br/>
+                        <img #image [src]="url" height="300px"><br/>
                         <input style = "display: none" type="file" class="form-control" (change)="onFileSelected($event)" #fileInput [(ngModel)]="filename" name="filename" required="">
                         <button type="button" class="btn btn-success btn-sm" (click)="fileInput.click()">Select Photo</button>
                       </div>

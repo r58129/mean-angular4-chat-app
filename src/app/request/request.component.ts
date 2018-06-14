@@ -27,7 +27,8 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   // chatRequest = { room: '', admin_name:'', phone_number: '', message: '', updated_at:'' };
   // socket = io('http://localhost:4000');
   // socket = io('https://192.168.0.102:3637');
-  socket = io('https://192.168.0.102:3637',{secure: true});
+  // socket = io('https://192.168.0.102:3637',{secure: true});
+  socket = io('https://airpoint.com.hk:3637',{secure: true});
   
   constructor(private chatService: ChatService) {}
 
@@ -156,6 +157,36 @@ export class RequestComponent implements OnInit, AfterViewChecked {
       console.log(err);
     });
   }
+
+  // setButtonColor(){
+  //   var status = this.newRequest.request_status;
+  //   console.log(status);
+
+  //   let classes = {
+  //     Red: this.isNew();
+  //     Orange: this.isWorking();
+  //     Green:  this.isDone();
+
+  //   };
+
+  //   return classes;
+
+  // }
+
+  // isNew(){
+  //   console.log("isNEW");
+  //   return this.setColor === "New";
+  // }
+
+  // isWorking(){
+  //   console.log("isWorking");
+  //   return this.setColor === "Working";
+  // }
+
+  // isDone(){
+  //   console.log("isDone");
+  //   return this.setColor === "Done";
+  // }
 
 }
 

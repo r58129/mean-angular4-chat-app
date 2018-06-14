@@ -33,8 +33,11 @@
                     <td>{{r.updated_at | date: 'medium'}}</td>
                     <td>
                     	<div class="pull-right">   	
-							<a [routerLink]="['/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id]}}]" routerLinkActive="active" class="btn btn-danger btn-xs">{{r.request_status}}</a>
-						</div>						
+                  <!--       <div [ngClass] ="setButtonColor()">
+                          <a [routerLink]="['/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id, r.request_status]}}]" routerLinkActive="active" [(ngModel)]="setColor">{{r.request_status}}</a> -->
+							             <a [routerLink]="['/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id, r.request_status]}}]" routerLinkActive="active" class="btn btn-danger btn-xs">{{r.request_status}}</a>
+                        <!-- </div> -->
+						          </div>						
                     </td>
                   </tr>
                 </tbody>

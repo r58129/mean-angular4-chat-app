@@ -2,11 +2,12 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var app = express();
+
 //var server = require('http').createServer(app);
 
 var fs = require('fs');
-var key = fs.readFileSync('routes/encryption/private.key');
-var cert = fs.readFileSync( 'routes/encryption/mydomain.crt' );
+var key = fs.readFileSync('routes/encryption/pk.pem');
+var cert = fs.readFileSync( 'routes/encryption/cert2.pem' );
 
 var options = {
 key: key,
@@ -41,6 +42,7 @@ console.log('Socket.io is listening on port:' + port);
 
 
  const bodyParser = require('body-parser');
+
 
  app.use(bodyParser.json());
 
@@ -145,8 +147,8 @@ io.on('connection', function (socket) {
       // io.to(socket.id).emit('chat',socket.userid +': '+ msg); // this is for original admin page demo
         
         console.log('Admin sending msg "' + JSON.stringify(msg.message) + '" to ' + username[userSocketID.indexOf(atou[socket.id])]);
-      // io.to(socket.id).emit('chat',socket.userid +': '+ msg);
-    io.to(socket.id).emit('chat',socket.userid +': '+ JSON.stringify(msg.message)); // this is for original admin page demo
+       //io.to(socket.id).emit('chat',socket.userid +': '+ msg);  //for chat request service
+    //io.to(socket.id).emit('chat',socket.userid +': '+ JSON.stringify(msg.message)); //this is for original admin page demo
         
       io.to(atou[socket.id]).emit('adminchat',msg); //to android
     } else {  //customer message
