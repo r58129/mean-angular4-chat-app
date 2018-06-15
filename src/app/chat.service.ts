@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
 import 'rxjs/add/operator/map';
 
 // let httpOptions = {
@@ -19,9 +20,46 @@ export class ChatService {
 
   constructor(private http : Http) { }
 
-    // private serverUrl = 'https://airpoint.com.hk:3088';
-    private serverUrl = 'https://airpoint.com.hk:4060';
-    
+  // private serverUrl = 'https://airpoint.com.hk:3088';
+  private serverUrl = 'https://airpoint.com.hk:4060';
+
+  // private dataSubject: BehaviorSubject<YourDataModel[]> = new BehaviorSubject([]);
+  // private dataSubject: BehaviorSubject<any> = new BehaviorSubject<any>({});
+
+  // data$: Observable<any> = this.dataSubject.asObservable();
+
+  // updateData(): Observable<any>  {
+  //   // return this.getData().do((data) => {
+  //   //   this.dataSubject.next(data);
+  //   //   console.log("updateData");
+  //   // });
+
+  //    console.log("getData");
+  //     var data = 'getdata';
+  //     return data;
+
+  // }  
+
+  // My data is an array of model objects
+  // getData(): Observable<any>{
+  //   return this.http.get(this.serverUrl+'/chat/request/human')
+  //     .map(res => {
+  //       let data = res.json()
+  //       if(data){
+  //           return data;
+  //         }
+  //       })
+
+      
+  //     .map((response: Response) => {
+  //       let data = response.json() && response.json().your_data_objects;
+  //       let data = res.json();
+  //         if(data){
+  //           return data;
+  //         }
+  //     })
+  // }
+
   getChatByRoom(room) {    //here we use room as phone_number
     return new Promise((resolve, reject) => {
       this.http.get(this.serverUrl+'/chat/' + room)

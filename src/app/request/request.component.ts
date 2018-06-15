@@ -1,8 +1,12 @@
-import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { ChatService } from '../chat.service';
 import { Router } from '@angular/router';
+import { Subject} from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
+import 'rxjs/add/observable/interval'
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
+
 
 @Component({
   selector: 'app-request',
@@ -12,16 +16,18 @@ import * as $ from 'jquery';
 
 export class RequestComponent implements OnInit, AfterViewChecked {
 
+  private unsubscribe: Subject<any> = new Subject();
+  // private subscription: Subscription = new Subscription();
+
   // @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   @ViewChild('scrollTable') private myScrollTableContainer: ElementRef;  
 
   chats: any;
-  // joinned: boolean = false;
-  newUser = { nickname: '', room: '' };
-  // msgData = { room: '', nickname: '', message: '' };
-  //new request
   requests: any;  //new request
+  interval: any;
+  timer: any;
   joinned: boolean = false;
+  newUser = { nickname: '', room: '' };
   newRequest = { phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
   // newRequest = { room:'', phone_number: '', message: '', socket_id:'',updated_at:'' };
   // chatRequest = { room: '', admin_name:'', phone_number: '', message: '', updated_at:'' };
@@ -35,6 +41,9 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   ngOnInit() {
     // var user = JSON.parse(localStorage.getItem("user"));
     // var request = JSON.parse(localStorage.getItem("request"));
+
+    this.getHumanRequest();
+    this.scrollTableToBottom();
 
     this.socket.emit('user','admin');
 
@@ -54,11 +63,11 @@ export class RequestComponent implements OnInit, AfterViewChecked {
    this.newRequest = {phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer service request', request_status:'New' };
    // this.newRequest = { room: this.newRequest.room, phone_number: this.newRequest.phone_number, socket_id: this.newRequest.socket_id, message: 'Join this room', updated_at:date };
    // this.newRequest = Object.assign({ room: userid, phone_number: userid, socket_id: socket_id, message: 'Join this room', updated_at:date }, this.newRequest);
- 	console.log(this.newRequest.room);
- 	console.log(this.newRequest.phone_number);
- 	console.log(this.newRequest.socket_id);
- 	console.log(this.newRequest.message);
- 	console.log(this.newRequest.request_status);
+   	console.log(this.newRequest.room);
+   	console.log(this.newRequest.phone_number);
+   	console.log(this.newRequest.socket_id);
+   	console.log(this.newRequest.message);
+   	console.log(this.newRequest.request_status);
  	// console.log(this.newRequest.updated_at);
 
 	// this.chatService.saveRequest(this.newRequest).then( function(result)  {
@@ -68,40 +77,64 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 	      console.log(err);
 	    });
   
-  this.getHumanRequest();
+  // this.getHumanRequest();
 
   	}	  //if 
 
   });
 
+// data refresh
+  // this.refreshData();
+  
+  // if(this.interval){
+  //   clearInterval(this.interval);
+  // }
+    
+  this.timer = setInterval(() => {
+    // this.refreshData();
+    this.getHumanRequest();
+    console.log("refresh requests");
+  }, 3000);
 
-// let watchCursor = db.getSiblingDB("chatService").chats.watch(
-//    [
-//       { $match : {"operationType" : "insert" } }
-//    ]
-// );
+  // this.chatService.data$.takeUntil(this.unsubscribe)
+  //   .subscribe(data => {
+  //     this.data = data;
+  //     console.log("subscribe data");
+  //   });    
 
-// while (!watchCursor.isExhausted()){
-//    if (watchCursor.hasNext()){
-//       watchCursor.next();
-//    }
-// }
+  }  //ngOnInit
 
-
-     this.getHumanRequest();
-     this.scrollTableToBottom();
-
+  ngOnDestroy(){
+        
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
+        //socket.emit('forceDisconnect');
+    this.socket.disconnect();
+    if (this.timer){
+      clearInterval(this.timer);
+      console.log('stop refreshing');
+    }
   }
 
-    ngOnDestroy(){
-        
-        //socket.emit('forceDisconnect');
-        this.socket.disconnect();
-        
-    }
+  // refreshData(){
+  //   this.chatService.updateData()
+  //     .takeUntil(this.unsubscribe)
+  //     .subscribe();
+  //     console.log("Data refreshed");
+  // }
+
+  // doAction(){
+  //   this.subscription.add(
+  //     this.chatService.doAction()
+  //       .subscribe(result => {
+  //         if(result === true){
+  //           this.refreshData();
+  //         }
+  //       })
+  //   );
+  // }
     
   ngAfterViewChecked() {
-  
     this.scrollTableToBottom();
   }
 
@@ -111,7 +144,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   //   } catch(err) { }
   // }
 
-   scrollTableToBottom(): void {
+  scrollTableToBottom(): void {
     try {
       this.myScrollTableContainer.nativeElement.scrollTop = this.myScrollTableContainer.nativeElement.scrollHeight;
     } catch(err) { }

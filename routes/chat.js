@@ -30,7 +30,7 @@ var username = new Array();
 var atou = {};
 var utoa = {};
 
-
+var operatorSessionUserConnected = false;
 
 var userSocketIDOperatorChannel  = {};
 var operatorSocketIDOperatorChannel = {};
@@ -56,6 +56,16 @@ io.on('connection', function (socket) {
   // });
 
 // start of "from johnson"
+
+  // ack from client to server
+  socket.on('KeepAliveMessage', (name, fn) => {
+    if (operatorSessionUserConnected){
+      console.log('Send Ack');
+      fn('ACK');
+    }
+  });
+
+
   socket.on('connectuser', function(SocketID){
     console.log(username[userSocketID.indexOf(SocketID)]+' connected to ' + socket.userid); //where is this socket.userid comes from???
     atou[socket.id] = SocketID;
@@ -117,6 +127,7 @@ io.on('connection', function (socket) {
     } else if (userid == 'operatorSessionUser'){
       console.log("emit socket.on(operatorSessionUser)" +socket.id);
       userSocketIDOperatorChannel = socket.id;
+      operatorSessionUserConnected = true;
     } else {
       console.log(' Customer Lu log userid is '+ userid);   //userid is tel number
       
@@ -161,15 +172,38 @@ io.on('connection', function (socket) {
   socket.on('disconnect', function(){
     if (socket.userid != null){
       if (socket.userid != 'admin'){
-        userSocketIDAndUsername.pop(socket.userid + ' (' + socket.id + ')');
-        userSocketID.pop(socket.id);
-        username.pop(socket.userid);
-      for(var i in adminSocketID){
-        io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername});
+      //   userSocketIDAndUsername.pop(socket.userid + ' (' + socket.id + ')');
+      //   userSocketID.pop(socket.id);
+      //   username.pop(socket.userid);
+      // for(var i in adminSocketID){
+      //   io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername});
+      // }
+        var index = userSocketIDAndUsername.indexOf(socket.userid + ' (' + socket.id + ')');
+        if (index > -1) {
+          userSocketIDAndUsername.splice(index, 1);
+        }
+
+        index = userSocketID.indexOf(socket.id);
+        if (index > -1) {
+          userSocketID.splice(index, 1);
+        }
+
+        index = username.indexOf(socket.userid);
+        if (index > -1) {
+          username.splice(index, 1);
+        }
+
+        for(var i in adminSocketID){
+          io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername});
+        }
       }
+
+      if (socket.userid == 'operatorSessionUser'){
+        operatorSessionUserConnected = false;
       }
-    //io.to(utoa[socket.id]).emit('disconnect',socket.userid + " disconnected");
-    console.log(socket.userid + ' disconnected');
+      
+      //io.to(utoa[socket.id]).emit('disconnect',socket.userid + " disconnected");
+      console.log(socket.userid + ' disconnected');
 
     }
   });
@@ -272,7 +306,7 @@ router.get('/request/human', function(req, res, next) {
   }, function (err, chats) {
     if (err) return next(err);
     res.json(chats);
-  });
+  }).limit(50);
 });
 
 // db.inventory.find( { $and: [ { price: { $ne: 1.99 } }, { price: { $exists: true } } ] } )
