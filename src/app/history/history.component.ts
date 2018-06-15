@@ -7,14 +7,13 @@ import 'rxjs/add/observable/interval'
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
 
-
 @Component({
-  selector: 'app-request',
-  templateUrl: './request.component.html',
-  styleUrls: ['./request.component.css']
+  selector: 'app-history',
+  templateUrl: './history.component.html',
+  styleUrls: ['./history.component.css']
 })
 
-export class RequestComponent implements OnInit, AfterViewChecked {
+export class HistoryComponent implements OnInit, AfterViewChecked {
 
   private unsubscribe: Subject<any> = new Subject();
   // private subscription: Subscription = new Subscription();
@@ -45,7 +44,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
     this.getHumanRequest();
     this.scrollTableToBottom();
 
-    this.socket.emit('user','admin');
+    this.socket.emit('user','operator');
 
     // this.socket.on('users', function(data){
     this.socket.on('users', (userid, socket_id) => {
@@ -91,10 +90,9 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   // }
     
   this.timer = setInterval(() => {
-    // this.refreshData();
     this.getHumanRequest();
     console.log("refresh requests");
-  }, 3000);
+  }, 10000);
 
   // this.chatService.data$.takeUntil(this.unsubscribe)
   //   .subscribe(data => {
@@ -116,33 +114,11 @@ export class RequestComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  // refreshData(){
-  //   this.chatService.updateData()
-  //     .takeUntil(this.unsubscribe)
-  //     .subscribe();
-  //     console.log("Data refreshed");
-  // }
-
-  // doAction(){
-  //   this.subscription.add(
-  //     this.chatService.doAction()
-  //       .subscribe(result => {
-  //         if(result === true){
-  //           this.refreshData();
-  //         }
-  //       })
-  //   );
-  // }
     
   ngAfterViewChecked() {
     this.scrollTableToBottom();
   }
 
-  // scrollToBottom(): void {
-  //   try {
-  //     this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-  //   } catch(err) { }
-  // }
 
   scrollTableToBottom(): void {
     try {
