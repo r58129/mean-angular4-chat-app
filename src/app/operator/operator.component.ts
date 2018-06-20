@@ -22,7 +22,7 @@ export class OperatorComponent implements OnInit {
       
   // var socket = io('http://192.168.0.102:3637');
   
-  this.socket.emit('user','operator');
+  // this.socket.emit('user','operator');
 
   this.socket.on('users', function(data){
   //alert(JSON.stringify(data));

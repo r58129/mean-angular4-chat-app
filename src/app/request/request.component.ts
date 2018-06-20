@@ -80,7 +80,6 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 	    });
        }
   
-  // this.getHumanRequest();
 
   	}	  //if 
 
@@ -115,7 +114,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
     this.socket.disconnect();
     if (this.timer){
       clearInterval(this.timer);
-      console.log('stop refreshing');
+      console.log('stop admin request refresh');
     }
   }
 
@@ -194,36 +193,6 @@ export class RequestComponent implements OnInit, AfterViewChecked {
       console.log(err);
     });
   }
-
-  // setButtonColor(){
-  //   var status = this.newRequest.request_status;
-  //   console.log(status);
-
-  //   let classes = {
-  //     Red: this.isNew();
-  //     Orange: this.isWorking();
-  //     Green:  this.isDone();
-
-  //   };
-
-  //   return classes;
-
-  // }
-
-  // isNew(){
-  //   console.log("isNEW");
-  //   return this.setColor === "New";
-  // }
-
-  // isWorking(){
-  //   console.log("isWorking");
-  //   return this.setColor === "Working";
-  // }
-
-  // isDone(){
-  //   console.log("isDone");
-  //   return this.setColor === "Done";
-  // }
 
 }
 

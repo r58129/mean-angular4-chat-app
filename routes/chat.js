@@ -78,37 +78,44 @@ io.on('connection', function (socket) {
     io.to(userSocketIDOperatorChannel).emit('operatorConnect',phoneNumber);
     usernameOperatorChannel = phoneNumber;
     console.log('Connected to: '+ phoneNumber);
-    io.to(socket.id).emit('users', {users: 'Connecting to: ' + phoneNumber + '.....'});
-
+    // io.to(socket.id).emit('users', {users: 'Connecting to: ' + phoneNumber + '.....'});
+    io.to(socket.id).emit('users', phoneNumber, socket.id );  //Ben
   });
 
 
   socket.on('addContactOperatorSession', function(phoneNumber){
     console.log('Add Contact: '+ phoneNumber);
-    io.to(operatorSocketIDOperatorChannel).emit('users', {users: 'Connected to: ' + phoneNumber});
+    // io.to(operatorSocketIDOperatorChannel).emit('users', {users: 'Connected to: ' + phoneNumber}); //no need for new UI
   });
 
   socket.on('deleteContactOperatorSession', function(phoneNumber){
     console.log('Delete Contact: '+ phoneNumber);
-    io.to(operatorSocketIDOperatorChannel).emit('users', {users: ''});
+    // io.to(operatorSocketIDOperatorChannel).emit('users', {users: ''}); //no need in new UI
   });
 
   socket.on('disconnectuserOperatorSession', function(phoneNumber){
     io.to(userSocketIDOperatorChannel).emit('operatorConnect','disconnect');  // '' means disconnect on android app
     console.log('disconnected: '+ phoneNumber);
-    io.to(socket.id).emit('users', {users: 'Disconnecting: ' + phoneNumber + '.....'});
+    // io.to(socket.id).emit('users', {users: 'Disconnecting: ' + phoneNumber + '.....'});  //this is for original plain UI only
   });
 
   socket.on('chatMessageOperatorSession', function(msg){
     if (operatorSocketIDOperatorChannel == socket.id){
       console.log('Operator sending msg "' + JSON.stringify(msg.message) + '" to ' + usernameOperatorChannel);
-      io.to(socket.id).emit('chat',socket.userid + ' (' + usernameOperatorChannel + '): '+ ': '+ JSON.stringify(msg.message));
+      // io.to(socket.id).emit('chat',socket.userid + ' (' + usernameOperatorChannel + '): '+ ': '+ JSON.stringify(msg.message));
+      // io.to(socket.id).emit('chat',socket.userid , usernameOperatorChannel ,JSON.stringify(msg.message));
       io.to(userSocketIDOperatorChannel).emit('operatorToUser',msg);
+
+      // modify this to json object
+    // var obj = JSON.parse(msg);
+    // var phoneNum = obj.sessionID;
+    // var message = obj.message;
     }
     if (userSocketIDOperatorChannel == socket.id) {
       console.log(usernameOperatorChannel + ' sending msg "' + msg + '" to operator');
-      io.to(socket.id).emit('chat',msg);
-      io.to(operatorSocketIDOperatorChannel).emit('chat',msg);
+      // io.to(socket.id).emit('chat', msg);
+      // io.to(socket.id).emit('chat', usernameOperatorChannel, msg);
+      io.to(operatorSocketIDOperatorChannel).emit('chat',usernameOperatorChannel,msg);  //Ben
     }
     
   });
@@ -124,10 +131,12 @@ io.on('connection', function (socket) {
     } else if (userid == 'operator') {
       console.log("emit socket.on(operator)" +socket.id);
       operatorSocketIDOperatorChannel = socket.id;
+      io.to(socket.id).emit('users', userid, socket.id); //Ben, just to get the socket id
     } else if (userid == 'operatorSessionUser'){
       console.log("emit socket.on(operatorSessionUser)" +socket.id);
       userSocketIDOperatorChannel = socket.id;
       operatorSessionUserConnected = true;
+      // io.to(socket.id).emit('users', userid, socket.id); //Ben
     } else {
       console.log(' Customer Lu log userid is '+ userid);   //userid is tel number
       
@@ -194,7 +203,7 @@ io.on('connection', function (socket) {
         }
 
         for(var i in adminSocketID){
-          io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername});
+          // io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername}); //no need it new UI
         }
       }
 
@@ -300,7 +309,8 @@ router.get('/request/human', function(req, res, next) {
     [ 
       { phone_number: {  $exists: true } }, 
       { socket_id: { $exists: true } }, 
-      { nickname: { $exists: false } }
+      { nickname: { $exists: false } },
+      { operator_request: { $exists: false } }
       // { status: "New" } 
     ]
   }, function (err, chats) {
@@ -308,6 +318,21 @@ router.get('/request/human', function(req, res, next) {
     res.json(chats);
   }).limit(50);
 });
+
+/* GET ALL REQUESTS with phone# and socket id 192.168.0.102:4080/chat/requests/human*/ 
+router.get('/request/operator', function(req, res, next) { 
+  Chat.find({ $and: 
+    [ 
+      { phone_number: {  $exists: true } }, 
+      { operator_request: { $exists: true } }
+      // { status: "New" } 
+    ]
+  }, function (err, chats) {
+    if (err) return next(err);
+    res.json(chats);
+  }).limit(100);
+});
+
 
 // db.inventory.find( { $and: [ { price: { $ne: 1.99 } }, { price: { $exists: true } } ] } )
 

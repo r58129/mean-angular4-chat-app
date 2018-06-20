@@ -3,15 +3,14 @@ import { ChatService } from '../chat.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
-// import { BSON } from 'bsonfy';
 import { Buffer } from 'buffer';
 
 @Component({
-  selector: 'app-chat',
-  templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css']
+  selector: 'app-opchat',
+  templateUrl: './opchat.component.html',
+  styleUrls: ['./opchat.component.css']
 })
-export class ChatComponent implements OnInit, AfterViewChecked {
+export class OpchatComponent implements OnInit, AfterViewChecked {
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   // @ViewChild('image') private myInputImage: any;
@@ -20,70 +19,93 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   url = '';
   ImageObject = {};
   displayImage = '';
+  display_socket_id: any;
   selectedFile: File;
   chats: any =[];
   joinned: boolean = false;
+  connected: boolean = false;
   notSelected: boolean = true;
 
-  newUser = { nickname: '', room: '' ,socket_id: '', db_id:'', request_status:''};
+  newUser = { nickname: '',socket_id: '', room: '' , db_id:'', operator_request:''};  //for operator
+  newOpRequest = { phone_number: '', socket_id: '', room:'', message: '', operator_request:'' };  //for customer
   msgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: { data:Buffer, contentType:'' }};
   imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
   CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
-  // socket = io('http://localhost:4000');
-  socket = io('https://airpoint.com.hk:3087',{secure: true});
+  
+  socket = io('https://airpoint.com.hk:3637',{secure: true});
   //socket = io('https://192.168.0.102:3637',{secure: true});
   
   constructor(private chatService: ChatService, private route: ActivatedRoute) {
-    // console.log("inside chat constructor" +this.route.snapshot.params);
+    
   }
 
   ngOnInit() {
 //      history.pushState({},"Edit","");
 
-    this.route.params.subscribe(params =>{
-      // console.log(params);
-      this.newUser.room = params['id'];
-      console.log(this.newUser.room);     
-    });
+  // this.route.params.subscribe(params =>{
+  //     // console.log(params);
+  //     this.newUser.room = params['id'];
+  //     // console.log(this.newUser.room);     
+  // });
 
-    this.route.params.subscribe(params =>{
-      // console.log(params);
-      this.newUser.socket_id = params['id2'];
-      console.log(this.newUser.socket_id);     
-    });
+  var user = JSON.parse(localStorage.getItem("user"));
 
-    this.route.params.subscribe(params =>{
-      // console.log(params);
-      this.newUser.db_id = params['id3'];
-      console.log(this.newUser.db_id);     
-    });
+  this.socket.emit('user','operator');
 
-    this.route.params.subscribe(params =>{
-      // console.log(params);
-      this.newUser.request_status = params['id4'];
-      console.log(this.newUser.request_status);     
-    });
+  // var op_socket_id = localStorage.getItem("op_socket_id");
 
-    var user = JSON.parse(localStorage.getItem("user"));
-    // var request = JSON.parse(localStorage.getItem("request"));
+  this.socket.on('users', (userid, socket_id) => {
 
-  this.socket.on('chat', (msg) =>{
-  // this.socket.on('chat', (userid, msg) =>{
+      var date = new Date();
+      // console.log("inside users socket.on");
+      console.log("userid: " +userid);
+      console.log("socket.id: " +socket_id);
+
+      this.newUser.socket_id = socket_id;
+   
+   //customer will join the room while operator won't do it again.
+   if (userid !== 'operator'){ 
+       // console.log("print userid before saveChat: " +userid);
+       // console.log("print socket_id before saveChat: " +socket_id);
+   // use status field to classify the new and old request
+   this.newOpRequest = {phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer joined', operator_request:'true' };
+   // this.newRequest = { room: this.newRequest.room, phone_number: this.newRequest.phone_number, socket_id: this.newRequest.socket_id, message: 'Join this room', updated_at:date };
+   // this.newRequest = Object.assign({ room: userid, phone_number: userid, socket_id: socket_id, message: 'Join this room', updated_at:date }, this.newRequest);
+     // console.log(this.newOpRequest.room);
+     console.log(this.newOpRequest.phone_number);
+     console.log(this.newOpRequest.socket_id);
+     console.log(this.newOpRequest.message);
+     console.log(this.newOpRequest.operator_request);
+   // // console.log(this.newRequest.updated_at);
+
+  // this.chatService.saveRequest(this.newRequest).then( function(result)  {
+  this.chatService.saveRequest(this.newOpRequest).then((result) => {
+      this.socket.emit('save-message', result);
+      }, (err) => {
+        console.log(err);
+      });
+
+    }    //if 
+
+  });
+
+  // this.socket.on('chat', (msg) =>{
+  this.socket.on('chat', (userid, msg) =>{
     var date = new Date();
-    console.log("print customer message object:" +msg);
+    // console.log("print customer message object: " +msg);
 
     // modify this to json object
-    var obj = JSON.parse(msg);
-    var phoneNum = obj.sessionID;
-    var message = obj.message;
+    // var obj = JSON.parse(msg);
+    // var phoneNum = obj.sessionID;
+    // var message = obj.message;
 
-    console.log("print customer phoneNum:" +phoneNum);
-    console.log("print customer message:" +message);
+    console.log("print customer phoneNum:" +userid);
+    console.log("print customer message:" +msg);
 
     if (msg !== 'undefined'){
     
-    this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
+    this.CusMsgData = { phone_number: userid, socket_id: 'socket_id', room:userid , nickname:userid , message: msg };
       console.log(this.CusMsgData.room);
       console.log(this.CusMsgData.phone_number);
       console.log(this.CusMsgData.socket_id);
@@ -97,10 +119,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     }
   });
 
-  this.socket.on('disconnect', function(msg){
-    console.log('Disconnect: ' +msg);
+  // this.socket.on('disconnect', function(msg){
+  //   console.log('Disconnect: ' +msg);
  
-  });
+  // });
   // end of from johnson
 
 
@@ -115,7 +137,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.socket.on('new-message', function (data) {
       // console.log("data.message.room: " + data.message.room);
       // console.log("JSON.parse(localStorage.getItem('user')).room: " + (JSON.parse(localStorage.getItem("user")).room));
-      console.log("new-message: " + data.message.room);
+      // console.log("phone#: " + data.message.room);
+      console.log("new-message: " + data.message.message);
     if (localStorage.getItem("user")!=null){
       if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
           user=JSON.parse(localStorage.getItem("user"));
@@ -150,7 +173,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   }
 
-  ngOnDestroy(){
+    ngOnDestroy(){
         
         //socket.emit('forceDisconnect');
     this.socket.disconnect();
@@ -162,7 +185,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked() {
     this.scrollToBottom();
-    // this.scrollTableToBottom();
   }
 
   scrollToBottom(): void {
@@ -180,37 +202,31 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  joinRoom() {
-    var socket_id =this.newUser.socket_id;
-    console.log('joinRoom using socket_id: ' +socket_id);
-    this.Connect(socket_id);  //connect to customer socket
+  opJoinRoom() {   //operator join room
+    // var socket_id =this.socket_id;
+    // console.log('operator joinRoom using phone#: ' +this.newUser.room);
+
+    this.Connect(this.newUser.room);  //operator join this room
+    
     var date = new Date();
+
     localStorage.setItem("user", JSON.stringify(this.newUser));
     this.getChatByRoom(this.newUser.room);
+    
     this.msgData = {phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
       room: this.newUser.room, nickname: this.newUser.nickname, message: '' };
+    
     this.joinned = true;
+    
     this.socket.emit('save-message', { phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
-      room: this.newUser.room, nickname: this.newUser.nickname, message: 'Join this room', updated_at: date });
+      room: this.newUser.room, nickname: this.newUser.nickname, message: ' Operator joined', updated_at: date });
 
-    //get db id
-    var db_id = this.newUser.db_id;
-    var currentStatus = this.newUser.request_status;
-    var updateStatus = { request_status:"Working"};
-    // console.log('request_id: ' +db_id);
-    console.log('request status: ' +currentStatus)
+    // this.socket.emit('user', this.newUser.room);
+    
+    // console.log('customer phone number: ' +this.newUser.room);
+    // console.log('socket_id: ' +this.newUser.socket_id);
 
-    //update request_status to working when admin has joined the room
-    if (currentStatus !== "Done")
-    {
-      this.chatService.updateChat(db_id, updateStatus).then((res) => {  //from chatService
-        console.log("status updated");
-      }, (err) => {
-        console.log(err);
-      });
 
-    }
-    console.log("status is NOT updated");
 
   }
 
@@ -226,51 +242,43 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   logout() {
-    console.log("disconnect customer and logout the room");
+    console.log("disconnect customer and operator, then logout");
     var date = new Date();
+    var room =this.newUser.room;
     var user = JSON.parse(localStorage.getItem("user"));
+    
     this.socket.emit('save-message', { phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
     localStorage.removeItem("user");
     this.joinned = false;
 
-    //update request_status to Done after logout
-    var db_id = this.newUser.db_id;
-    var currentStatus = this.newUser.request_status;
-    console.log('request_id: ' +db_id);
-    var updateStatus = { request_status:"Done"};
-
-   if (currentStatus !== "Done")
-    {
-      this.chatService.updateChat(db_id, updateStatus).then((res) => {  //from chatService
-        console.log("status updated");
-      }, (err) => {
-        console.log(err);
-      });
-
-    }
-    console.log("status is NOT updated");
-
-    //send goodbye message when logout()
+    //send goodbye message before logout()
     var goodbye = "goodbye";
     this.SendForm(goodbye);
     console.log("goodbye");
 
+    this.Disconnect(room);
+
   }
 
   SendForm(message){
-    console.log("admin is sending a message: " +message);
+    console.log("operator is sending a message: " +message);
     // this.socket.emit('chat message',message);  //from admin to customer
     var obj = { type:"text", path:"null", message: message };
-    this.socket.emit('chat message', obj);  //send json object from admin to customer
-    console.log("admin is sending object: " +obj);
+    this.socket.emit('chatMessageOperatorSession', obj);  //send json object from op to customer
+    console.log("operator is sending object: " +obj);
     // return false;
   }
 
-  Connect(socket_id){
-    console.log("admin join the room with socket_id: " +socket_id);
-     this.socket.emit('connectuser', socket_id);
+  Connect(phone_number){
+    console.log("operator join the room: " +phone_number);
+     this.socket.emit('connectuserOperatorSession', phone_number);
    
-    // return false;
+  }
+
+  Disconnect(phone_number){
+    console.log("disconnectuserOperatorSession: " +phone_number);
+     this.socket.emit('disconnectuserOperatorSession', phone_number);
+   
   }
 
   selectPhoto() {
@@ -307,35 +315,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     console.log("room: " + this.newUser.room);
     console.log("socket_id: " + this.newUser.socket_id);
     console.log("message: " + this.msgData.message);
-
-
-    // var imageString = ((this.url).split(",")[1]);
-    // console.log("imageString: " + imageString);
-
-    // var imageType = ((this.url).split(",")[0]);
-    // console.log("imageType: " + imageType);  //  data:image/png;base64
-
-    // var bindata = new Buffer(string.split(",")[1],"base64");
-
-    // var imageBuffer = Buffer.from(imageString, 'base64');
-    // console.log ("buffer: " +imageBuffer);
-
-    // // convert file to bson    
-    // var imageBuffer = BSON.serialize(this.selectedFile);  //uint8array
-    // // var imageBuffer = BSON.Binary(this.selectedFile);  //uint8array
-    // console.log('imageBuffer:', imageBuffer);
-
-    // // var imageSize = BSON.getElementSize(this.selectedFile);  //uint8array
-    // // console.log('imageSize:', imageSize);
-
-    // // var bufferImage = Buffer.from(new Uint8Array(bsonImage));
-    // var imageArray = Array.from (imageBuffer);
-    // console.log('imageArray:', imageArray);
-
-    // var uploadImage =  {
-    //   data: imageString,
-    //   contentType: imageType
-    // }
 
     //save to DB
     this.imgData = {phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
@@ -381,46 +360,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     console.log('jsonMesg.path: ' +jsonMesg.path);
     console.log('jsonMesg.message: ' +jsonMesg.message);
     
-    this.socket.emit('chat message', jsonMesg);
+    this.socket.emit('chatMessageOperatorSession', jsonMesg);
     this.notSelected = true;
-
-
-
-      // console.log(this.selectedFile.value);
-      // this.selectedFile.value = '';
-      // console.log(this.selectedFile.value);
-    
-  }
-
-  RetrievePhoto(data){
-
-    console.log("RetrievePhoto binary");
-    console.log("filename: " +data.filename );
-    console.log("nickname: " + data.nickname);
-    console.log("room: " + data.room);
-    console.log("socket_id: " + data.socket_id);
-    console.log("message: " + data.message);
-
-    // var imageString = ((this.url).split(",")[1]);
-    // console.log("imageString: " + imageString);
-    // var bindata = new Buffer(string.split(",")[1],"base64");
-
-    var image = Buffer.from(data.image, 'base64');
-    console.log ("buffer: " +image);
-
-  }
-
-  getImage(base64image){
-
-    console.log ("displayImage");
-    // var imageString = ((this.url).split(",")[1]);
-    // console.log("imageString: " + imageString);
-    // var bindata = new Buffer(string.split(",")[1],"base64");
-
-    var image = Buffer.from(base64image, 'base64');
-    console.log ("buffer: " +image);
-
-    this.displayImage = "data:image/png;base64" + image;
 
   }
 
@@ -431,3 +372,4 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
 
 }
+

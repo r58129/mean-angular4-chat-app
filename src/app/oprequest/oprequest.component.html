@@ -2,11 +2,11 @@
 <div class="content-wrapper">
   <!-- <div class="wrapper"> -->
     <!-- <div class="container"> -->
-      <div class="row no-padding" id="request-page">
+      <div class="row no-padding" id="oprequest-page">
           <div class="col-xs-6 no-padding" >
             <div class="box box-primary direct-chat direct-chat-primary">
               <div class="box-header with-border">
-                <h3 class="box-title">Customer Requests</h3>
+                <h3 class="box-title">Operator Requests</h3>
                 <div class="box-tools">
                   <div class="input-group input-group-sm" style="width: 150px;">
                     <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
@@ -24,27 +24,19 @@
                   <tr>
                     <th>Customer</th>
                     <th>Time</th>
-                    <th>Status</th>
+                    <!-- <th>Status</th> -->
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let r of requests">
-      				      <td>{{r.phone_number }}</td>
-                    <td>{{r.updated_at | date: 'medium'}}</td>
-                    <td>
+                  <tr *ngFor="let op of requests">
+      				<td>{{op.phone_number }}</td>
+                    <td>{{op.updated_at | date: 'medium'}}</td>
+<!--                     <td>
                     	<div class="pull-right">   	
-                  <!--       <div [ngClass] ="setButtonColor()">
-                          <a [routerLink]="['/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id, r.request_status]}}]" routerLinkActive="active" [(ngModel)]="setColor">{{r.request_status}}</a> -->
-							            <a [routerLink]="['/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id, r.request_status]}}]" routerLinkActive="active" class="btn btn-xs" 
-                          [ngClass]="{
-                          ' btn-danger ':r.request_status === 'New',
-                          ' btn-warning ':r.request_status === 'Working',
-                          ' btn-success ':r.request_status === 'Done'
-                          }">
-                          {{r.request_status}}</a>
-                        <!-- </div> -->
-						          </div>						
-                    </td>
+                             <a [routerLink]="['/operator', {outlets: { opchatOutlet: ['opchatbox', op.phone_number]}}]" routerLinkActive="active" class="btn btn-primary btn-xs" 
+                          >View</a>
+						</div>						
+                    </td> -->
                   </tr>
                 </tbody>
                   <!-- </div> -->
@@ -57,8 +49,9 @@
       	<!-- /.row -->          
 
           <!-- Place chat box here -->
-          <div class="row no-padding" id="chat-page">
-          	<router-outlet name="chatOutlet"></router-outlet>
+          <div class="row no-padding" id="opchat-page">
+          	<app-opchat></app-opchat>
+          	<!-- <router-outlet name="opchatOutlet"></router-outlet> -->
           </div>
 
       <!-- </div> -->
