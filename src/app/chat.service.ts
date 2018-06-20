@@ -132,7 +132,7 @@ export class ChatService {
     });
   }
 
- // get all human Request
+ // get customer request except opeartor and robot
   getHumanRequest(human) {
     return new Promise((resolve, reject) => {
       this.http.get(this.serverUrl+'/chat/request/human' )
@@ -143,6 +143,20 @@ export class ChatService {
           reject(err);
         });
     });
+  }
+
+  // get operator Request
+  getOperatorRequest(){
+    return new Promise((resolve, reject) => {
+      this.http.get(this.serverUrl+'/chat/request/operator' )
+        .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+
   }
 
   // Request, room refer to phone number

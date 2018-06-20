@@ -77,7 +77,6 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 	      console.log(err);
 	    });
   
-  // this.getHumanRequest();
 
   	}	  //if 
 
@@ -112,7 +111,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
     this.socket.disconnect();
     if (this.timer){
       clearInterval(this.timer);
-      console.log('stop refreshing');
+      console.log('stop admin request refresh');
     }
   }
 

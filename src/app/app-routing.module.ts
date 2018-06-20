@@ -15,8 +15,9 @@ import { OperatorComponent } from './operator/operator.component';
 import { RequestComponent } from './request/request.component';
 import { AuthguardGuard } from './authguard.guard';
 import { AuthserviceService } from './authservice.service';
-import { HistoryComponent } from './history/history.component';
+// import { HistoryComponent } from './history/history.component';
 import { OpchatComponent } from './opchat/opchat.component';
+import { OprequestComponent } from './oprequest/oprequest.component';
 
 const appRoutes: Routes = [
   { path: '', component: ApploginComponent, pathMatch: 'full'},
@@ -24,14 +25,14 @@ const appRoutes: Routes = [
   children:[
       { path: 'chatbox/:id/:id2/:id3/:id4', component: ChatComponent, outlet:'chatOutlet'},
   ], canActivate: [AuthguardGuard]},
-  { path: 'operator', component: HistoryComponent, 
+  { path: 'operator', component: OprequestComponent, 
   children:[
-      { path: 'opchat/:id', component: OpchatComponent, outlet:'opchatOutlet'},
+      { path: 'opchatbox/:id', component: OpchatComponent, outlet:'opchatOutlet'},
   ], canActivate: [AuthguardGuard]},
 
   // { path: 'opchat', component: OpchatComponent, canActivate: [AuthguardGuard] },
   // { path: 'admin', component: AdminComponent , canActivate: [AuthguardGuard]},
-  { path: 'oldoperator', component: OperatorComponent, canActivate: [AuthguardGuard] },
+  // { path: 'oldoperator', component: OperatorComponent, canActivate: [AuthguardGuard] },
   { path: '**', component: PagenotfoundComponent}
   // { path: '', redirectTo: '/login', pathMatch: 'full', canActivate: [AuthguardGuard] },
   // { path: 'login', component: ApploginComponent},

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HistoryComponent } from './history.component';
+import { OprequestComponent } from './oprequest.component';
 
-describe('HistoryComponent', () => {
-  let component: HistoryComponent;
-  let fixture: ComponentFixture<HistoryComponent>;
+describe('OprequestComponent', () => {
+  let component: OprequestComponent;
+  let fixture: ComponentFixture<OprequestComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HistoryComponent ]
+      declarations: [ OprequestComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HistoryComponent);
+    fixture = TestBed.createComponent(OprequestComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

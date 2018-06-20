@@ -23,8 +23,8 @@ import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AdminComponent } from './admin/admin.component';
 import { OperatorComponent } from './operator/operator.component';
 import { RequestComponent } from './request/request.component';
-import { HistoryComponent } from './history/history.component';
 import { OpchatComponent } from './opchat/opchat.component';
+import { OprequestComponent } from './oprequest/oprequest.component';
 
 // import { EmojiModule } from 'angular-emoji/dist';
 
@@ -50,8 +50,8 @@ import { OpchatComponent } from './opchat/opchat.component';
     AdminComponent,
     OperatorComponent,
     RequestComponent,
-    HistoryComponent,
-    OpchatComponent
+    OpchatComponent,
+    OprequestComponent
     //CallbackComponent
     // ApphovertableComponent
   ],

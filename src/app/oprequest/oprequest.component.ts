@@ -8,12 +8,12 @@ import * as io from 'socket.io-client';
 import * as $ from 'jquery';
 
 @Component({
-  selector: 'app-history',
-  templateUrl: './history.component.html',
-  styleUrls: ['./history.component.css']
+  selector: 'app-oprequest',
+  templateUrl: './oprequest.component.html',
+  styleUrls: ['./oprequest.component.css']
 })
 
-export class HistoryComponent implements OnInit, AfterViewChecked {
+export class OprequestComponent implements OnInit, AfterViewChecked {
 
   private unsubscribe: Subject<any> = new Subject();
   // private subscription: Subscription = new Subscription();
@@ -38,67 +38,15 @@ export class HistoryComponent implements OnInit, AfterViewChecked {
   constructor(private chatService: ChatService) {}
 
   ngOnInit() {
-    // var user = JSON.parse(localStorage.getItem("user"));
-    // var request = JSON.parse(localStorage.getItem("request"));
 
-    this.getHumanRequest();
+    this.getOperatorRequest();
     this.scrollTableToBottom();
 
-    this.socket.emit('user','operator');
-
-    // this.socket.on('users', function(data){
-    this.socket.on('users', (userid, socket_id) => {
-      // this.socket.on('logRequest', (userid, socket_id) => {
-    // this.socket.on('users', function(userid, socket_id){
-      var date = new Date();
-      // console.log("inside users socket.on");
-      console.log("print userid:" +userid);
-      console.log("print socket.id:" +socket_id);
-  
-   if (userid !== 'admin'){
-  	 	console.log("print userid before saveChat: " +userid);
-   		console.log("print socket_id before saveChat: " +socket_id);
-   // use status field to classify the new and old request
-   this.newRequest = {phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer service request', request_status:'New' };
-   // this.newRequest = { room: this.newRequest.room, phone_number: this.newRequest.phone_number, socket_id: this.newRequest.socket_id, message: 'Join this room', updated_at:date };
-   // this.newRequest = Object.assign({ room: userid, phone_number: userid, socket_id: socket_id, message: 'Join this room', updated_at:date }, this.newRequest);
-   	console.log(this.newRequest.room);
-   	console.log(this.newRequest.phone_number);
-   	console.log(this.newRequest.socket_id);
-   	console.log(this.newRequest.message);
-   	console.log(this.newRequest.request_status);
- 	// console.log(this.newRequest.updated_at);
-
-	// this.chatService.saveRequest(this.newRequest).then( function(result)  {
-	this.chatService.saveRequest(this.newRequest).then((result) => {
-      this.socket.emit('save-message', result);
-	    }, (err) => {
-	      console.log(err);
-	    });
-  
-  // this.getHumanRequest();
-
-  	}	  //if 
-
-  });
-
-// data refresh
-  // this.refreshData();
-  
-  // if(this.interval){
-  //   clearInterval(this.interval);
-  // }
     
   this.timer = setInterval(() => {
-    this.getHumanRequest();
-    console.log("refresh requests");
-  }, 10000);
-
-  // this.chatService.data$.takeUntil(this.unsubscribe)
-  //   .subscribe(data => {
-  //     this.data = data;
-  //     console.log("subscribe data");
-  //   });    
+    this.getOperatorRequest();
+    console.log("operator refresh requests");
+  }, 5000);
 
   }  //ngOnInit
 
@@ -112,6 +60,7 @@ export class HistoryComponent implements OnInit, AfterViewChecked {
       clearInterval(this.timer);
       console.log('stop refreshing');
     }
+
   }
 
     
@@ -141,6 +90,16 @@ export class HistoryComponent implements OnInit, AfterViewChecked {
     }, (err) => {
       console.log(err);
     });
+  }
+
+  getOperatorRequest(){
+  	var operator_request = "true";
+    this.chatService.getOperatorRequest().then((res) => {  //from chatService, 
+      this.requests = res;
+    }, (err) => {
+      console.log(err);
+    });
+
   }
 
   getRequestByRoom(room) {

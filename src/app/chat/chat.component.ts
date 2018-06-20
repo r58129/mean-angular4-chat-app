@@ -150,6 +150,16 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   }
 
+  ngOnDestroy(){
+        
+        //socket.emit('forceDisconnect');
+    this.socket.disconnect();
+    // if (this.timer){
+    //   clearInterval(this.timer);
+    //   console.log('stop refreshing');
+    // }
+  }
+
   ngAfterViewChecked() {
     this.scrollToBottom();
     // this.scrollTableToBottom();
