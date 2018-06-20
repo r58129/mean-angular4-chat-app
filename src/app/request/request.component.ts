@@ -6,6 +6,7 @@ import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval'
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
+import { AuthserviceService } from '../authservice.service';
 
 
 @Component({
@@ -34,9 +35,9 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   // socket = io('http://localhost:4000');
   // socket = io('https://192.168.0.102:3637');
   // socket = io('https://192.168.0.102:3637',{secure: true});
-  socket = io('https://airpoint.com.hk:3637',{secure: true});
+  socket = io('https://airpoint.com.hk:3087',{secure: true});
   
-  constructor(private chatService: ChatService) {}
+  constructor(public authService: AuthserviceService,private chatService: ChatService) {}
 
   ngOnInit() {
     // var user = JSON.parse(localStorage.getItem("user"));
@@ -70,12 +71,14 @@ export class RequestComponent implements OnInit, AfterViewChecked {
    	console.log(this.newRequest.request_status);
  	// console.log(this.newRequest.updated_at);
 
+       if (this.newRequest.socket_id!=undefined){
 	// this.chatService.saveRequest(this.newRequest).then( function(result)  {
 	this.chatService.saveRequest(this.newRequest).then((result) => {
       this.socket.emit('save-message', result);
 	    }, (err) => {
 	      console.log(err);
 	    });
+       }
   
   // this.getHumanRequest();
 
@@ -163,6 +166,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
     this.chatService.getHumanRequest(customer_service).then((res) => {  //from chatService, 
       this.requests = res;
     }, (err) => {
+        this.authService.logout();
       console.log(err);
     });
   }

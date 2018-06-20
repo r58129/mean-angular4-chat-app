@@ -11,8 +11,8 @@ const Auth0Strategy = require('passport-auth0');
 mongoose.Promise = global.Promise;
 
 // mongoose.connect('mongodb://localhost/chatService')
-// mongoose.connect('mongodb://192.168.0.102/luChatService')
-mongoose.connect('mongodb://192.168.0.102/chatService')
+mongoose.connect('mongodb://192.168.0.102/luChatService')
+// mongoose.connect('mongodb://192.168.0.102/chatService')
   .then(() =>  console.log('connection successful'))
   .catch((err) => console.error(err));
 
@@ -21,7 +21,10 @@ var app = express();
 
 
 app.set('view engine', 'html');
-app.use(logger('dev'));
+//app.use(logger('dev'));
+app.use(logger('dev', {
+  skip: function (req, res) { return res.statusCode < 400 }
+}));
 app.use(bodyParser.json({limit: '16mb'}));
 app.use(bodyParser.urlencoded({limit: '16mb','extended':'false'}));
 
@@ -53,7 +56,7 @@ const strategy = new Auth0Strategy(
     domain: 'aptcmai0.auth0.com',
     clientID: 'QHj13LadXiKO4qLoj7IQaJWv3Z0s3j5D',
     clientSecret: 'xxx',
-    callbackURL: 'https://192.168.0.102:4060/'
+    callbackURL: 'https://airpoint.com.hk:3089/'
     // callbackURL: 'https://192.168.0.102:3089/'
   },
   (accessToken, refreshToken, extraParams, profile, done) => {
