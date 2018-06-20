@@ -85,12 +85,12 @@ io.on('connection', function (socket) {
 
   socket.on('addContactOperatorSession', function(phoneNumber){
     console.log('Add Contact: '+ phoneNumber);
-    io.to(operatorSocketIDOperatorChannel).emit('users', {users: 'Connected to: ' + phoneNumber});
+    // io.to(operatorSocketIDOperatorChannel).emit('users', {users: 'Connected to: ' + phoneNumber}); //no need for new UI
   });
 
   socket.on('deleteContactOperatorSession', function(phoneNumber){
     console.log('Delete Contact: '+ phoneNumber);
-    io.to(operatorSocketIDOperatorChannel).emit('users', {users: ''});
+    // io.to(operatorSocketIDOperatorChannel).emit('users', {users: ''}); //no need in new UI
   });
 
   socket.on('disconnectuserOperatorSession', function(phoneNumber){
@@ -131,7 +131,7 @@ io.on('connection', function (socket) {
     } else if (userid == 'operator') {
       console.log("emit socket.on(operator)" +socket.id);
       operatorSocketIDOperatorChannel = socket.id;
-      // io.to(socket.id).emit('users', userid, socket.id); //Ben, just to get the socket id
+      io.to(socket.id).emit('users', userid, socket.id); //Ben, just to get the socket id
     } else if (userid == 'operatorSessionUser'){
       console.log("emit socket.on(operatorSessionUser)" +socket.id);
       userSocketIDOperatorChannel = socket.id;
@@ -203,7 +203,7 @@ io.on('connection', function (socket) {
         }
 
         for(var i in adminSocketID){
-          io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername});
+          // io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername}); //no need it new UI
         }
       }
 

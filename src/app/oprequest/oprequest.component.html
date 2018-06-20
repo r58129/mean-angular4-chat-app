@@ -24,20 +24,19 @@
                   <tr>
                     <th>Customer</th>
                     <th>Time</th>
-                    <th>Status</th>
+                    <!-- <th>Status</th> -->
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let op of requests">
       				<td>{{op.phone_number }}</td>
                     <td>{{op.updated_at | date: 'medium'}}</td>
-                    <td>
+<!--                     <td>
                     	<div class="pull-right">   	
                              <a [routerLink]="['/operator', {outlets: { opchatOutlet: ['opchatbox', op.phone_number]}}]" routerLinkActive="active" class="btn btn-primary btn-xs" 
                           >View</a>
-                        <!-- </div> -->
 						</div>						
-                    </td>
+                    </td> -->
                   </tr>
                 </tbody>
                   <!-- </div> -->

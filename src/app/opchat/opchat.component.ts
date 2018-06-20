@@ -3,7 +3,6 @@ import { ChatService } from '../chat.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
-// import { BSON } from 'bsonfy';
 import { Buffer } from 'buffer';
 
 @Component({
@@ -20,7 +19,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   url = '';
   ImageObject = {};
   displayImage = '';
-  socket_id: any;
+  display_socket_id: any;
   selectedFile: File;
   chats: any =[];
   joinned: boolean = false;
@@ -44,11 +43,11 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   ngOnInit() {
 //      history.pushState({},"Edit","");
 
-  this.route.params.subscribe(params =>{
-      // console.log(params);
-      this.newUser.room = params['id'];
-      // console.log(this.newUser.room);     
-  });
+  // this.route.params.subscribe(params =>{
+  //     // console.log(params);
+  //     this.newUser.room = params['id'];
+  //     // console.log(this.newUser.room);     
+  // });
 
   var user = JSON.parse(localStorage.getItem("user"));
 
@@ -63,7 +62,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
       console.log("userid: " +userid);
       console.log("socket.id: " +socket_id);
 
-      // this.socket_id = socket_id;
+      this.newUser.socket_id = socket_id;
    
    //customer will join the room while operator won't do it again.
    if (userid !== 'operator'){ 
