@@ -76,14 +76,3 @@ Execute on server side:
 
 Execute on client side:
 - Npm start
-
-
-emit socket.on(users)oaTI4gATABINSILRAAAO
-admin (oaTI4gATABINSILRAAAO) is connected.
-Lu log userid is 85260261976
-85260261976 (jXOgu4-aul1CLO8oAAAP) is connected.
-85260261976 connected to admin
-jXOgu4-aul1CLO8oAAAP , oaTI4gATABINSILRAAAO
-chatting...
-85260261976 sending msg "########   Operator Request  ######## Customer last input:
-Human" to admin
