@@ -1,6 +1,6 @@
 import { NgModule }              from '@angular/core';
 import { RouterModule, Routes }  from '@angular/router';
-import { FullLayout, SimpleLayout} from './containers';
+
 import { AppComponent } from './app.component';
 import { ChatService } from './chat.service';
 import { ChatComponent } from './chat/chat.component';

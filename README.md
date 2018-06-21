@@ -72,7 +72,8 @@ Check mongoDB command
 - db.user.remove({})
 
 Execute on server side:
-- Node app.js
+npm start 
 
 Execute on client side:
-- Npm start
+ng serve -o --port 4080 --host 0.0.0.0 --ssl true --ssl-key ./routes/encryption/pk.pem --ssl-cert ./routes/encryption/cert2.pem --public airpoint.com.hk
+
