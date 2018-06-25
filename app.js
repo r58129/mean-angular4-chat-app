@@ -37,9 +37,11 @@ app.get('/a', function (req, res) {
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Content-Disposition, Accept");
+  res.header("Access-Control-Expose-Headers", "Content-Disposition, filename");
   // res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+
   next();
 
 });

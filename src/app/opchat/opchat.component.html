@@ -101,7 +101,7 @@
                         <input type="text" class="form-control" [(ngModel)]="newUser.room" name="oproom" placeholder="Input phone number" required="">
                       </div>
                       <div class="form-group">
-                        <input type="text" class="form-control" [(ngModel)]="newUser.socket_id" name="op_socket_id" required="" >
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.socket_id" name="op_socket_id" required="" >
                       </div>
 <!--                       <div class="form-group">
                         <input type="text" class="form-control" [(ngModel)]="newUser.db_id" name="db_id"  >
@@ -125,15 +125,15 @@
                     <form (ngSubmit)="SendPhoto()" #joinForm="ngForm">
                       
                       <div class="form-group">
-                        <input type="text" class="form-control" [(ngModel)]="newUser.nickname" placeholder="Input user name" name="nickname" required="" >
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.nickname" placeholder="Input user name" name="nickname" required="" >
                       </div>
 
                       <div class="form-group">
-                        <input type="text" class="form-control" [(ngModel)]="newUser.room" name="room" placeholder="Input phone number"required="" >
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.room" name="room" placeholder="Input phone number"required="" >
                       </div>
 
                       <div class="form-group">
-                        <input type="text" class="form-control" [(ngModel)]="newUser.socket_id" name="socket_id" required="" >
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.socket_id" name="socket_id" required="" >
                       </div>
 
                       <div class="form-group">

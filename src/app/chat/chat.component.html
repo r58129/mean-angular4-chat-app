@@ -47,19 +47,24 @@
                     <!-- <ul class="chat"> -->
                       <!-- <li *ngFor="let c of chats"> -->
                     <div *ngFor="let c of chats">
-
                         <!-- <ul class="chat">
                             <li *ngFor="let c of chats"> -->
                             <!-- Message. Default to the left -->
                             <div class="direct-chat-msg">
                               <div class="direct-chat-info clearfix" *ngIf="c.nickname!==msgData.nickname; else rightchat">
-
                                 <!-- <span class="direct-chat-name pull-left">{{ c.nickname }}</span> -->
-                                <!-- <span class="direct-chat-timestamp pull-left">{{ c.updated_at | date: 'medium' }}</span> -->
-                             
+                                <!-- <span class="direct-chat-timestamp pull-left">{{ c.updated_at | date: 'medium' }}</span> -->                               
                                 <!-- /.direct-chat-img -->
                                 <img class="direct-chat-img" src="../assets/dist/img/user3-128x128.jpg" alt="Message User Image">
-                                <div class="direct-chat-text pull-left"><span class="direct-chat-name pull-left">{{ c.phone_number }}</span><br>{{ c.message }}<br>
+                               
+                                <div class="direct-chat-text pull-left"><span class="direct-chat-name pull-left">{{ c.phone_number }}</span><br>
+                                <div  *ngIf="c.message.includes('📷 Photo')" >
+                                <div class="pull-left">
+                                  <img id="displayImage" [src]="c.image">
+                                </div><br>
+                                </div>
+                                
+                                <div class="pull-left">{{ c.message }}</div><br>
                                 <small class="direct-chat-timestamp pull-right">{{ c.updated_at | date: 'medium' }}</small>
                                 </div>
                               </div>
@@ -138,13 +143,13 @@
                         <input type="text" class="form-control" [(ngModel)]="newUser.room" name="room" placeholder="Input phone number"required="">
                       </div>
                       <div class="form-group">
-                        <input type="text" class="form-control" [(ngModel)]="newUser.socket_id" name="socket_id" >
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.socket_id" name="socket_id" >
                       </div>
                       <div class="form-group">
-                        <input type="text" class="form-control" [(ngModel)]="newUser.db_id" name="db_id"  >
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.db_id" name="db_id"  >
                       </div>
                       <div class="form-group">
-                        <input type="text" class="form-control" [(ngModel)]="newUser.request_status" name="request_status"  >
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.request_status" name="request_status"  >
                       </div>
                       <div class="form-group">
                         <button type="submit" class="btn btn-success" [disabled]="!joinForm.form.valid">Join</button>
@@ -162,15 +167,15 @@
                     <form (ngSubmit)="SendPhoto()" #joinForm="ngForm">
                       
                       <div class="form-group">
-                        <input type="text" class="form-control" [(ngModel)]="newUser.nickname" placeholder="Input user name" name="nickname" required="" >
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.nickname" placeholder="Input user name" name="nickname" required="" >
                       </div>
 
                       <div class="form-group">
-                        <input type="text" class="form-control" [(ngModel)]="newUser.room" name="room" placeholder="Input phone number"required="" >
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.room" name="room" placeholder="Input phone number"required="" >
                       </div>
 
                       <div class="form-group">
-                        <input type="text" class="form-control" [(ngModel)]="newUser.socket_id" name="socket_id" required="" >
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.socket_id" name="socket_id" required="" >
                       </div>
 
                       <div class="form-group">

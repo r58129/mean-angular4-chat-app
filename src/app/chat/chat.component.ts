@@ -18,9 +18,11 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   // @ViewChild('scrollTable') private myScrollTableContainer: ElementRef;  //Ben
 
   url = '';
+  getUrl = '';
   ImageObject = {};
   displayImage = '';
   selectedFile: File;
+  getFile: any;
   chats: any =[];
   joinned: boolean = false;
   notSelected: boolean = true;
@@ -29,6 +31,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   msgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: { data:Buffer, contentType:'' }};
   imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
+  CusImgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', image: '' };
   CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // socket = io('http://localhost:4000');
   socket = io('https://airpoint.com.hk:3637',{secure: true});
@@ -82,6 +85,74 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     console.log("print customer message:" +message);
 
     if (msg !== 'undefined'){
+
+      if (msg.includes('📷 Photo') ){
+
+        // get admin sessionID
+        var sID=localStorage.getItem('res.data.sessionID');
+        var tinkerPath = ((message).split(":")[1]);
+        console.log("sID: " + sID);
+        console.log("tinkerPath: " + tinkerPath);
+        var path = 'sessionID='+sID +'&'+tinkerPath;
+        console.log("path: " + path);
+
+        this.chatService.getImageFromNode(path).then((res) => {  //from chatService
+          console.log(" get image from tinker");
+        
+          var blob = new Blob(
+              // I'm using page innerHTML as data
+              // note that you can use the array
+              // to concatenate many long strings EFFICIENTLY
+              // [document.body.innerHTML],
+              [res],
+              // Mime type is important for data url
+              // {type : 'text/html'}
+              {type : 'image/png'}
+              );
+
+          var reader = new FileReader();
+          reader.readAsDataURL(blob);
+          reader.onloadend =(evt:any) =>{
+              // Capture result here
+            var getImage = evt.target.result;
+            console.log(evt.target.result);
+
+            this.CusImgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message, image:getImage };
+            console.log('receive image from customer');
+            console.log(this.CusImgData.room);
+            console.log(this.CusImgData.phone_number);
+            console.log(this.CusImgData.socket_id);
+            console.log(this.CusImgData.message);
+            console.log(this.CusImgData.image);
+
+            this.chatService.saveImage(this.CusImgData).then((result) => {
+              console.log('save Image from tinker');
+              this.socket.emit('save-image', result);
+            }, (err) => {
+              console.log(err);
+            });
+
+          };
+       
+
+        }, (err) => {
+          console.log(err);
+        });
+
+
+    
+    
+        
+        
+      //sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
+
+
+
+
+
+    }  // end if
+
+    else{
     
     this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
       console.log(this.CusMsgData.room);
@@ -94,7 +165,11 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       }, (err) => {
         console.log(err);
       });
-    }
+    }  // end else
+  }  // end if
+
+
+    
   });
 
   this.socket.on('disconnect', function(msg){

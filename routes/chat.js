@@ -60,7 +60,7 @@ io.on('connection', function (socket) {
   // ack from client to server
   socket.on('KeepAliveMessage', (name, fn) => {
     if (operatorSessionUserConnected){
-      console.log('Send Ack');
+      // console.log('Send Ack');
       fn('ACK');
     }
   });
@@ -316,7 +316,7 @@ router.get('/request/human', function(req, res, next) {
   }, function (err, chats) {
     if (err) return next(err);
     res.json(chats);
-  }).limit(50);
+  })
 });
 
 /* GET ALL REQUESTS with phone# and socket id 192.168.0.102:4080/chat/requests/human*/ 
@@ -330,7 +330,7 @@ router.get('/request/operator', function(req, res, next) {
   }, function (err, chats) {
     if (err) return next(err);
     res.json(chats);
-  }).limit(100);
+  })
 });
 
 
