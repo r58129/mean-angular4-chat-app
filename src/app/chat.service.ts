@@ -383,7 +383,7 @@ export class ChatService {
       console.log("path: " +path);
 
       // path = sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
-     this.http.get('https://airpoint.com.hk:8006/api/csp/getimage?'+path,{responseType: ResponseContentType.Blob} )
+     this.http.get('https://airpoint.com.hk:8007/api/csp/getimage?'+path,{responseType: ResponseContentType.Blob} )
          .map(res => res.blob())
          .subscribe(res => {
            resolve(res);
