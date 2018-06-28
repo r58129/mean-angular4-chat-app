@@ -33,7 +33,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
   CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   
-  socket = io('https://airpoint.com.hk:3637',{secure: true});
+  socket = io('https://airpoint.com.hk:3087',{secure: true});
   //socket = io('https://192.168.0.102:3637',{secure: true});
   
   constructor(private chatService: ChatService, private route: ActivatedRoute) {
