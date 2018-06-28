@@ -31,7 +31,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   msgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: { data:Buffer, contentType:'' }};
   imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
-  CusImgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', image: '' };
+  CusImgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', file_path:'', image: '' };
   CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // socket = io('http://localhost:4000');
   socket = io('https://airpoint.com.hk:3637',{secure: true});
@@ -80,35 +80,56 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     var obj = JSON.parse(msg);
     var phoneNum = obj.sessionID;
     var message = obj.message;
+    var filePath = obj.photoPath;
 
     console.log("print customer phoneNum:" +phoneNum);
     console.log("print customer message:" +message);
+    console.log("print customer photoPath:" +filePath);
 
-    if (msg !== 'undefined'){
+    if (msg !== 'undefine'){
 
-      if (msg.includes('📷 Photo') ){
+      if (!message.includes('📷')){
+    
+      this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
+      console.log(this.CusMsgData.room);
+      console.log(this.CusMsgData.phone_number);
+      console.log(this.CusMsgData.socket_id);
+      console.log(this.CusMsgData.message);
+      
+      this.chatService.saveChat(this.CusMsgData).then((result) => {
+      this.socket.emit('save-message', result);
+      }, (err) => {
+        console.log(err);
+      });
+      }  //end if
+    }  // end if
 
-        // get admin sessionID
-        var sID=localStorage.getItem('res.data.sessionID');
-        var tinkerPath = ((message).split(":")[1]);
-        console.log("sID: " + sID);
-        console.log("tinkerPath: " + tinkerPath);
-        var path = 'sessionID='+sID +'&'+tinkerPath;
-        console.log("path: " + path);
+    if (!filePath){
+        console.log("filePath is null");
+    }
+    else{
+      // get admin sessionID
+      var sID=localStorage.getItem('res.data.sessionID');
+      var fileType = ((filePath).split(".")[1]);
+      var path = 'sessionID='+sID +'&path='+filePath;
+      var completePath = 'https://airpoint.com.hk:8006/api/csp/getimage?'+path;  //save complete path to db
+
+
+      console.log("sID: " + sID);
+      console.log("tinkerPath: " + filePath);
+      console.log("complete path: " + completePath);
+      console.log("fileType: " + fileType);
 
         this.chatService.getImageFromNode(path).then((res) => {  //from chatService
           console.log(" get image from tinker");
         
           var blob = new Blob(
-              // I'm using page innerHTML as data
-              // note that you can use the array
-              // to concatenate many long strings EFFICIENTLY
-              // [document.body.innerHTML],
               [res],
               // Mime type is important for data url
               // {type : 'text/html'}
-              {type : 'image/png'}
+              {type : 'image/' +fileType}
               );
+
 
           var reader = new FileReader();
           reader.readAsDataURL(blob);
@@ -117,13 +138,14 @@ export class ChatComponent implements OnInit, AfterViewChecked {
             var getImage = evt.target.result;
             console.log(evt.target.result);
 
-            this.CusImgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message, image:getImage };
+            this.CusImgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message, file_path:completePath, image:getImage };
             console.log('receive image from customer');
             console.log(this.CusImgData.room);
             console.log(this.CusImgData.phone_number);
             console.log(this.CusImgData.socket_id);
             console.log(this.CusImgData.message);
             console.log(this.CusImgData.image);
+            console.log(this.CusImgData.file_path);
 
             this.chatService.saveImage(this.CusImgData).then((result) => {
               console.log('save Image from tinker');
@@ -138,38 +160,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         }, (err) => {
           console.log(err);
         });
-
-
     
-    
-        
-        
       //sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
-
-
-
-
-
-    }  // end if
-
-    else{
-    
-    this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
-      console.log(this.CusMsgData.room);
-      console.log(this.CusMsgData.phone_number);
-      console.log(this.CusMsgData.socket_id);
-      console.log(this.CusMsgData.message);
-      
-      this.chatService.saveChat(this.CusMsgData).then((result) => {
-      this.socket.emit('save-message', result);
-      }, (err) => {
-        console.log(err);
-      });
     }  // end else
-  }  // end if
-
-
-    
   });
 
   this.socket.on('disconnect', function(msg){
@@ -467,37 +460,37 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     
   }
 
-  RetrievePhoto(data){
+  // RetrievePhoto(data){
 
-    console.log("RetrievePhoto binary");
-    console.log("filename: " +data.filename );
-    console.log("nickname: " + data.nickname);
-    console.log("room: " + data.room);
-    console.log("socket_id: " + data.socket_id);
-    console.log("message: " + data.message);
+  //   console.log("RetrievePhoto binary");
+  //   console.log("filename: " +data.filename );
+  //   console.log("nickname: " + data.nickname);
+  //   console.log("room: " + data.room);
+  //   console.log("socket_id: " + data.socket_id);
+  //   console.log("message: " + data.message);
 
-    // var imageString = ((this.url).split(",")[1]);
-    // console.log("imageString: " + imageString);
-    // var bindata = new Buffer(string.split(",")[1],"base64");
+  //   // var imageString = ((this.url).split(",")[1]);
+  //   // console.log("imageString: " + imageString);
+  //   // var bindata = new Buffer(string.split(",")[1],"base64");
 
-    var image = Buffer.from(data.image, 'base64');
-    console.log ("buffer: " +image);
+  //   var image = Buffer.from(data.image, 'base64');
+  //   console.log ("buffer: " +image);
 
-  }
+  // }
 
-  getImage(base64image){
+  // getImage(base64image){
 
-    console.log ("displayImage");
-    // var imageString = ((this.url).split(",")[1]);
-    // console.log("imageString: " + imageString);
-    // var bindata = new Buffer(string.split(",")[1],"base64");
+  //   console.log ("displayImage");
+  //   // var imageString = ((this.url).split(",")[1]);
+  //   // console.log("imageString: " + imageString);
+  //   // var bindata = new Buffer(string.split(",")[1],"base64");
 
-    var image = Buffer.from(base64image, 'base64');
-    console.log ("buffer: " +image);
+  //   var image = Buffer.from(base64image, 'base64');
+  //   console.log ("buffer: " +image);
 
-    this.displayImage = "data:image/png;base64" + image;
+  //   this.displayImage = "data:image/png;base64" + image;
 
-  }
+  // }
 
   CancelPhoto(){
     console.log('clicked cancel Photo' );

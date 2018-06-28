@@ -21,6 +21,13 @@
    height: 80vh;
 }
 
+.box.box-primary.direct-chat.direct-chat-primary
+{
+    margin-bottom: 0;
+    /*height: 250px;*/
+   /*height: 75vh;*/
+
+}
 
 #oprequest-page, #opchat-page
 {

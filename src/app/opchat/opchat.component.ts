@@ -31,6 +31,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   msgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: { data:Buffer, contentType:'' }};
   imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
+  CusImgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', file_path:'', image: '' };  
   CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   
   socket = io('https://airpoint.com.hk:3637',{secure: true});
@@ -90,22 +91,27 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
   });
 
-  // this.socket.on('chat', (msg) =>{
-  this.socket.on('chat', (userid, msg) =>{
+  this.socket.on('chat', (msg) =>{
+  // this.socket.on('chat', (userid, msg) =>{
     var date = new Date();
-    // console.log("print customer message object: " +msg);
+    console.log("print customer message object: " +msg);
 
     // modify this to json object
-    // var obj = JSON.parse(msg);
-    // var phoneNum = obj.sessionID;
-    // var message = obj.message;
+    var obj = JSON.parse(msg);
+    var phoneNum = obj.sessionID;
+    var message = obj.message;
+    var filePath = obj.photoPath;
 
-    console.log("print customer phoneNum:" +userid);
-    console.log("print customer message:" +msg);
+    console.log("print customer phoneNum:" +phoneNum);
+    console.log("print customer message:" +message);
+    console.log("print customer photoPath:" +filePath);
 
     if (msg !== 'undefined'){
+
+      if (!message.includes('📷')){
     
-    this.CusMsgData = { phone_number: userid, socket_id: 'socket_id', room:userid , nickname:userid , message: msg };
+      // this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:userid , message: msg };
+      this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
       console.log(this.CusMsgData.room);
       console.log(this.CusMsgData.phone_number);
       console.log(this.CusMsgData.socket_id);
@@ -116,7 +122,70 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
       }, (err) => {
         console.log(err);
       });
+      }  //end if
+    }  //end if
+
+    if (!filePath){
+        console.log("filePath is null");
     }
+    else{
+      // get admin sessionID
+      var sID=localStorage.getItem('res.data.sessionID');
+      var fileType = ((filePath).split(".")[1]);
+      var path = 'sessionID='+sID +'&path='+filePath;
+      var completePath = 'https://airpoint.com.hk:8006/api/csp/getimage?'+path;  //save complete path to db
+
+
+      console.log("sID: " + sID);
+      console.log("tinkerPath: " + filePath);
+      console.log("complete path: " + completePath);
+      console.log("fileType: " + fileType);
+
+        this.chatService.getImageFromNode(path).then((res) => {  //from chatService
+          console.log(" get image from tinker");
+        
+          var blob = new Blob(
+              [res],
+              // Mime type is important for data url
+              // {type : 'text/html'}
+              {type : 'image/' +fileType}
+              );
+
+
+          var reader = new FileReader();
+          reader.readAsDataURL(blob);
+          reader.onloadend =(evt:any) =>{
+              // Capture result here
+            var getImage = evt.target.result;
+            console.log(evt.target.result);
+
+            this.CusImgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message, file_path:completePath, image:getImage };
+            console.log('receive image from customer');
+            console.log(this.CusImgData.room);
+            console.log(this.CusImgData.phone_number);
+            console.log(this.CusImgData.socket_id);
+            console.log(this.CusImgData.message);
+            console.log(this.CusImgData.image);
+            console.log(this.CusImgData.file_path);
+
+            this.chatService.saveImage(this.CusImgData).then((result) => {
+              console.log('save Image to tinker');
+              this.socket.emit('save-image', result);
+            }, (err) => {
+              console.log(err);
+            });
+
+          };
+       
+
+        }, (err) => {
+          console.log(err);
+        });
+    
+      //sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
+    }  // end else
+
+
   });
 
   // this.socket.on('disconnect', function(msg){
@@ -281,18 +350,17 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
    
   }
 
-  selectPhoto() {
+  opSelectPhoto() {
     console.log('inside select Photo' );
     this.notSelected = false;
-    
   }
 
 
-  onFileSelected(event) {    
+  onOpFileSelected(event) {    
 
     this.selectedFile = event.target.files[0];
     console.log("event.target.files[0]: " +this.selectedFile);
-    console.log("onFileSelected: " +this.selectedFile.name);
+    console.log("onOpFileSelected: " +this.selectedFile.name);
     // console.log("event.target.files: " +event.target.files);  //file list
 
     if (event.target.files && event.target.files[0]) {

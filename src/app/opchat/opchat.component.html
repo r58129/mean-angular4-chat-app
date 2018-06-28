@@ -10,7 +10,7 @@
                   <!-- /.box-header -->
                 <div class="box-header with-border">
                     <!-- <div class="panel-heading"> -->
-                      <span class="glyphicon glyphicon-comment"></span> 
+                      <!-- <span class="glyphicon glyphicon-comment"></span>  -->
                       {{ msgData.room }}
 
                       <div class="btn-group pull-right no-padding"> 
@@ -26,7 +26,7 @@
                   </div>
 
                       <div class="btn-group pull-right" >
-                        <button type="button" class="btn btn-warning btn-xs" id="btn-photo" (click)="selectPhoto()">
+                        <button type="button" class="btn btn-warning btn-xs" id="btn-photo" (click)="opSelectPhoto()">
                           <!-- <button type="button" class="btn btn-warning btn-xs" id="btn-photo" (click)="selectPhoto()" >
                            --> <span class = "glyphicon glyphicon-paperclip"></span>
                          </button>
@@ -40,7 +40,14 @@
                              
                                 <!-- /.direct-chat-img -->
                                 <img class="direct-chat-img" src="../assets/dist/img/user3-128x128.jpg" alt="Message User Image">
-                                <div class="direct-chat-text pull-left"><span class="direct-chat-name pull-left">{{ c.phone_number }}</span><br>{{ c.message }}<br>
+                                <div class="direct-chat-text pull-left"><span class="direct-chat-name pull-left">{{ c.nickname }}</span><br>
+                                <div  *ngIf="c.file_path !== undefine" >
+                                <div class="pull-left">
+                                  <img id="displayGetImage" [src]="c.image">
+                                </div><br>
+                                </div>
+
+                                <div class="pull-left">{{ c.message }}</div><br>
                                 <small class="direct-chat-timestamp pull-right">{{ c.updated_at | date: 'medium' }}</small>
                                 </div>
                               </div>
@@ -138,7 +145,7 @@
 
                       <div class="form-group">
                         <img #image [src]="url" height="300px"><br/>
-                        <input style = "display: none" type="file" class="form-control" (change)="onFileSelected($event)" #fileInput [(ngModel)]="filename" name="filename" required="">
+                        <input style = "display: none" type="file" class="form-control" (change)="onOpFileSelected($event)" #fileInput [(ngModel)]="filename" name="filename" required="">
                         <button type="button" class="btn btn-success btn-sm" (click)="fileInput.click()">Select Photo</button>
                       </div>
 

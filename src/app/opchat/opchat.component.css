@@ -21,6 +21,13 @@
 
 }
 
+.box.box-primary.direct-chat.direct-chat-primary
+{
+    margin-bottom: 0;
+    /*height: 250px;*/
+   /*height: 75vh;*/
+
+}
 
 #chat-page
 {
@@ -53,7 +60,7 @@
     margin-left: 10px;
 }
 
-#displayImage{
+#displayImage, #displayGetImage{
     
     max-height: 20vw;
     max-width: 30vw;
