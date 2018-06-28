@@ -115,7 +115,7 @@ io.on('connection', function (socket) {
       console.log(usernameOperatorChannel + ' sending msg "' + msg + '" to operator');
       // io.to(socket.id).emit('chat', msg);
       // io.to(socket.id).emit('chat', usernameOperatorChannel, msg);
-      io.to(operatorSocketIDOperatorChannel).emit('chat',usernameOperatorChannel,msg);  //Ben
+      io.to(operatorSocketIDOperatorChannel).emit('chat', msg);  //Ben
     }
     
   });
@@ -150,7 +150,7 @@ io.on('connection', function (socket) {
           // io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername},socket.id);
           io.to(adminSocketID[i]).emit('users',userid,socket.id);
           // io.to(adminSocketID[i]).emit('logRequest',userid,socket.id);
-          console.log("emit customer socket.on(users)" +socket.id);
+          // console.log("emit customer socket.on(users)" +socket.id);
       }
     }
     socket.userid = userid;
@@ -316,7 +316,7 @@ router.get('/request/human', function(req, res, next) {
   }, function (err, chats) {
     if (err) return next(err);
     res.json(chats);
-  }).limit(50);
+  })
 });
 
 /* GET ALL REQUESTS with phone# and socket id 192.168.0.102:4080/chat/requests/human*/ 
@@ -330,7 +330,7 @@ router.get('/request/operator', function(req, res, next) {
   }, function (err, chats) {
     if (err) return next(err);
     res.json(chats);
-  }).limit(100);
+  })
 });
 
 

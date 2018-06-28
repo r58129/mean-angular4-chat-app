@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
+import { Http, Headers, ResponseContentType } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import 'rxjs/add/operator/map';
@@ -7,8 +7,8 @@ import 'rxjs/add/operator/map';
 // let httpOptions = {
 //   headers: new Headers({
 //     // 'Content-Type':  'multipart/form-data'
-//     'Content-Type':  'application/form-data'
-//     'Content-Type':  'undefined'
+//     'Content-Type':  'application/octet-stream'
+//     'Content-Disposition':  'form-data; filename = '
 //     // 'Content-Type':  'application/json'
 //     //  'Content-Type':'application/x-www-form-urlencoded'
 //     //'Authorization': 'my-auth-token'
@@ -369,10 +369,30 @@ export class ChatService {
          // .map(res => res.json())
          .subscribe(res => {
            resolve(res);
-           console.log("post successful");
+           // console.log("post successful");
          }, (err) => {
            reject(err);
-           console.log("post failed");
+           // console.log("post failed");
+         });
+    });
+  }
+
+    //get image from tinker
+  getImageFromNode(path) {
+    return new Promise((resolve, reject) => {
+      console.log("path: " +path);
+
+      // path = sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
+     this.http.get('https://airpoint.com.hk:8006/api/csp/getimage?'+path,{responseType: ResponseContentType.Blob} )
+         .map(res => res.blob())
+         .subscribe(res => {
+           resolve(res);
+           console.log("get image successful");
+           // console.log(res);
+           
+         }, (err) => {
+           reject(err);
+           console.log("get image failed");
          });
     });
   }

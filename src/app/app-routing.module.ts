@@ -1,6 +1,6 @@
 import { NgModule }              from '@angular/core';
 import { RouterModule, Routes }  from '@angular/router';
- 
+
 import { AppComponent } from './app.component';
 import { ChatService } from './chat.service';
 import { ChatComponent } from './chat/chat.component';
@@ -20,14 +20,17 @@ import { AuthserviceService } from './authservice.service';
 import { OpchatComponent } from './opchat/opchat.component';
 import { OprequestComponent } from './oprequest/oprequest.component';
 
+
 const appRoutes: Routes = [
   { path: '', component: ApploginComponent, pathMatch: 'full'},
+  
   { path: 'request', component: RequestComponent, 
-  children:[
+    children:[
       { path: 'chatbox/:id/:id2/:id3/:id4', component: ChatComponent, outlet:'chatOutlet',canActivate: [AuthguardGuard]},
   ], canActivate: [AuthguardGuard]},
+  
   { path: 'operator', component: OprequestComponent, 
-  children:[
+    children:[
       { path: 'opchatbox/:id', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthguardGuard]},
   ], canActivate: [AuthguardGuard]},
 

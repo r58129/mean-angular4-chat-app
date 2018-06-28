@@ -72,18 +72,8 @@ Check mongoDB command
 - db.user.remove({})
 
 Execute on server side:
-- Node app.js
+npm start 
 
 Execute on client side:
-- Npm start
+ng serve -o --port 4080 --host 0.0.0.0 --ssl true --ssl-key ./routes/encryption/pk.pem --ssl-cert ./routes/encryption/cert2.pem --public airpoint.com.hk
 
-
-emit socket.on(users)oaTI4gATABINSILRAAAO
-admin (oaTI4gATABINSILRAAAO) is connected.
-Lu log userid is 85260261976
-85260261976 (jXOgu4-aul1CLO8oAAAP) is connected.
-85260261976 connected to admin
-jXOgu4-aul1CLO8oAAAP , oaTI4gATABINSILRAAAO
-chatting...
-85260261976 sending msg "########   Operator Request  ######## Customer last input:
-Human" to admin

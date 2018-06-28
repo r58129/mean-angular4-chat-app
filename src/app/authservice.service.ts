@@ -73,7 +73,7 @@ export class AuthserviceService {
       if (authResult && authResult.accessToken && authResult.idToken) {
        window.location.hash = '';
         this.setSession(authResult);
-        this.router.navigate(['']);
+        this.router.navigate(['request']);
         //TODO
         //login to tinker board and register admin
         //console.log(this.loginTinker());
