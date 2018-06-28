@@ -1,9 +1,9 @@
   <!-- Left side column. contains the logo and sidebar -->
-  <aside class="main-sidebar">
+  <aside class="main-sidebar" *ngIf="authService.isAuthenticated()">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
       <!-- Sidebar user panel -->
-      <div class="user-panel" *ngIf="authService.isAuthenticated()">
+      <div class="user-panel" >
         <div class="pull-left image">
           <img src="assets/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
         </div>

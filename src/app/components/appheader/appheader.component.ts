@@ -8,12 +8,17 @@ import { AuthserviceService } from '../../authservice.service';
 })
 export class AppheaderComponent implements OnInit {
 
+
+
   constructor(public authService: AuthserviceService) { }
 
   ngOnInit() {
+
+  		// console.log ("print isAuthenticated(): " +this.authService.isAuthenticated());
   }
 logout() {
     this.authService.logout();
  //   this.setMessage();
+ 	// console.log ("print isAuthenticated(): " +this.authService.isAuthenticated());
   }
 }
