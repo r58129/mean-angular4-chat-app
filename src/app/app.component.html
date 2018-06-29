@@ -4,12 +4,22 @@
 <!--<link rel="stylesheet" href="assets/dist/css/AdminLTE.min.css">-->
 </head>
 
-
+<!-- <body class="hold-transition skin-blue sidebar-mini" *ngIf="authService.isAuthenticated(); else loginPage">	
+ -->
 <app-appheader></app-appheader>
 <app-appmenu></app-appmenu>
 <router-outlet></router-outlet>
 <app-appfooter></app-appfooter>
 <app-appsettings></app-appsettings>
+<!-- </body> -->
+
+<!-- <ng-template #loginPage>
+
+<body class="hold-transition skin-blue fixed login-page ">
+<router-outlet></router-outlet>	
+</body>
+
+</ng-template> -->
 
 <!--<script src="assets/dist/js/adminlte.min.js"></script>-->
 
