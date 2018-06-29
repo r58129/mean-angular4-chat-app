@@ -48,14 +48,19 @@ app.use(function(req, res, next) {
 
 app.use('/chat', chat);
 
+//update this port for nodejs express addr
+global.expressIp = 'https://192.168.0.102';
+global.expressPort = 4060;
 
+global.expressAddr = expressIp +':'+expressPort+'/';
+console.log('Express Addr: ' +global.expressAddr);
 
 const strategy = new Auth0Strategy(
   {
     domain: 'aptcmai0.auth0.com',
     clientID: 'QHj13LadXiKO4qLoj7IQaJWv3Z0s3j5D',
     clientSecret: 'xxx',
-    callbackURL: 'https://192.168.0.102:4060/'
+    callbackURL: global.expressAddr
     // callbackURL: 'https://192.168.0.102:3089/'
   },
   (accessToken, refreshToken, extraParams, profile, done) => {

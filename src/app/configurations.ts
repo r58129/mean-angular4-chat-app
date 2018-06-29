@@ -7,6 +7,8 @@ export class Configs {
   expressAddr: string = 'https://airpoint.com.hk:4060';
   socketIoServerAddr: string = 'https://airpoint.com.hk:3637';
   tinkerboardAddr: string = 'https://airpoint.com.hk:8006';
-  // remember to update the express port number in bin/www
-  // update mongodb address and name and express port as needed in app.js
+  
+// update server express addr in app.js
+// global.expressIp = 'https://192.168.0.102';
+// global.expressPort = 4060;
 }
