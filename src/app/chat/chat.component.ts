@@ -3,8 +3,8 @@ import { ChatService } from '../chat.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
-// import { BSON } from 'bsonfy';
 import { Buffer } from 'buffer';
+import { Configs } from '../configurations';
 
 @Component({
   selector: 'app-chat',
@@ -34,15 +34,21 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   CusImgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', file_path:'', image: '' };
   CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // socket = io('http://localhost:4000');
-  socket = io('https://airpoint.com.hk:3637',{secure: true});
+  // socket = io('https://airpoint.com.hk:3637',{secure: true});
   //socket = io('https://192.168.0.102:3637',{secure: true});
-  
-  constructor(private chatService: ChatService, private route: ActivatedRoute) {
+  socket = io(this.configs.socketIoServerAddr,{secure: true});
+
+  constructor(private chatService: ChatService, private route: ActivatedRoute, private configs: Configs) {
     // console.log("inside chat constructor" +this.route.snapshot.params);
   }
 
   ngOnInit() {
 //      history.pushState({},"Edit","");
+
+    // console.log(this.configs.socketIoServerAddr); 
+    // console.log(this.configs.expressAddr); 
+    // console.log(this.configs.tinkerboardAddr); 
+
 
     this.route.params.subscribe(params =>{
       // console.log(params);

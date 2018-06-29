@@ -3,6 +3,7 @@ import { Http, Headers, ResponseContentType } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import 'rxjs/add/operator/map';
+import { Configs } from './configurations';
 
 // let httpOptions = {
 //   headers: new Headers({
@@ -18,10 +19,12 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class ChatService {
 
-  constructor(private http : Http) { }
+  constructor(private http : Http, private configs: Configs) { }
 
   // private serverUrl = 'https://airpoint.com.hk:3088';
-  private serverUrl = 'https://airpoint.com.hk:4060';
+  // private serverUrl = 'https://airpoint.com.hk:4060';
+  private serverUrl = this.configs.expressAddr;
+  private tinkerUrl = this.configs.tinkerboardAddr;
 
   // private dataSubject: BehaviorSubject<YourDataModel[]> = new BehaviorSubject([]);
   // private dataSubject: BehaviorSubject<any> = new BehaviorSubject<any>({});
@@ -365,7 +368,7 @@ export class ChatService {
       console.log("formdata.imagefilename: " +formdata.imagefilename);
 
       // this.http.post('https://192.168.0.157:8011/api/csp/postimage', formdata, httpOptions )
-     this.http.post('https://airpoint.com.hk:8006/api/csp/postimage', formdata )
+     this.http.post(this.tinkerUrl +'/api/csp/postimage', formdata )
          // .map(res => res.json())
          .subscribe(res => {
            resolve(res);
@@ -383,7 +386,7 @@ export class ChatService {
       console.log("path: " +path);
 
       // path = sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
-     this.http.get('https://airpoint.com.hk:8006/api/csp/getimage?'+path,{responseType: ResponseContentType.Blob} )
+     this.http.get(this.tinkerUrl +'/api/csp/getimage?'+path,{responseType: ResponseContentType.Blob} )
          .map(res => res.blob())
          .subscribe(res => {
            resolve(res);

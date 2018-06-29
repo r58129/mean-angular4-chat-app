@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
 import { Buffer } from 'buffer';
+import { Configs } from '../configurations';
 
 @Component({
   selector: 'app-opchat',
@@ -34,10 +35,11 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   CusImgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', file_path:'', image: '' };  
   CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   
-  socket = io('https://airpoint.com.hk:3637',{secure: true});
+  // socket = io('https://airpoint.com.hk:3637',{secure: true});
   //socket = io('https://192.168.0.102:3637',{secure: true});
+  socket = io(this.configs.socketIoServerAddr,{secure: true});
   
-  constructor(private chatService: ChatService, private route: ActivatedRoute) {
+  constructor(private chatService: ChatService, private route: ActivatedRoute, private configs: Configs) {
     
   }
 
