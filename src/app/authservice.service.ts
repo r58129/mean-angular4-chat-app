@@ -57,37 +57,114 @@ export class AuthserviceService {
     audience: 'https://aptcmai0.auth0.com/userinfo',
     redirectUri: 'https://airpoint.com.hk:3089',
     //redirectUri: 'https://airpoint.com.hk:4080',
-    scope: 'openid'
+    scope: 'openid profile email'
   });
 
 //  redirectUrl: string;
     
   constructor(public router: Router, public http: HttpClient) {}
 
+  public userProfile: any;
+    public profileLu:object;
+    
   public login(): void {
+      
+      
+      
     this.auth0.authorize();
+      //this.auth0.handleAuthentication();
+      // Parse the URL and extract the Access Token
+//  this.auth0.parseHash(window.location.hash, function(err, authResult) {
+//    if (err) {
+//      return console.log(err);
+//    }
+//    this.auth0.client.userInfo(authResult.accessToken, function(err, user) {
+//        // This method will make a request to the /userinfo endpoint
+//        // and return the user object, which contains the user's information,
+//        // similar to the response below.
+//        
+//        this.userProfile=user;
+//    });
+ // });
+//});
   }
 
+    
+    
+   // tPort:any;
+     //namespace:any;
+    //atoken:any;
+//...
+public getProfile(cb): void {
+    
+    
+    
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    //if (!this.atoken) {
+    return;
+    //throw new Error('Access Token must exist to fetch profile');
+  }
+
+  const self = this;
+  this.auth0.client.userInfo(accessToken, (err, profile) => {
+    if (profile) {
+      self.userProfile = profile;
+    }
+    cb(err, profile);
+  });
+}
+    
+
+    
     public handleAuthentication(): void {
     this.auth0.parseHash((err, authResult) => {
+        
+       //this.router.navigate(['']);
+       //this.router.navigate(['']);
+        
       if (authResult && authResult.accessToken && authResult.idToken) {
        window.location.hash = '';
+//        
+//        
+//        
+//            this.auth0.client.userInfo(authResult.accessToken, function(err, user) {
+//        // This method will make a request to the /userinfo endpoint
+//        // and return the user object, which contains the user's information,
+//        // similar to the response below.
+//        if (this.auth0.alreadyExists(this.profileLu.sub)){
+//        
+//        
+//        if (user!=undefined){
+//        
+//        this.profileLu=user;
+//            }
+//        }
+//
+//    });
         this.setSession(authResult);
-        this.router.navigate(['request']);
         //TODO
         //login to tinker board and register admin
         //console.log(this.loginTinker());
-        this.loginTinker();
+//        this.delay(10000);
         
+        //this.router.navigate(['request']);
+//        this.loginTinker();
+        
+        this.router.navigate(['']);
+          //return this.profileLu;
+          
       } else if (err) {
         this.router.navigate(['']);
         console.log(err);
       }
     });
   }
-
+  
   private tinkerUrl = 'https://airpoint.com.hk:8007/api/user/login';
   private tinkerUrlOut = 'https://airpoint.com.hk:8007/api/user/logout';
+  
+  
 
   //public sID ='111' ;
   
@@ -134,9 +211,28 @@ export class AuthserviceService {
   });
       localStorage.removeItem('res.data.sessionID');
   }
-  
-  private loginTinker() {
+  tPort='0';
+pp:any;
+
+private async delay(ms: number) {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("fired"));
+}
+
+  public loginTinker() {
       
+//          if (this.authService.userProfile) {
+//      this.profile = this.authService.userProfile;
+//     } else {
+//      this.authService.getProfile((err, profile) => {
+//        this.profile = profile;
+//      });
+//    }
+      
+      
+
+//      
+    //this.tPort=this.pp.nickname;
+                      
  //     console.log('~~~ now will login and reg Tinker board!!! ~~~');
       //this.tinkerUrl
       this.http.post (this.tinkerUrl, {
@@ -156,6 +252,7 @@ export class AuthserviceService {
             
             sID=localStorage.getItem('res.data.sessionID');
            console.log('localStorage sID is ' + sID); 
+            console.log('tPort is ' + this.tPort); 
             //return sID;
             //'https://192.168.0.156:8011/api/csp/register?action=register&sessionID='+sID
             //'https://httpbin.org/post?sessionID='
@@ -183,6 +280,17 @@ export class AuthserviceService {
     localStorage.setItem('access_token', authResult.accessToken);
     localStorage.setItem('id_token', authResult.idToken);
     localStorage.setItem('expires_at', expiresAt);
+//      this.atoken=authResult.accessToken;
+      
+//                if (this.userProfile) {
+//      this.pp = this.userProfile;
+//     }else{
+//      this.getProfile((err, profilex) => {
+//        this.pp = profilex;
+//      });
+//     }
+
+//      localStorage.setItem('test1', this.pp.nickname);
   }
 
   public logout(): void {
