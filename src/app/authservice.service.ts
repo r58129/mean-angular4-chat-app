@@ -36,6 +36,7 @@ import { HttpClient } from '@angular/common/http';
 import { BrowserModule }    from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import 'rxjs/add/observable/throw';
+import { Configs } from './configurations';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -56,13 +57,13 @@ export class AuthserviceService {
     responseType: 'token id_token',
     audience: 'https://aptcmai0.auth0.com/userinfo',
     redirectUri: 'https://airpoint.com.hk:3089',
-    //redirectUri: 'https://airpoint.com.hk:4080',
+    redirectUri: this.configs.angularAddr,
     scope: 'openid profile email'
   });
 
 //  redirectUrl: string;
     
-  constructor(public router: Router, public http: HttpClient) {}
+  constructor(public router: Router, public http: HttpClient, private configs: Configs) {}
 
   public userProfile: any;
     public profileLu:object;
@@ -143,6 +144,7 @@ public getProfile(cb): void {
 //
 //    });
         this.setSession(authResult);
+        this.router.navigate(['request']);
         //TODO
         //login to tinker board and register admin
         //console.log(this.loginTinker());
@@ -161,8 +163,8 @@ public getProfile(cb): void {
     });
   }
   
-  private tinkerUrl = 'https://airpoint.com.hk:8007/api/user/login';
-  private tinkerUrlOut = 'https://airpoint.com.hk:8007/api/user/logout';
+  private tinkerUrl = this.configs.tinkerboardAddr +'/api/user/login';
+  private tinkerUrlOut = this.configs.tinkerboardAddr +'/api/user/logout';
   
   
 
@@ -180,7 +182,7 @@ public getProfile(cb): void {
       var sID2 = '222';
       sID2=localStorage.getItem('res.data.sessionID');
       
-      this.http.post ('https://airpoint.com.hk:8007/api/csp/unregister?action=unregister&sessionID='+sID2, 
+      this.http.post (this.configs.tinkerboardAddr+'/api/csp/unregister?action=unregister&sessionID='+sID2, 
     {}, httpOptions)
     .pipe(
       catchError(this.handleErrorObservable)
@@ -256,7 +258,7 @@ private async delay(ms: number) {
             //return sID;
             //'https://192.168.0.156:8011/api/csp/register?action=register&sessionID='+sID
             //'https://httpbin.org/post?sessionID='
-            this.http.post ('https://airpoint.com.hk:8007/api/csp/register?action=register&sessionID='+sID, 
+            this.http.post (this.configs.tinkerboardAddr+'/api/csp/register?action=register&sessionID='+sID, 
       //action: 'register',
       {}
     , httpOptions)

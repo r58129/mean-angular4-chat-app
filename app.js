@@ -10,9 +10,16 @@ const Auth0Strategy = require('passport-auth0');
 
 mongoose.Promise = global.Promise;
 
+//update this port for nodejs express addr
+global.expressIp = 'https://192.168.0.102';
+global.expressPort = 4060;
+
+global.dbIp = 'mongodb://192.168.0.102/';
+global.dbName = 'chatService';
+
 // mongoose.connect('mongodb://localhost/chatService')
 mongoose.connect('mongodb://192.168.0.102/luChatService')
-// mongoose.connect('mongodb://192.168.0.102/chatService')
+mongoose.connect(global.dbIp +global.dbName)
   .then(() =>  console.log('connection successful'))
   .catch((err) => console.error(err));
 
@@ -52,13 +59,15 @@ app.use(function(req, res, next) {
 app.use('/chat', chat);
 
 
+global.expressAddr = expressIp +':'+expressPort+'/';
+console.log('Express Addr: ' +global.expressAddr);
 
 const strategy = new Auth0Strategy(
   {
     domain: 'aptcmai0.auth0.com',
     clientID: 'QHj13LadXiKO4qLoj7IQaJWv3Z0s3j5D',
     clientSecret: 'xxx',
-    callbackURL: 'https://airpoint.com.hk:3089/'
+    callbackURL: global.expressAddr
     // callbackURL: 'https://192.168.0.102:3089/'
   },
   (accessToken, refreshToken, extraParams, profile, done) => {

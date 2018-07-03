@@ -6,6 +6,7 @@ import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval'
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
+import { Configs } from '../configurations';
 
 @Component({
   selector: 'app-oprequest',
@@ -33,9 +34,10 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
   // socket = io('http://localhost:4000');
   // socket = io('https://192.168.0.102:3637');
   // socket = io('https://192.168.0.102:3637',{secure: true});
-  socket = io('https://airpoint.com.hk:3087',{secure: true});
+  // socket = io('https://airpoint.com.hk:3637',{secure: true});
+  socket = io(this.configs.socketIoServerAddr,{secure: true});
   
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService, private configs: Configs) {}
 
   ngOnInit() {
 

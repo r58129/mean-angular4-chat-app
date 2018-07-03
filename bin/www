@@ -24,7 +24,7 @@ cert: cert
 
 
 // var port = normalizePort(process.env.PORT || '3088');
-var port = normalizePort(process.env.PORT || '3088');
+var port = normalizePort(process.env.PORT || global.expressPort);
 app.set('port', port);
 
 /**
