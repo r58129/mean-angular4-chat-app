@@ -59,8 +59,8 @@ Client side
 
 
 
-Make sure mongoDB is running
-- mongod
+Make sure mongoDB is running with auth enabled and admin user set up
+- mongod --auth --port 27017 --dbpath /data/db1
 
 Check mongoDB command
 - mongo
