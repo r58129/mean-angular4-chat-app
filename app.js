@@ -4,9 +4,17 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+// var cookieParser = require('cookie-parser');
+// var cors = require('cors');
 // var fs = require('fs');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
+
+// Bring in the data model
+// require('./api/models/db');
+
+// Bring in the Passport config after model is defined
+// require('./api/config/passport');
 
 mongoose.Promise = global.Promise;
 
