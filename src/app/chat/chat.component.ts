@@ -118,9 +118,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       var sID=localStorage.getItem('res.data.sessionID');
       var fileType = ((filePath).split(".")[1]);
       var path = 'sessionID='+sID +'&path='+filePath;
-      var completePath = 'https://airpoint.com.hk:8006/api/csp/getimage?'+path;  //save complete path to db
-
-
+      var completePath = 'https://airpoint.com.hk:'+sessionStorage.getItem("tinkerport")+'/api/csp/getimage?'+path;  //save complete path to db
+   
       console.log("sID: " + sID);
       console.log("tinkerPath: " + filePath);
       console.log("complete path: " + completePath);

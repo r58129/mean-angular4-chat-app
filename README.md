@@ -124,6 +124,7 @@ Check mongoDB command
 - Db.collectionName.find().pretty()
 - db.collection.drop()
 - db.user.remove({})
+db.chats.remove({})
 
 Execute on server side:
 npm start 
