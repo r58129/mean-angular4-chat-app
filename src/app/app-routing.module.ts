@@ -13,6 +13,7 @@ import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AdminComponent } from './admin/admin.component';
 import { OperatorComponent } from './operator/operator.component';
 import { RequestComponent } from './request/request.component';
+//import { ServiceComponent } from './service/service.component';
 import { AuthguardGuard } from './authguard.guard';
 import { AuthserviceService } from './authservice.service';
 // import { HistoryComponent } from './history/history.component';
@@ -25,12 +26,12 @@ const appRoutes: Routes = [
   
   { path: 'request', component: RequestComponent, 
     children:[
-      { path: 'chatbox/:id/:id2/:id3/:id4', component: ChatComponent, outlet:'chatOutlet'},
+      { path: 'chatbox/:id/:id2/:id3/:id4', component: ChatComponent, outlet:'chatOutlet',canActivate: [AuthguardGuard]},
   ], canActivate: [AuthguardGuard]},
   
   { path: 'operator', component: OprequestComponent, 
     children:[
-      { path: 'opchatbox/:id', component: OpchatComponent, outlet:'opchatOutlet'},
+      { path: 'opchatbox/:id', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthguardGuard]},
   ], canActivate: [AuthguardGuard]},
 
   // { path: 'opchat', component: OpchatComponent, canActivate: [AuthguardGuard] },

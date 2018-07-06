@@ -36,7 +36,7 @@ var userSocketIDOperatorChannel  = {};
 var operatorSocketIDOperatorChannel = {};
 var usernameOperatorChannel = {};
 
-var port=3637;
+var port=3087;
 server.listen(port);
 console.log('Socket.io is listening on port:' + port);
 
@@ -60,7 +60,7 @@ io.on('connection', function (socket) {
   // ack from client to server
   socket.on('KeepAliveMessage', (name, fn) => {
     if (operatorSessionUserConnected){
-      // console.log('Send Ack');
+//      console.log('Send Ack');
       fn('ACK');
     }
   });
