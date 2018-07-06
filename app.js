@@ -13,6 +13,7 @@ mongoose.Promise = global.Promise;
 //update this port for nodejs express addr
 global.expressIp = 'https://192.168.0.102';
 global.expressPort = 3088;
+global.socketIoPort = 3087;
 
 global.dbIp = 'mongodb://192.168.0.102/';
 global.dbName = 'luChatService';
