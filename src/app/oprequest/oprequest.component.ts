@@ -35,7 +35,7 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
   // socket = io('https://192.168.0.102:3637');
   // socket = io('https://192.168.0.102:3637',{secure: true});
   // socket = io('https://airpoint.com.hk:3637',{secure: true});
-  socket = io(this.configs.socketIoServerAddr,{secure: true});
+  socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
   
   constructor(private chatService: ChatService, private configs: Configs) {}
 

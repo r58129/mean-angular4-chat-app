@@ -7,13 +7,28 @@ import 'rxjs/add/observable/interval'
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
 import { Configs } from '../configurations';
+import { AuthserviceService } from '../authservice.service';
+import { HttpClient } from '@angular/common/http';
+import { catchError, retry } from 'rxjs/operators';
+import { HttpHeaders } from '@angular/common/http';
+import 'rxjs/add/observable/throw';
+import { Observable } from 'rxjs/Observable';
 
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type':  'application/json'
+    //  'Content-Type':'application/x-www-form-urlencoded'
+    //'Authorization': 'my-auth-token'
+  })
+};
 
 @Component({
   selector: 'app-request',
   templateUrl: './request.component.html',
   styleUrls: ['./request.component.css']
 })
+
 
 export class RequestComponent implements OnInit, AfterViewChecked {
 
@@ -36,9 +51,9 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   // socket = io('https://192.168.0.102:3637');
   // socket = io('https://192.168.0.102:3637',{secure: true});
   // socket = io('https://airpoint.com.hk:3637',{secure: true});
-  socket = io(this.configs.socketIoServerAddr,{secure: true});
+  socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
   
-  constructor(private chatService: ChatService, private configs: Configs) {}
+  constructor(public http: HttpClient, private authService: AuthserviceService, private chatService: ChatService, private configs: Configs) {}
 
   ngOnInit() {
     // var user = JSON.parse(localStorage.getItem("user"));
@@ -46,7 +61,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 
     this.getHumanRequest();
     this.scrollTableToBottom();
-
+      
     this.socket.emit('user','admin');
 
     // this.socket.on('users', function(data){
@@ -86,6 +101,31 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 
   });
 
+//      var tPort:string ;
+//      var sID :string;
+//      tPort =sessionStorage.getItem("tinkerport");
+//      sID =localStorage.getItem('res.data.sessionID');
+      
+//      console.log("tinkerport got is "+tPort);
+//      console.log("res.data.sessionID got is "+sID);
+      
+      this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
+      //action: 'register',
+      {}
+    , httpOptions)
+            .pipe(
+      catchError(this.handleErrorObservable)
+    ).subscribe(
+        res => {
+//            console.log(sID2);
+//          console.log(res);
+  
+    
+    // this.refreshData();
+    this.getHumanRequest();
+            
+        });
+      
 // data refresh
   // this.refreshData();
   
@@ -93,7 +133,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   //   clearInterval(this.interval);
   // }
     
-  this.timer = setInterval(() => {
+this.timer = setInterval(() => {
     // this.refreshData();
     this.getHumanRequest();
     console.log("refresh requests");
@@ -109,14 +149,46 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 
   ngOnDestroy(){
         
+      var tPort:string ;
+      var sID :string;
+      tPort =sessionStorage.getItem("tinkerport");
+      sID =localStorage.getItem('res.data.sessionID');
+      
+      console.log("tinkerport got is "+tPort);
+      console.log("res.data.sessionID got is "+sID);
+        //socket.emit('forceDisconnect');
+      
+      if (tPort!=null){
+      this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
+    {}, httpOptions)
+    .pipe(
+      catchError(this.handleErrorObservable)
+    ).subscribe(
+        res => {
+                
     this.unsubscribe.next();
     this.unsubscribe.complete();
-        //socket.emit('forceDisconnect');
-    this.socket.disconnect();
-    if (this.timer){
-      clearInterval(this.timer);
-      console.log('stop admin request refresh');
-    }
+//            console.log(sID2);
+//          console.log(res);
+            this.socket.disconnect();
+                if (this.timer){
+                    clearInterval(this.timer);
+                    console.log('stop admin request refresh');
+                    }
+      //return true;
+        });
+          
+    } //end if tPort !=null
+    else  {
+            this.unsubscribe.next();
+            this.unsubscribe.complete();
+            this.socket.disconnect();
+                if (this.timer){
+                    clearInterval(this.timer);
+                    console.log('stop admin request refresh');
+                }
+            }
+
   }
 
   // refreshData(){
@@ -147,6 +219,13 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   //   } catch(err) { }
   // }
 
+    
+      private handleErrorObservable (error: Response | any) {
+	//console.error(error.message || error);
+	//return Observable.throw(error.message || error);
+          return "0";
+    }
+    
   scrollTableToBottom(): void {
     try {
       this.myScrollTableContainer.nativeElement.scrollTop = this.myScrollTableContainer.nativeElement.scrollHeight;
@@ -166,7 +245,8 @@ export class RequestComponent implements OnInit, AfterViewChecked {
     this.chatService.getHumanRequest(customer_service).then((res) => {  //from chatService, 
       this.requests = res;
     }, (err) => {
-        this.authService.logout();
+        //this.authService.logout(this.authService.userProfile[this.configs.angularAddr+"/tinkerport"]);
+        this.authService.logout(sessionStorage.getItem("tinkerport"));
       console.log(err);
     });
   }

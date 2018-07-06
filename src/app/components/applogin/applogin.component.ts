@@ -17,6 +17,7 @@
 import { Component }   from '@angular/core';
 import { Router }      from '@angular/router';
 import { AuthserviceService } from '../../authservice.service';
+import { Configs } from '../../configurations';
 
 @Component({
     selector: 'app-applogin',
@@ -34,7 +35,7 @@ export class ApploginComponent {
   message: string;
 
     
-  constructor(public authService: AuthserviceService, public router: Router) {
+  constructor(public authService: AuthserviceService, public router: Router, private configs: Configs) {
       authService.handleAuthentication();
       
       
@@ -53,9 +54,15 @@ export class ApploginComponent {
     
     profile1: any;
     
-    static loginTinkerDone="0";
+    //static loginTinkerDone="0";
     
     ngOnInit() {
+        
+        if (!sessionStorage.getItem('loginTinkerDone'))
+            {
+                sessionStorage.setItem('loginTinkerDone', "0");
+                //localStorage.setItem('gotProfileDone', "0");
+            }
 //    if (this.authService.userProfile) {
 //      this.profile1 = this.authService.userProfile;
 //     } else {
@@ -64,25 +71,47 @@ export class ApploginComponent {
 //      });
 //    }
   }
-    ngAfterContentChecked(){
-    if (this.authService.userProfile) {
-      this.profile1 = this.authService.userProfile;
-        console.log("got profile1 from auth service!!!");
-     } else {
-      this.authService.getProfile((err, profiley) => {
-        this.profile1 = profiley;
-          console.log("got profile1 from getProfile call!!!");
-      });
+    ngDoCheck(){
+        
+        if (this.authService.isAuthenticated()){
+            
+    //if ((!this.profile1)){
+       if (this.authService.userProfile) {
+           
+           if ((!this.profile1)){
+            this.profile1 = this.authService.userProfile;
+            //localStorage.setItem('gotProfileDone', "1");
+            console.log("got profile1 from auth service!!!");
+           }
+           
+        } 
+        else {
+            
+            this.authService.getProfile((err, profiley) => {
+            if (err==null){
+                this.profile1 = profiley;}else{
+            //localStorage.setItem('gotProfileDone', "1");
+            //console.log("got profile1 from getProfile call!!!");
+            console.log("got profile1 err which is "+err+" !!!");}
+            });
+        }
+   //         }
+    
     }
   }
     
     ngAfterViewChecked(){
+        if (this.authService.isAuthenticated()){
+        if (this.profile1&&(sessionStorage.getItem('loginTinkerDone')=="0")){
+        //console.log("nickname is  "+this.profile1.nickname+"  by Lu");
+            //if (localStorage.getItem('loginTinkerDone')=="0"){
+        this.authService.loginTinker(this.profile1[this.configs.angularAddr+"/tinkerport"]);
+//                {
+                    sessionStorage.setItem('loginTinkerDone', "1");
+//                 //localStorage.setItem('loginTinkerDone',"1");
+//                }
+                //}
         
-        if (this.profile1.nickname){
-        console.log("nickname is  "+this.profile1.nickname+"  by Lu");
-            if (this.loginTinkerDone=="0"){
-        this.authService.loginTinker();
-                this.loginTinkerDone="1";
             }
         }
     }
@@ -117,8 +146,12 @@ export class ApploginComponent {
   }
 
   logout() {
- //     this.loginTinkerDone="0";
-    this.authService.logout();
+   //   localStorage.removeItem('loginTinkerDone');
+      //if (this.authService.logoutTinker(this.profile1[this.configs.angularAddr+"/tinkerport"])){
+    this.authService.logout(this.profile1[this.configs.angularAddr+"/tinkerport"]);
+      //}else{
+        //  console.log ("some problem here in tinker logout??");
+      //this.authService.logout();}
  //   this.setMessage();
   }
 }

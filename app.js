@@ -12,13 +12,13 @@ mongoose.Promise = global.Promise;
 
 //update this port for nodejs express addr
 global.expressIp = 'https://192.168.0.102';
-global.expressPort = 4060;
+global.expressPort = 3088;
 
 global.dbIp = 'mongodb://192.168.0.102/';
-global.dbName = 'chatService';
+global.dbName = 'luChatService';
 
 // mongoose.connect('mongodb://localhost/chatService')
-mongoose.connect('mongodb://192.168.0.102/luChatService')
+//mongoose.connect('mongodb://192.168.0.102/luChatService')
 mongoose.connect(global.dbIp +global.dbName)
   .then(() =>  console.log('connection successful'))
   .catch((err) => console.error(err));

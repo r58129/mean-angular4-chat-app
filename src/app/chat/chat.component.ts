@@ -36,7 +36,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   // socket = io('http://localhost:4000');
   // socket = io('https://airpoint.com.hk:3637',{secure: true});
   //socket = io('https://192.168.0.102:3637',{secure: true});
-  socket = io(this.configs.socketIoServerAddr,{secure: true});
+  socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
 
   constructor(private chatService: ChatService, private route: ActivatedRoute, private configs: Configs) {
     // console.log("inside chat constructor" +this.route.snapshot.params);

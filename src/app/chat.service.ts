@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import 'rxjs/add/operator/map';
 import { Configs } from './configurations';
+import { AuthserviceService } from './authservice.service'
 
 // let httpOptions = {
 //   headers: new Headers({
@@ -19,12 +20,22 @@ import { Configs } from './configurations';
 @Injectable()
 export class ChatService {
 
-  constructor(private http : Http, private configs: Configs) { }
+  constructor(private http : Http, private configs: Configs,private authService: AuthserviceService) { }
 
-  private serverUrl = 'https://airpoint.com.hk:3088';
+  //private serverUrl = 'https://airpoint.com.hk:3088';
   // private serverUrl = 'https://airpoint.com.hk:4060';
+    //sessionStorage.setItem("expressport",self.userProfile[this.configs.angularAddr+"/expressport"]);
   private serverUrl = this.configs.expressAddr;
+    
   private tinkerUrl = this.configs.tinkerboardAddr;
+    
+    updateUrl(){
+        this.serverUrl = "https://airpoint.com.hk"+":"+sessionStorage.getItem("expressport");
+        this.tinkerUrl = "https://airpoint.com.hk"+":"+sessionStorage.getItem("tinkerport");
+    }
+    
+    //sessionStorage.setItem("serverUrl",serverUrl);
+   // sessionStorage.setItem("tinkerUrl",tinkerUrl);
 
   // private dataSubject: BehaviorSubject<YourDataModel[]> = new BehaviorSubject([]);
   // private dataSubject: BehaviorSubject<any> = new BehaviorSubject<any>({});
@@ -135,9 +146,13 @@ export class ChatService {
     });
   }
 
+    
+    
+    
  // get customer request except opeartor and robot
   getHumanRequest(human) {
     return new Promise((resolve, reject) => {
+      this.updateUrl();
       this.http.get(this.serverUrl+'/chat/request/human' )
         .map(res => res.json())
         .subscribe(res => {
@@ -151,6 +166,7 @@ export class ChatService {
   // get operator Request
   getOperatorRequest(){
     return new Promise((resolve, reject) => {
+        this.updateUrl();
       this.http.get(this.serverUrl+'/chat/request/operator' )
         .map(res => res.json())
         .subscribe(res => {

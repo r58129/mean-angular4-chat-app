@@ -56,7 +56,7 @@ export class AuthserviceService {
     domain: 'aptcmai0.auth0.com',
     responseType: 'token id_token',
     audience: 'https://aptcmai0.auth0.com/userinfo',
-    redirectUri: 'https://airpoint.com.hk:3089',
+//    redirectUri: 'https://airpoint.com.hk:3089',
     redirectUri: this.configs.angularAddr,
     scope: 'openid profile email'
   });
@@ -73,6 +73,7 @@ export class AuthserviceService {
       
       
     this.auth0.authorize();
+      
       //this.auth0.handleAuthentication();
       // Parse the URL and extract the Access Token
 //  this.auth0.parseHash(window.location.hash, function(err, authResult) {
@@ -103,14 +104,25 @@ public getProfile(cb): void {
   const accessToken = localStorage.getItem('access_token');
   if (!accessToken) {
     //if (!this.atoken) {
+    console.log("Can't get access_token!!");
     return;
     //throw new Error('Access Token must exist to fetch profile');
   }
 
   const self = this;
   this.auth0.client.userInfo(accessToken, (err, profile) => {
-    if (profile) {
+    if (err==null) {
       self.userProfile = profile;
+        
+        console.log("set auth serv's profile!");
+        
+        //this.configs.tinkerboardAddr = 'https://airpoint.com.hk'+":"+self.userProfile[this.configs.angularAddr+"/tinkerport"];
+        sessionStorage.setItem("tinkerport",self.userProfile[this.configs.angularAddr+"/tinkerport"]);
+        //this.configs.socketIoServerAddr = 'https://airpoint.com.hk'+":"+self.userProfile[this.configs.angularAddr+"/socketioport"];
+        sessionStorage.setItem("socketioport",self.userProfile[this.configs.angularAddr+"/socketioport"]);
+        //this.configs.expressAddr = 'https://airpoint.com.hk'+":"+self.userProfile[this.configs.angularAddr+"/expressport"];
+        sessionStorage.setItem("expressport",self.userProfile[this.configs.angularAddr+"/expressport"]);
+        
     }
     cb(err, profile);
   });
@@ -144,7 +156,16 @@ public getProfile(cb): void {
 //
 //    });
         this.setSession(authResult);
-        this.router.navigate(['request']);
+                
+        if (sessionStorage.getItem('loginTinkerDone')=="0")
+        {
+            this.router.navigate(['']);
+        }
+        else
+        {
+            this.router.navigate(['request']);
+        }
+
         //TODO
         //login to tinker board and register admin
         //console.log(this.loginTinker());
@@ -153,7 +174,7 @@ public getProfile(cb): void {
         //this.router.navigate(['request']);
 //        this.loginTinker();
         
-        this.router.navigate(['']);
+//        this.router.navigate(['']);
           //return this.profileLu;
           
       } else if (err) {
@@ -163,8 +184,10 @@ public getProfile(cb): void {
     });
   }
   
-  private tinkerUrl = this.configs.tinkerboardAddr +'/api/user/login';
-  private tinkerUrlOut = this.configs.tinkerboardAddr +'/api/user/logout';
+  //private tinkerUrl = this.configs.tinkerboardAddr +'/api/user/login';
+  //'https://airpoint.com.hk:8007'
+  //private tinkerUrl = this.configs.tinkerboardAddr +'/api/user/login';
+  //private tinkerUrlOut = this.configs.tinkerboardAddr +'/api/user/logout';
   
   
 
@@ -175,20 +198,20 @@ public getProfile(cb): void {
 	return Observable.throw(error.message || error);
     }
 
-  private logoutTinker(){
+  public logoutTinker(port:string): boolean{
       
 //      console.log('~~~ now will unreg Tinker board!!! ~~~');
       
       var sID2 = '222';
       sID2=localStorage.getItem('res.data.sessionID');
       
-      this.http.post (this.configs.tinkerboardAddr+'/api/csp/unregister?action=unregister&sessionID='+sID2, 
-    {}, httpOptions)
-    .pipe(
-      catchError(this.handleErrorObservable)
-    )
-    .subscribe(
-        res => {
+//      this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/unregister?action=unregister&sessionID='+sID2, 
+//    {}, httpOptions)
+//    .pipe(
+//      catchError(this.handleErrorObservable)
+//    )
+//    .subscribe(
+//        res => {
  //           var sID = '111';
  //         console.log(res);
 //            console.log(res.data.sessionID);
@@ -198,7 +221,7 @@ public getProfile(cb): void {
             //'https://192.168.0.156:8011/api/csp/register?action=register'
             //'https://httpbin.org/post?sessionID='
             //this.tinkerUrlOut
-            this.http.post (this.tinkerUrlOut+'?sessionID='+sID2, 
+            this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/user/logout'+'?sessionID='+sID2, 
       //action: 'register',
       {}
       , httpOptions)
@@ -209,9 +232,21 @@ public getProfile(cb): void {
         res => {
 //            console.log(sID2);
 //          console.log(res);
+//            localStorage.setItem('res.data.sessionID','0');
+//      sessionStorage.setItem('loginTinkerDone','0');
+//      localStorage.removeItem('res.data.sessionID');
+//      sessionStorage.removeItem('loginTinkerDone');
+      
+      return true;
         });
-  });
-      localStorage.removeItem('res.data.sessionID');
+  //});
+      //localStorage.setItem('res.data.sessionID','0');
+      sessionStorage.setItem('loginTinkerDone','0');
+      //localStorage.removeItem('res.data.sessionID');
+      sessionStorage.removeItem('loginTinkerDone');
+      
+      return true;
+      
   }
   tPort='0';
 pp:any;
@@ -220,7 +255,7 @@ private async delay(ms: number) {
     await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("fired"));
 }
 
-  public loginTinker() {
+  public loginTinker(port:string) :boolean{
       
 //          if (this.authService.userProfile) {
 //      this.profile = this.authService.userProfile;
@@ -237,7 +272,7 @@ private async delay(ms: number) {
                       
  //     console.log('~~~ now will login and reg Tinker board!!! ~~~');
       //this.tinkerUrl
-      this.http.post (this.tinkerUrl, {
+      this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/user/login', {
       userID: 'admin',
       Password: 'admin'
     }, httpOptions)
@@ -246,32 +281,37 @@ private async delay(ms: number) {
     )
     .subscribe(
         res => {
-            var sID = '111';
+//            var sID = '111';
 //          console.log(res);
 //            console.log(res.data.sessionID);
             //sID=res.data.sessionID;
             localStorage.setItem('res.data.sessionID', res.data.sessionID);  //Lu test storage
-            
-            sID=localStorage.getItem('res.data.sessionID');
-           console.log('localStorage sID is ' + sID); 
-            console.log('tPort is ' + this.tPort); 
+            //localStorage.setItem('loginTinkerDone', "1");
+            this.router.navigate(['request']);
+            return true;
+//            sID=localStorage.getItem('res.data.sessionID');
+//           console.log('localStorage sID is ' + sID); 
+//            console.log('tPort is ' + this.tPort); 
             //return sID;
             //'https://192.168.0.156:8011/api/csp/register?action=register&sessionID='+sID
             //'https://httpbin.org/post?sessionID='
-            this.http.post (this.configs.tinkerboardAddr+'/api/csp/register?action=register&sessionID='+sID, 
+//            this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/register?action=register&sessionID='+sID, 
       //action: 'register',
-      {}
-    , httpOptions)
-            .pipe(
-      catchError(this.handleErrorObservable)
-    )
-    .subscribe(
-        res => {
+//      {}
+//    , httpOptions)
+//            .pipe(
+//      catchError(this.handleErrorObservable)
+//    )
+//    .subscribe(
+//        res => {
+            
+//            this.router.navigate(['request']);
+//            return true;
 //          console.log(res);
         });
-  });
+  //});
    
-      
+      return true;
   }
               
           
@@ -295,22 +335,30 @@ private async delay(ms: number) {
 //      localStorage.setItem('test1', this.pp.nickname);
   }
 
-  public logout(): void {
+  public logout(port:string): void {
       
-      this.logoutTinker();
+          // Go back to the home route
+    this.router.navigate(['']);
+      this.logoutTinker(port);
     // Remove tokens and expiry time from localStorage
     localStorage.removeItem('access_token');
     localStorage.removeItem('id_token');
     localStorage.removeItem('expires_at');
-    // Go back to the home route
-    this.router.navigate(['']);
+      
+      localStorage.clear();
+      
+      sessionStorage.removeItem('expressport');
+      sessionStorage.removeItem('socketioport');
+      sessionStorage.removeItem('tinkerport');
+      sessionStorage.clear();
+
   }
 
   public isAuthenticated(): boolean {
     // Check whether the current time is past the
     // Access Token's expiry time
-    const expiresAt = JSON.parse(localStorage.getItem('expires_at') || '{}');
-    return new Date().getTime() < expiresAt;
+    const expiresAt = JSON.parse(localStorage.getItem('expires_at') || '{}');  
+    return new Date().getTime() < (expiresAt+604800); //expires in 7days
     //  return true;
   }
 }
