@@ -110,7 +110,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
     if (msg !== 'undefined'){
 
-      if (!message.includes('“·')){
+      if (!message.includes('\uD83D\uDCF7')){
     
       // this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:userid , message: msg };
       this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
@@ -135,7 +135,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
       var sID=localStorage.getItem('res.data.sessionID');
       var fileType = ((filePath).split(".")[1]);
       var path = 'sessionID='+sID +'&path='+filePath;
-      var completePath = 'https://airpoint.com.hk:8007/api/csp/getimage?'+path;  //save complete path to db
+      var completePath = 'https://airpoint.com.hk:8006/api/csp/getimage?'+path;  //save complete path to db
 
 
       console.log("sID: " + sID);
