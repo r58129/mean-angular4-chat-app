@@ -80,21 +80,37 @@ export class RequestComponent implements OnInit, AfterViewChecked {
    this.newRequest = {phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer service request', request_status:'New' };
    // this.newRequest = { room: this.newRequest.room, phone_number: this.newRequest.phone_number, socket_id: this.newRequest.socket_id, message: 'Join this room', updated_at:date };
    // this.newRequest = Object.assign({ room: userid, phone_number: userid, socket_id: socket_id, message: 'Join this room', updated_at:date }, this.newRequest);
-   	console.log(this.newRequest.room);
+   	// console.log(this.newRequest.room);
    	console.log(this.newRequest.phone_number);
    	console.log(this.newRequest.socket_id);
    	console.log(this.newRequest.message);
    	console.log(this.newRequest.request_status);
  	// console.log(this.newRequest.updated_at);
 
-       if (this.newRequest.socket_id!=undefined){
-	// this.chatService.saveRequest(this.newRequest).then( function(result)  {
-	this.chatService.saveRequest(this.newRequest).then((result) => {
-      this.socket.emit('save-message', result);
-	    }, (err) => {
-	      console.log(err);
-	    });
-       }
+  if (this.newRequest.socket_id!=undefined){
+    //check if this socket id exist
+    this.chatService.showRequestSocket(this.newRequest.socket_id).then((result) => {
+        if (result == 0){
+          console.log( result +" entry found" );
+          this.chatService.saveRequest(this.newRequest).then((result) => {
+            this.socket.emit('save-message', result);
+          }, (err) => {
+          console.log(err);
+          });
+        } else{
+          console.log("duplicated entry, will not update DB");
+        }
+
+      }, (err) => {
+        console.log(err);
+      });
+
+	  // this.chatService.saveRequest(this.newRequest).then((result) => {
+   //    this.socket.emit('save-message', result);
+	  //   }, (err) => {
+	  //     console.log(err);
+	  //   });
+  }
   
 
   	}	  //if 

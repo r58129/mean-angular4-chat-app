@@ -53,25 +53,25 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.route.params.subscribe(params =>{
       // console.log(params);
       this.newUser.room = params['id'];
-      console.log(this.newUser.room);     
+      // console.log(this.newUser.room);     
     });
 
     this.route.params.subscribe(params =>{
       // console.log(params);
       this.newUser.socket_id = params['id2'];
-      console.log(this.newUser.socket_id);     
+      // console.log(this.newUser.socket_id);     
     });
 
     this.route.params.subscribe(params =>{
       // console.log(params);
       this.newUser.db_id = params['id3'];
-      console.log(this.newUser.db_id);     
+      // console.log(this.newUser.db_id);     
     });
 
     this.route.params.subscribe(params =>{
       // console.log(params);
       this.newUser.request_status = params['id4'];
-      console.log(this.newUser.request_status);     
+      // console.log(this.newUser.request_status);     
     });
 
     var user = JSON.parse(localStorage.getItem("user"));
@@ -119,8 +119,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       var fileType = ((filePath).split(".")[1]);
       var path = 'sessionID='+sID +'&path='+filePath;
       var completePath = 'https://airpoint.com.hk:'+sessionStorage.getItem("tinkerport")+'/api/csp/getimage?'+path;  //save complete path to db
-
-
+   
       console.log("sID: " + sID);
       console.log("tinkerPath: " + filePath);
       console.log("complete path: " + completePath);

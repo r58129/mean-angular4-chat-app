@@ -361,12 +361,26 @@ router.get('/request/:id', function(req, res, next) {
 });
 
 /* GET SINGLE REQUEST BY socket ID */
-router.get('/requestsid/:socket_id', function(req, res, next) {
-  Chat.find({socket_id:req.params.socket_id}, function (err, chats) {
+// router.get('/requestsid/:socket_id', function(req, res, next) {
+//   Chat.find({socket_id:req.params.socket_id}, function (err, chats) {
+//     if (err) return next(err);
+//     res.json(chats);
+//   });
+// });
+
+router.get('/requestsid/:socket_id', function(req, res, next) { 
+  Chat.count({ $and: 
+    [ 
+      { socket_id: req.params.socket_id },      
+      // { request_status: { $exists: true } } 
+      { request_status: "New" } 
+    ]
+  }, function (err, chats) {
     if (err) return next(err);
     res.json(chats);
   });
 });
+
 
 /* SAVE REQUEST */
 router.post('/request', function(req, res, next) {

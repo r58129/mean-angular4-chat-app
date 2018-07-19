@@ -193,7 +193,7 @@ export class ChatService {
 
   showRequest(id) {
     return new Promise((resolve, reject) => {
-        this.http.get(this.serverUrl+'/chat/request' + id)
+        this.http.get(this.serverUrl+'/chat/request/' + id)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -205,7 +205,7 @@ export class ChatService {
 
    showRequestSocket(id) {
     return new Promise((resolve, reject) => {
-        this.http.get(this.serverUrl+'/chat/requestsid' + id)
+        this.http.get(this.serverUrl+'/chat/requestsid/' + id)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -229,7 +229,7 @@ export class ChatService {
 
   updateRequest(id, data) {
     return new Promise((resolve, reject) => {
-        this.http.put(this.serverUrl+'/chat/request'+id, data)
+        this.http.put(this.serverUrl+'/chat/request/'+id, data)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -267,7 +267,7 @@ export class ChatService {
 
   showUser(id) {
     return new Promise((resolve, reject) => {
-        this.http.get(this.serverUrl+'/chat/user' + id)
+        this.http.get(this.serverUrl+'/chat/user/' + id)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -292,7 +292,7 @@ export class ChatService {
 
   updateUser(id, data) {
     return new Promise((resolve, reject) => {
-        this.http.put(this.serverUrl+'/chat/user'+id, data)
+        this.http.put(this.serverUrl+'/chat/user/'+id, data)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -329,7 +329,7 @@ export class ChatService {
   //get image by room
   getImageByRoom(room) {    //here we use room as phone_number
     return new Promise((resolve, reject) => {
-      this.http.get(this.serverUrl+'/chat/image' + room)
+      this.http.get(this.serverUrl+'/chat/image/' + room)
         .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -342,7 +342,7 @@ export class ChatService {
 // Show signle image by ID
   showImage(id) {
     return new Promise((resolve, reject) => {
-        this.http.get(this.serverUrl+'/chat/image' + id)
+        this.http.get(this.serverUrl+'/chat/image/' + id)
           .map(res => res.json())
           .subscribe(res => {
             resolve(res)

@@ -59,8 +59,62 @@ Client side
 
 
 
-Make sure mongoDB is running
-- mongod
+Make sure mongoDB is running with auth enabled and admin user set up
+
+- use admin
+
+db.createUser(
+  {
+    user: "admin",
+    pwd: "abc123",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+  }
+)
+
+
+//Re-start the MongoDB instance with access control.
+mongod --auth --port 27017 --dbpath /data/db
+mongod --auth --port 27017 --dbpath /var/lib/mongodb
+mongod --port 27017 --dbpath /var/lib/mongodb
+
+//To authenticate during connection
+mongo --port 27017 -u "admin" -p "abc123" --authenticationDatabase "admin"
+
+//To authenticate after connected
+use admin
+db.auth("admin", "abc123" )
+
+//grant the role at first time
+db.grantRolesToUser("admin", [ { role: "read", db: "admin" } ])
+db.grantRolesToUser("owner", [ { role: "readWrite", db: "chatService" } ])
+
+
+// then admin can assign role to other users
+use chatService
+db.createUser(
+  {
+    user: "owner",
+    pwd: "xyz123",
+    roles: [ { role: "readWrite", db: "chatService" },
+             { role: "readWrite", db: "contactlist" } ]
+  }
+)
+
+
+privileges: [
+  { resource: { db: "products", collection: "inventory" }, actions: [ "find", "update", "insert" ] },
+  { resource: { db: "products", collection: "orders" },  actions: [ "find" ] }
+]
+
+
+// show users
+db.getUsers()
+
+//remove users
+db.dropUser("user")
+
+//change pw to SOh3TbYhxuLiW8ypJPxmt1oOfL
+db.changeUserPassword("reporting", "SOh3TbYhxuLiW8ypJPxmt1oOfL")
 
 Check mongoDB command
 - mongo
@@ -70,6 +124,7 @@ Check mongoDB command
 - Db.collectionName.find().pretty()
 - db.collection.drop()
 - db.user.remove({})
+db.chats.remove({})
 
 Execute on server side:
 npm start 
