@@ -225,7 +225,12 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnDestroy(){
-        
+    
+      //auto send goodbye in case CS switch page without pressing disconnect
+          //send goodbye message when logout()
+    // var goodbye = "goodbye";
+    // this.SendForm(goodbye);
+    //console.log("goodbye");
         //socket.emit('forceDisconnect');
     this.socket.disconnect();
     // if (this.timer){

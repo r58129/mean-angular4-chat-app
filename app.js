@@ -11,9 +11,9 @@ const Auth0Strategy = require('passport-auth0');
 mongoose.Promise = global.Promise;
 
 //update this port for nodejs express addr
-global.expressIp = 'https://192.168.0.102';
-global.expressPort = 3088;
-global.socketIoPort = 3087;
+global.expressIp = 'https://airpoint.com.hk';
+global.expressPort = 3202;
+global.socketIoPort = 3201;
 
 global.dbIp = 'mongodb://192.168.0.102/';
 global.dbName = 'luChatService';
