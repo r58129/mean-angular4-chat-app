@@ -205,13 +205,13 @@ public getProfile(cb): void {
       var sID2 = '222';
       sID2=localStorage.getItem('res.data.sessionID');
       
-//      this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/unregister?action=unregister&sessionID='+sID2, 
-//    {}, httpOptions)
-//    .pipe(
-//      catchError(this.handleErrorObservable)
-//    )
-//    .subscribe(
-//        res => {
+      this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/unregister?action=unregister&sessionID='+sID2, 
+    {}, httpOptions)
+    .pipe(
+      catchError(this.handleErrorObservable)
+    )
+    .subscribe(
+        res => {
  //           var sID = '111';
  //         console.log(res);
 //            console.log(res.data.sessionID);
@@ -239,7 +239,7 @@ public getProfile(cb): void {
       
       return true;
         });
-  //});
+  });
       //localStorage.setItem('res.data.sessionID','0');
       sessionStorage.setItem('loginTinkerDone','0');
       //localStorage.removeItem('res.data.sessionID');
@@ -318,10 +318,10 @@ private async delay(ms: number) {
   
   private setSession(authResult): void {
     // Set the time that the Access Token will expire at
-    const expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
+    const expiresAt = JSON.stringify(((authResult.expiresIn+1209600) * 1000) + new Date().getTime());//expires in +14days
     localStorage.setItem('access_token', authResult.accessToken);
     localStorage.setItem('id_token', authResult.idToken);
-    localStorage.setItem('expires_at', expiresAt);
+    localStorage.setItem('expires_at', expiresAt);   
 //      this.atoken=authResult.accessToken;
       
 //                if (this.userProfile) {
@@ -358,7 +358,7 @@ private async delay(ms: number) {
     // Check whether the current time is past the
     // Access Token's expiry time
     const expiresAt = JSON.parse(localStorage.getItem('expires_at') || '{}');  
-    return new Date().getTime() < (expiresAt+604800); //expires in 7days
+    return new Date().getTime() < (expiresAt); 
     //  return true;
   }
 }
