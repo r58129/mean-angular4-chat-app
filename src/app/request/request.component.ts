@@ -73,7 +73,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
       console.log("print userid:" +userid);
       console.log("print socket.id:" +socket_id);
   
-   if (userid !== 'admin'){
+  if (userid !== 'admin'){
   	 	console.log("print userid before saveChat: " +userid);
    		console.log("print socket_id before saveChat: " +socket_id);
    // use status field to classify the new and old request
@@ -87,9 +87,9 @@ export class RequestComponent implements OnInit, AfterViewChecked {
    	console.log(this.newRequest.request_status);
  	// console.log(this.newRequest.updated_at);
 
-  if (this.newRequest.socket_id!=undefined){
+    if (this.newRequest.socket_id!=undefined){
     //check if this socket id exist
-    this.chatService.showRequestSocket(this.newRequest.socket_id).then((result) => {
+      this.chatService.showRequestSocket(this.newRequest.socket_id).then((result) => {
         if (result == 0){
           console.log( result +" entry found" );
           this.chatService.saveRequest(this.newRequest).then((result) => {
@@ -104,16 +104,17 @@ export class RequestComponent implements OnInit, AfterViewChecked {
       }, (err) => {
         console.log(err);
       });
-
+      
+   //  setTimeout(()=> {
 	  // this.chatService.saveRequest(this.newRequest).then((result) => {
    //    this.socket.emit('save-message', result);
 	  //   }, (err) => {
 	  //     console.log(err);
 	  //   });
-  }
+   //  },2000);
   
-
-  	}	  //if 
+    }  // (this.newRequest.socket_id!=undefined)
+  }	  //if (userid !== 'admin')
 
   });
 
