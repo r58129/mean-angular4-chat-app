@@ -3,22 +3,11 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var app = express();
 
-// Auth
-// var jwt = require('express-jwt');
-// var auth = jwt({
-//   secret: 'MY_SECRET',
-//   userProperty: 'payload'
-// });
-
-var server = require('http').createServer(app);
+//var server = require('http').createServer(app);
 
 var fs = require('fs');
 var key = fs.readFileSync('routes/encryption/pk.pem');
 var cert = fs.readFileSync( 'routes/encryption/cert2.pem' );
-
-// Auth
-// var ctrlProfile = require('../api/controllers/profile');
-// var ctrlAuth = require('../api/controllers/authentication');
 
 var options = {
 key: key,
@@ -138,7 +127,8 @@ io.on('connection', function (socket) {
       adminSocketID.push(socket.id);
       // io.to(socket.id).emit('users',{users:userSocketIDAndUsername});  //orginal
       io.to(socket.id).emit('users', userid, socket.id); //Ben
-      console.log("emit socket.on(users)" +socket.id);
+      console.log("admin emit socket.on(users)" +socket.id);
+      console.dir("print array " +adminSocketID);
       // console.log("emit socket.on(users)" +{users:userSocketIDAndUsername});
     } else if (userid == 'operator') {
       console.log("emit socket.on(operator)" +socket.id);
@@ -161,8 +151,12 @@ io.on('connection', function (socket) {
           // orginal
           // io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername},socket.id);
           io.to(adminSocketID[i]).emit('users',userid,socket.id);
+          // io.to(socket.id).emit('users',userid,socket.id);
           // io.to(adminSocketID[i]).emit('logRequest',userid,socket.id);
-          // console.log("emit customer socket.on(users)" +socket.id);
+          console.log("emit customer socket.on(users)" +socket.id);
+          // console.log("emit userSocketID " +socket.id);
+          // console.log("emit username " +userid);
+
       }
     }
     socket.userid = userid;
@@ -192,10 +186,29 @@ io.on('connection', function (socket) {
 
   socket.on('disconnect', function(){
     if (socket.userid != null){
+
+      if (socket.userid == 'admin'){
+        // adminSocketID.pop();
+
+        var index = adminSocketID.indexOf(socket.id);
+        if (index > -1) {
+          adminSocketID.splice(index, 1);
+        }
+
+        console.dir("print array " +adminSocketID);
+        console.log("remove admin socket.on(users) from array" +socket.id);
+      }
+
+
       if (socket.userid != 'admin'){
-      //   userSocketIDAndUsername.pop(socket.userid + ' (' + socket.id + ')');
-      //   userSocketID.pop(socket.id);
-      //   username.pop(socket.userid);
+        // userSocketIDAndUsername.pop(socket.userid + ' (' + socket.id + ')');
+        // userSocketID.pop(socket.id);
+        // username.pop(socket.userid);
+
+        // console.log("remove userSocketID from array " +socket.id);
+        // console.log("remove username from array " +socket.userid);
+        
+
       // for(var i in adminSocketID){
       //   io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername});
       // }
@@ -217,17 +230,15 @@ io.on('connection', function (socket) {
         for(var i in adminSocketID){
           // io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername}); //no need it new UI
         }
-
         console.log( 'user ' + socket.userid + ' disconnected');
-
       }
 
       if (socket.userid == 'operatorSessionUser'){
         operatorSessionUserConnected = false;
         console.log( 'operatorSessionUser' + socket.userid + ' disconnected');
       }
-      
       io.to(utoa[socket.id]).emit('disconnect', socket.userid);
+      //io.to(utoa[socket.id]).emit('disconnect',socket.userid + " disconnected");
       console.log(socket.userid + ' disconnected');
 
     }
@@ -253,14 +264,6 @@ io.on('connection', function (socket) {
   });
 
 }); //io.on
-
-
-// Auth profile
-// router.get('/api/profile', auth, ctrlProfile.profileRead);
-
-// authentication
-// router.post('/api/register', ctrlAuth.register);
-// router.post('/api/login', ctrlAuth.login);
 
 
 /* GET ALL CHATS, THIS IS THE REAL ROOM */
@@ -343,21 +346,6 @@ router.get('/request/human', function(req, res, next) {
   })
 });
 
-/* GET NEW REQUESTS with phone# and socket id 192.168.0.102:4080/chat/requests/human*/ 
-// router.get('/newrequest/:number', function(req, res, next) { 
-//   Chat.find({ $and: 
-//     [ 
-//       { phone_number: {  $exists: true } }, 
-//       { socket_id: { $exists: true } }, 
-//       { nickname: { $exists: false } },
-//       { operator_request: { $exists: false } },
-//       { request_status: "New" } 
-//     ]
-//   }, function (err, chats) {
-//     if (err) return next(err);
-//     res.json(chats);
-//   }).count();
-// });
 
 /* GET ALL NEW REQUESTS COUNT */
 router.get('/newrequest/human', function(req, res, next) { 
@@ -368,6 +356,7 @@ router.get('/newrequest/human', function(req, res, next) {
     res.json(chats);
   });
 });
+
 
 /* GET ALL REQUESTS with phone# and socket id 192.168.0.102:4080/chat/requests/human*/ 
 router.get('/request/operator', function(req, res, next) { 
@@ -386,7 +375,7 @@ router.get('/request/operator', function(req, res, next) {
 
 // db.inventory.find( { $and: [ { price: { $ne: 1.99 } }, { price: { $exists: true } } ] } )
 
-/* GET ALL REQUESTS in same room 192.168.0.102:4080/chat/request/room1*/ 
+/* GET ALL REQUESTS in same room 192.168.0.102:4080/chat/roomhistory/phone#*/ 
 router.get('/roomhistory/:room', function(req, res, next) {
   Chat.find({ room: req.params.room }, function (err, chats) {
     // Chat.find({ $and:
@@ -394,9 +383,17 @@ router.get('/roomhistory/:room', function(req, res, next) {
       // { room: req.params.room }
       // { socket_id: { $exists: true } }, 
       // { nickname: {$exists:true, $ne:"robot" } }  //filter robot reply
+
+// router.get('/requestroom/:room', function(req, res, next) {
+//   // Chat.find({ room: req.params.room }, function (err, requests) {
+//     Chat.find({ $and:
+//     [
+//       { room: req.params.room },
+//       { socket_id: { $exists: true } }, 
+//       { nickname: {$exists:true, $ne:"robot" } }  //filter robot reply
     
-    // ]
-  // }, function (err, chats) {
+//     ]
+//   }, function (err, chats) {
     if (err) return next(err);
     res.json(chats);
   });
@@ -411,12 +408,33 @@ router.get('/request/:id', function(req, res, next) {
 });
 
 /* GET SINGLE REQUEST BY socket ID */
-router.get('/requestsid/:socket_id', function(req, res, next) {
-  Chat.find({socket_id:req.params.socket_id}, function (err, chats) {
+// router.get('/requestsid/:socket_id', function(req, res, next) {
+//   Chat.find({socket_id:req.params.socket_id}, function (err, chats) {
+//     if (err) return next(err);
+//     res.json(chats);
+//   });
+// });
+
+// router.get('/requestsid/:socket_id', function(req, res, next) {
+//   Chat.find({socket_id:req.params.socket_id}, function (err, chats) {
+//     if (err) return next(err);
+//     res.json(chats);
+//   });
+// });
+
+router.get('/requestsid/:socket_id', function(req, res, next) { 
+  Chat.count({ $and: 
+    [ 
+      { socket_id: req.params.socket_id },      
+      // { request_status: { $exists: true } } 
+      { request_status: "New" } 
+    ]
+  }, function (err, chats) {
     if (err) return next(err);
     res.json(chats);
   });
 });
+
 
 /* SAVE REQUEST */
 router.post('/request', function(req, res, next) {
