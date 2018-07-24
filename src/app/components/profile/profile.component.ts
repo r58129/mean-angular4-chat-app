@@ -16,7 +16,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {    
     this.auth.profile().subscribe(user => {
       this.details = user;
-      console.log('name: ' +user.name);
+      // console.log('name: ' +user.name);
       console.log('email: ' +user.email);
     }, (err) => {
       console.error(err);

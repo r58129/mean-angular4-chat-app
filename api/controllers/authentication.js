@@ -55,7 +55,6 @@ module.exports.login = function(req, res) {
     var token;
 
     console.log("logging in...");
-    var staff = new Staff();
 
     // If Passport throws/catches an error
     if (err) {
@@ -65,8 +64,9 @@ module.exports.login = function(req, res) {
 
     // If a user is found
     if(staff){
-      // console.log("before generateJwt");
-      token = staff.generateJwt();  
+      console.log("before generateJwt: " + staff);
+      token = staff.generateJwt();  //error
+      console.log("token: " + token);
       sendJSONresponse(res, 200, {
         "token" : token
       });

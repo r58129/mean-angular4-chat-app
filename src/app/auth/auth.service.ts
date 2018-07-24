@@ -73,9 +73,11 @@ private token: string;
       // base = this.http.post(`/api/${type}`, user);
       if (type === 'register') {
       base = this.http.post('https://airpoint.com.hk:4060/api/register', user);
+      console.log("register post base" );
       }
       if (type === 'login') {
       base = this.http.post('https://airpoint.com.hk:4060/api/login', user);
+      console.log("login post base" );
       }
       
     } else {
@@ -89,7 +91,7 @@ private token: string;
         console.log("before data.token" );
         if (data.token) {
           console.log("inside data.token" );
-          this.saveToken(data.token);
+          this.saveToken(data.token);          
         }
         return data;
       })
@@ -120,6 +122,8 @@ private token: string;
     this.token = '';
     window.localStorage.removeItem('mean-token');
     this.router.navigateByUrl('/');
+    console.log("layout user");
+
   }
 }
 

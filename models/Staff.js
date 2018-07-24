@@ -33,6 +33,7 @@ StaffSchema.methods.setPassword = function(password){
 };
 
 StaffSchema.methods.validPassword = function(password) {
+  // this.salt = crypto.randomBytes(16).toString('hex');
   var hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
   return this.hash === hash;
 };

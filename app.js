@@ -14,8 +14,6 @@ var passport = require('passport');
 
 var gracefulShutdown;
 
-
-
 // [Auth] Bring in the data model, db are defined in app.js
 // require('./api/models/db');
 
@@ -96,9 +94,10 @@ require('./models/Staff');
 // [Auth] Bring in the Passport config after model is defined
 require('./api/config/passport'); //require strategary after nodel definition
 
-
+// Bring in the routes for the API
 var chat = require('./routes/chat');
 var routesApi = require('./routes/index');    
+
 var app = express();
 
 
@@ -109,8 +108,6 @@ app.use(logger('dev', {
 }));
 app.use(bodyParser.json({limit: '16mb'}));
 app.use(bodyParser.urlencoded({limit: '16mb',extended:false}));
-
-
 app.use(cookieParser());
 app.use(cors());
 // app.get('/a', function (req, res) {
@@ -140,8 +137,8 @@ app.use(function(req, res, next) {
 // app.use('/chat', chat);
 
 
-global.expressAddr = expressIp +':'+expressPort+'/';
-console.log('Express Addr: ' +global.expressAddr);
+// global.expressAddr = expressIp +':'+expressPort+'/';
+// console.log('Express Addr: ' +global.expressAddr);
 
 // const strategy = new Auth0Strategy(
 //   {

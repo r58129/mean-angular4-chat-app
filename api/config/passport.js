@@ -4,8 +4,7 @@ var mongoose = require('mongoose');
 var Staff = mongoose.model('Staff');
 
 passport.use(new LocalStrategy({
-    usernameField: 'email',
-    passwordField: 'password'
+    usernameField: 'email'
   },
   function(username, password, done) {
     Staff.findOne({ email: username }, function (err, staff) {
@@ -23,9 +22,9 @@ passport.use(new LocalStrategy({
         });
       }
       // If credentials are correct, return the user object
-      console.log("Staff name: " + username);
-      console.log("Staff email: " + password);
-      return done(null, Staff);
+      console.log("Staff email: " + username);
+      console.log("Staff password: " + password);
+      return done(null, staff);
     });
   }
 ));
