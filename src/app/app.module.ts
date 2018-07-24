@@ -13,13 +13,13 @@ import { AppRoutingModule } from './app-routing.module'
 import { Configs } from './configurations';
 
 import { ChatService } from './chat.service';
-import { AuthguardGuard } from './authguard.guard';
-import { AuthserviceService } from './authservice.service';
+// import { AuthguardGuard } from './authguard.guard';
+// import { AuthserviceService } from './authservice.service';
 import { ChatComponent } from './chat/chat.component';
 import { AppheaderComponent } from './components/appheader/appheader.component';
 import { AppfooterComponent } from './components/appfooter/appfooter.component';
 import { AppmenuComponent } from './components/appmenu/appmenu.component';
-import { AppsettingsComponent } from './components/appsettings/appsettings.component';
+// import { AppsettingsComponent } from './components/appsettings/appsettings.component';
 import { ApploginComponent } from './components/applogin/applogin.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AdminComponent } from './admin/admin.component';
@@ -28,6 +28,12 @@ import { RequestComponent } from './request/request.component';
 import { OpchatComponent } from './opchat/opchat.component';
 import { OprequestComponent } from './oprequest/oprequest.component';
 
+import { RegisterComponent } from './components/register/register.component';
+import { LoginComponent } from './components/login/login.component';
+import { AuthService } from './auth/auth.service';
+import { AuthGuardService } from './auth/auth.guard.service';
+import { HomeComponent } from './components/home/home.component';
+import { ProfileComponent } from './components/profile/profile.component';
 // import { EmojiModule } from 'angular-emoji/dist';
 
 // import { ApphovertableComponent } from './components/apphovertable/apphovertable.component';
@@ -46,14 +52,18 @@ import { OprequestComponent } from './oprequest/oprequest.component';
     AppheaderComponent,
     AppfooterComponent,
     AppmenuComponent,
-    AppsettingsComponent,
+    // AppsettingsComponent,
     ApploginComponent,
     PagenotfoundComponent,
     AdminComponent,
     OperatorComponent,
     RequestComponent,
     OpchatComponent,
-    OprequestComponent
+    OprequestComponent,
+    RegisterComponent,
+    LoginComponent,
+    HomeComponent,
+    ProfileComponent
     //CallbackComponent
     // ApphovertableComponent
   ],
@@ -67,8 +77,10 @@ import { OprequestComponent } from './oprequest/oprequest.component';
     // RouterModule.forRoot(ROUTES)
   ],
   providers: [
-    AuthserviceService,
-    AuthguardGuard,
+    AuthService,
+    AuthGuardService,
+    // AuthserviceService,
+    // AuthguardGuard,
     ChatService,
     Configs,
     {provide: LocationStrategy, useClass: PathLocationStrategy}

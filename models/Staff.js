@@ -6,14 +6,14 @@ var StaffSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
-    required: true,
-    trim: true
+    required: true
+    // trim: true
   },
   name: {
     type: String,
-    unique: true,
-    required: true,
-    trim: true
+    // unique: true,
+    required: true
+    // trim: true
   },
   // password: {
   //   type: String,
@@ -38,6 +38,7 @@ StaffSchema.methods.validPassword = function(password) {
 };
 
 StaffSchema.methods.generateJwt = function() {
+  // set expiration to 7 days
   var expiry = new Date();
   expiry.setDate(expiry.getDate() + 7);
 
@@ -49,8 +50,8 @@ StaffSchema.methods.generateJwt = function() {
   }, "MY_SECRET"); // DO NOT KEEP YOUR SECRET IN THE CODE!
 };
 
-var Staff = mongoose.model('Staff', StaffSchema);
-module.exports = Staff;
+module.exports  = mongoose.model('Staff', StaffSchema);
+// module.exports = Staff;
 
 
 

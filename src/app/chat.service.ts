@@ -163,6 +163,20 @@ export class ChatService {
     });
   }
 
+ // get customer request except opeartor and robot
+  getNewRequestCount() {
+    return new Promise((resolve, reject) => {
+      this.updateUrl();
+      this.http.get(this.serverUrl+'/chat/newrequest/human')
+        .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
   // get operator Request
   getOperatorRequest(){
     return new Promise((resolve, reject) => {

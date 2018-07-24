@@ -24,12 +24,13 @@
 
 // src/app/auth/auth.service.ts
 
-import { Injectable } from '@angular/core';
+import { Injectable,Output,EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import * as auth0 from 'auth0-js';
 import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -50,6 +51,8 @@ const httpOptions = {
 
 @Injectable()
 export class AuthserviceService {
+
+  @Output() getLoginStatus = new EventEmitter();
 
   auth0 = new auth0.WebAuth({
     clientID: 'QHj13LadXiKO4qLoj7IQaJWv3Z0s3j5D',
@@ -361,4 +364,19 @@ private async delay(ms: number) {
     return new Date().getTime() < (expiresAt+604800); //expires in 7days
     //  return true;
   }
+
+  public loginStatus(): Observable<boolean>{
+
+    if (this.isAuthenticated()){
+      this.getLoginStatus.emit(true);  
+      console.log("getLoginStatus True");
+      return of(true);
+    } else {
+      this.getLoginStatus.emit(false);  
+      console.log("getLoginStatus false");
+      return of(false);
+    }
+    
+  }
+
 }

@@ -3,11 +3,22 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var app = express();
 
-//var server = require('http').createServer(app);
+// Auth
+// var jwt = require('express-jwt');
+// var auth = jwt({
+//   secret: 'MY_SECRET',
+//   userProperty: 'payload'
+// });
+
+var server = require('http').createServer(app);
 
 var fs = require('fs');
 var key = fs.readFileSync('routes/encryption/pk.pem');
 var cert = fs.readFileSync( 'routes/encryption/cert2.pem' );
+
+// Auth
+// var ctrlProfile = require('../api/controllers/profile');
+// var ctrlAuth = require('../api/controllers/authentication');
 
 var options = {
 key: key,
@@ -20,6 +31,7 @@ var server = require('https').createServer(options,app);
 var io = require('socket.io')(server,{secure: true});
 var Chat = require('../models/Chat.js');
 var User = require('../models/User.js');
+// var Staff = require('../models/Staff.js');
 // var Request = require('../models/Request.js');
 
 
@@ -205,13 +217,17 @@ io.on('connection', function (socket) {
         for(var i in adminSocketID){
           // io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername}); //no need it new UI
         }
+
+        console.log( 'user ' + socket.userid + ' disconnected');
+
       }
 
       if (socket.userid == 'operatorSessionUser'){
         operatorSessionUserConnected = false;
+        console.log( 'operatorSessionUser' + socket.userid + ' disconnected');
       }
       
-      //io.to(utoa[socket.id]).emit('disconnect',socket.userid + " disconnected");
+      io.to(utoa[socket.id]).emit('disconnect', socket.userid);
       console.log(socket.userid + ' disconnected');
 
     }
@@ -237,6 +253,14 @@ io.on('connection', function (socket) {
   });
 
 }); //io.on
+
+
+// Auth profile
+// router.get('/api/profile', auth, ctrlProfile.profileRead);
+
+// authentication
+// router.post('/api/register', ctrlAuth.register);
+// router.post('/api/login', ctrlAuth.login);
 
 
 /* GET ALL CHATS, THIS IS THE REAL ROOM */
@@ -319,6 +343,32 @@ router.get('/request/human', function(req, res, next) {
   })
 });
 
+/* GET NEW REQUESTS with phone# and socket id 192.168.0.102:4080/chat/requests/human*/ 
+// router.get('/newrequest/:number', function(req, res, next) { 
+//   Chat.find({ $and: 
+//     [ 
+//       { phone_number: {  $exists: true } }, 
+//       { socket_id: { $exists: true } }, 
+//       { nickname: { $exists: false } },
+//       { operator_request: { $exists: false } },
+//       { request_status: "New" } 
+//     ]
+//   }, function (err, chats) {
+//     if (err) return next(err);
+//     res.json(chats);
+//   }).count();
+// });
+
+/* GET ALL NEW REQUESTS COUNT */
+router.get('/newrequest/human', function(req, res, next) { 
+  Chat.count(
+    { request_status: "New"   
+  }, function (err, chats) {
+    if (err) return next(err);
+    res.json(chats);
+  });
+});
+
 /* GET ALL REQUESTS with phone# and socket id 192.168.0.102:4080/chat/requests/human*/ 
 router.get('/request/operator', function(req, res, next) { 
   Chat.find({ $and: 
@@ -337,16 +387,16 @@ router.get('/request/operator', function(req, res, next) {
 // db.inventory.find( { $and: [ { price: { $ne: 1.99 } }, { price: { $exists: true } } ] } )
 
 /* GET ALL REQUESTS in same room 192.168.0.102:4080/chat/request/room1*/ 
-router.get('/requestroom/:room', function(req, res, next) {
-  // Chat.find({ room: req.params.room }, function (err, requests) {
-    Chat.find({ $and:
-    [
-      { room: req.params.room },
-      { socket_id: { $exists: true } }, 
-      { nickname: {$exists:true, $ne:"robot" } }  //filter robot reply
+router.get('/roomhistory/:room', function(req, res, next) {
+  Chat.find({ room: req.params.room }, function (err, chats) {
+    // Chat.find({ $and:
+    // [
+      // { room: req.params.room }
+      // { socket_id: { $exists: true } }, 
+      // { nickname: {$exists:true, $ne:"robot" } }  //filter robot reply
     
-    ]
-  }, function (err, chats) {
+    // ]
+  // }, function (err, chats) {
     if (err) return next(err);
     res.json(chats);
   });

@@ -14,25 +14,37 @@ import { AdminComponent } from './admin/admin.component';
 import { OperatorComponent } from './operator/operator.component';
 import { RequestComponent } from './request/request.component';
 //import { ServiceComponent } from './service/service.component';
-import { AuthguardGuard } from './authguard.guard';
-import { AuthserviceService } from './authservice.service';
+// import { AuthguardGuard } from './authguard.guard';
+// import { AuthserviceService } from './authservice.service';
 // import { HistoryComponent } from './history/history.component';
 import { OpchatComponent } from './opchat/opchat.component';
 import { OprequestComponent } from './oprequest/oprequest.component';
 
+import { RegisterComponent } from './components/register/register.component';
+import { LoginComponent } from './components/login/login.component';
+import { AuthService } from './auth/auth.service';
+import { AuthGuardService } from './auth/auth.guard.service';
+import { HomeComponent } from './components/home/home.component';
+import { ProfileComponent } from './components/profile/profile.component';
+
 
 const appRoutes: Routes = [
-  { path: '', component: ApploginComponent, pathMatch: 'full'},
+    { path: '', component: HomeComponent },
+  { path: 'api/login', component: LoginComponent },
+  { path: 'api/register', component: RegisterComponent },
+  { path: 'api/profile', component: ProfileComponent, canActivate: [AuthGuardService] },
   
-  { path: 'request', component: RequestComponent, 
-    children:[
-      { path: 'chatbox/:id/:id2/:id3/:id4', component: ChatComponent, outlet:'chatOutlet',canActivate: [AuthguardGuard]},
-  ], canActivate: [AuthguardGuard]},
+  // { path: '', component: ApploginComponent, pathMatch: 'full'},
   
-  { path: 'operator', component: OprequestComponent, 
-    children:[
-      { path: 'opchatbox/:id', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthguardGuard]},
-  ], canActivate: [AuthguardGuard]},
+  // { path: 'request', component: RequestComponent, 
+  //   children:[
+  //     { path: 'chatbox/:id/:id2/:id3/:id4', component: ChatComponent, outlet:'chatOutlet',canActivate: [AuthguardGuard]},
+  // ], canActivate: [AuthguardGuard]},
+  
+  // { path: 'operator', component: OprequestComponent, 
+  //   children:[
+  //     { path: 'opchatbox/:id', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthguardGuard]},
+  // ], canActivate: [AuthguardGuard]},
 
   // { path: 'opchat', component: OpchatComponent, canActivate: [AuthguardGuard] },
   // { path: 'admin', component: AdminComponent , canActivate: [AuthguardGuard]},

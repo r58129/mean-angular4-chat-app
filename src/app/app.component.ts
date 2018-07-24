@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { AuthserviceService } from './authservice.service';
+// import { AuthserviceService } from './authservice.service';
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +10,6 @@ import { AuthserviceService } from './authservice.service';
 export class AppComponent {
   // title = 'app works!';
 
-    constructor(public authService: AuthserviceService) { }
+    constructor(public authService: AuthService) { }
+    // constructor(public authService: AuthserviceService) { }
 }

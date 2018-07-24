@@ -170,10 +170,26 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     }  // end else
   });
 
-  this.socket.on('disconnect', function(msg){
-    console.log('Disconnect: ' +msg);
- 
-  });
+  this.socket.on('disconnect', function(userid){
+    console.log('Disconnect: ' + userid);
+    var message = "User is disconnected!";
+
+    // var goodbye = "Goodbye";
+    // this.SendForm(goodbye);
+    // console.log("goodbye");
+
+    this.CusMsgData = { phone_number: userid, socket_id: 'socket_id', room:userid , nickname:userid , message: message };
+      console.log(this.CusMsgData.room);
+      console.log(this.CusMsgData.phone_number);
+      console.log(this.CusMsgData.socket_id);
+      console.log(this.CusMsgData.message);
+      
+      this.chatService.saveChat(this.CusMsgData).then((result) => {
+      this.socket.emit('save-message', result);
+      }, (err) => {
+        console.log(err);
+      });
+  }.bind(this));
   // end of from johnson
 
 
@@ -324,7 +340,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     console.log("status is NOT updated");
 
     //send goodbye message when logout()
-    var goodbye = "goodbye";
+    var goodbye = "Goodbye";
     this.SendForm(goodbye);
     console.log("goodbye");
 
