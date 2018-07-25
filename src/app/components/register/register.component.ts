@@ -27,7 +27,8 @@ export class RegisterComponent {
       console.log("inside auth.register");
   
       // this.router.navigateByUrl('/api/profile');
-      this.router.navigateByUrl('/');
+      // this.router.navigateByUrl('/');
+      this.authService.logout();
       // this.router.navigate('/api/profile');
     }, (err) => {
       console.error(err);

@@ -105,7 +105,9 @@ private token: string;
         console.log("before data.token" );
         if (data.token) {
           console.log("inside data.token" );
-          this.saveToken(data.token);          
+          // if (type === 'login'){
+            this.saveToken(data.token);
+          // }
         }
         return data;
       })
