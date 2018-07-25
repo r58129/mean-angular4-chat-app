@@ -2,7 +2,7 @@
 <div class="content-wrapper">
   <!-- <div class="wrapper"> -->
     <!-- <div class="container"> -->
-      <div class="row no-padding" id="request-page">
+      <div class="row no-padding" id="request-page" >
           <div class="col-xs-6 no-padding" >
             <div class="box box-primary direct-chat direct-chat-primary">
               <div class="box-header with-border">
@@ -35,7 +35,7 @@
                     	<div class="pull-right">   	
                   <!--       <div [ngClass] ="setButtonColor()">
                           <a [routerLink]="['/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id, r.request_status]}}]" routerLinkActive="active" [(ngModel)]="setColor">{{r.request_status}}</a> -->
-							            <a [routerLink]="['/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id, r.request_status]}}]" routerLinkActive="active" class="btn btn-xs" 
+							            <a [routerLink]="['/chat/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id, r.request_status]}}]" routerLinkActive="active" class="btn btn-xs" 
                           [ngClass]="{
                           ' btn-danger ':r.request_status === 'New',
                           ' btn-warning ':r.request_status === 'Working',

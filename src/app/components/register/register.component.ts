@@ -15,7 +15,7 @@ export class RegisterComponent {
     password: ''
   };
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   register() {
     console.log("inside register components");
@@ -23,10 +23,11 @@ export class RegisterComponent {
     console.log("this.credentials.email: " + this.credentials.email);
     console.log("this.credentials.password: " + this.credentials.password);
 
-    this.auth.register(this.credentials).subscribe(() => {
+    this.authService.register(this.credentials).subscribe(() => {
       console.log("inside auth.register");
   
-      this.router.navigateByUrl('/api/profile');
+      // this.router.navigateByUrl('/api/profile');
+      this.router.navigateByUrl('/');
       // this.router.navigate('/api/profile');
     }, (err) => {
       console.error(err);

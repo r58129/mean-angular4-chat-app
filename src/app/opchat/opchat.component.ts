@@ -37,7 +37,8 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   
   // socket = io('https://airpoint.com.hk:3637',{secure: true});
   //socket = io('https://192.168.0.102:3637',{secure: true});
-  socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
+  // socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
+  socket = io(this.configs.socketIoServerAddr,{secure: true});
   
   constructor(private chatService: ChatService, private route: ActivatedRoute, private configs: Configs) {
     
@@ -108,84 +109,96 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     console.log("print customer message:" +message);
     console.log("print customer photoPath:" +filePath);
 
-    if (msg !== 'undefined'){
+    if (msg !== 'undefine'){
 
       if (!message.includes('\uD83D\uDCF7')){
     
-      // this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:userid , message: msg };
-      this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
-      console.log(this.CusMsgData.room);
-      console.log(this.CusMsgData.phone_number);
-      console.log(this.CusMsgData.socket_id);
-      console.log(this.CusMsgData.message);
-      
-      this.chatService.saveChat(this.CusMsgData).then((result) => {
-      this.socket.emit('save-message', result);
-      }, (err) => {
-        console.log(err);
-      });
-      }  //end if
-    }  //end if
-
-    if (!filePath){
-        console.log("filePath is null");
-    }
-    else{
-      // get admin sessionID
-      var sID=localStorage.getItem('res.data.sessionID');
-      var fileType = ((filePath).split(".")[1]);
-      var path = 'sessionID='+sID +'&path='+filePath;
-      var completePath = 'https://airpoint.com.hk:'+sessionStorage.getItem("tinkerport")+'/api/csp/getimage?'+path;  //save complete path to db
-
-
-      console.log("sID: " + sID);
-      console.log("tinkerPath: " + filePath);
-      console.log("complete path: " + completePath);
-      console.log("fileType: " + fileType);
-
-        this.chatService.getImageFromNode(path).then((res) => {  //from chatService
-          console.log(" get image from tinker");
+        this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
+        console.log(this.CusMsgData.room);
+        console.log(this.CusMsgData.phone_number);
+        console.log(this.CusMsgData.socket_id);
+        console.log(this.CusMsgData.message);
         
-          var blob = new Blob(
-              [res],
-              // Mime type is important for data url
-              // {type : 'text/html'}
-              {type : 'image/' +fileType}
-              );
-
-
-          var reader = new FileReader();
-          reader.readAsDataURL(blob);
-          reader.onloadend =(evt:any) =>{
-              // Capture result here
-            var getImage = evt.target.result;
-            console.log(evt.target.result);
-
-            this.CusImgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message, file_path:completePath, image:getImage };
-            console.log('receive image from customer');
-            console.log(this.CusImgData.room);
-            console.log(this.CusImgData.phone_number);
-            console.log(this.CusImgData.socket_id);
-            console.log(this.CusImgData.message);
-            console.log(this.CusImgData.image);
-            console.log(this.CusImgData.file_path);
-
-            this.chatService.saveImage(this.CusImgData).then((result) => {
-              console.log('save Image to tinker');
-              this.socket.emit('save-image', result);
-            }, (err) => {
-              console.log(err);
-            });
-
-          };
-       
-
+        this.chatService.saveChat(this.CusMsgData).then((result) => {
+          this.socket.emit('save-message', result);
         }, (err) => {
           console.log(err);
         });
-    
-      //sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
-    }  // end else
+      } else { //else  (message.includes('\uD83D\uDCF7'))
+
+        if ((!filePath) || (filePath == "Timeout")){
+          console.log("filePath is null or Timeout");
+
+          this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: "Sent Photo Failed!" };
+          // console.log(this.CusMsgData.room);
+          // console.log(this.CusMsgData.phone_number);
+          // console.log(this.CusMsgData.socket_id);
+          // console.log(this.CusMsgData.message);
+        
+          this.chatService.saveChat(this.CusMsgData).then((result) => {
+            this.socket.emit('save-message', result);
+          }, (err) => {
+            console.log(err);
+          });
+
+        } else {
+        // get admin sessionID
+        var sID=localStorage.getItem('res.data.sessionID');
+        var fileType = ((filePath).split(".")[1]);
+        var path = 'sessionID='+sID +'&path='+filePath;
+        // var completePath = 'https://airpoint.com.hk:'+sessionStorage.getItem("tinkerport")+'/api/csp/getimage?'+path;  //save complete path to db
+        var completePath = 'https://airpoint.com.hk:'+this.configs.tinkerport+'/api/csp/getimage?'+path;  //save complete path to db
+
+        console.log("sID: " + sID);
+        console.log("tinkerPath: " + filePath);
+        console.log("complete path: " + completePath);
+        console.log("fileType: " + fileType);
+
+          this.chatService.getImageFromNode(path).then((res) => {  //from chatService
+            console.log(" get image from tinker");
+          
+            var blob = new Blob(
+                [res],
+                // Mime type is important for data url
+                // {type : 'text/html'}
+                {type : 'image/' +fileType}
+                );
+
+
+            var reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend =(evt:any) =>{
+                // Capture result here
+              var getImage = evt.target.result;
+              console.log(evt.target.result);
+
+              this.CusImgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message, file_path:completePath, image:getImage };
+              console.log('receive image from customer');
+              console.log(this.CusImgData.room);
+              console.log(this.CusImgData.phone_number);
+              console.log(this.CusImgData.socket_id);
+              console.log(this.CusImgData.message);
+              console.log(this.CusImgData.image);
+              console.log(this.CusImgData.file_path);
+
+              this.chatService.saveImage(this.CusImgData).then((result) => {
+                console.log('save Image from tinker');
+                this.socket.emit('save-image', result);
+              }, (err) => {
+                console.log(err);
+              });
+
+            };
+         
+
+          }, (err) => {
+            console.log(err);
+          });
+      
+        //sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
+        }  // end else
+      }  //end first else
+    }  // end if (msg !== 'undefine')
   });
 
 // User disconnect chat in operation mode

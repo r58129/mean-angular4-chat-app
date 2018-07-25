@@ -53,7 +53,8 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   // socket = io('https://192.168.0.102:3637');
   // socket = io('https://192.168.0.102:3637',{secure: true});
   // socket = io('https://airpoint.com.hk:3637',{secure: true});
-  socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
+  // socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
+  socket = io(this.configs.socketIoServerAddr,{secure: true});
   
   // constructor(public http: HttpClient, private authService: AuthserviceService, private chatService: ChatService, private configs: Configs) {}
   constructor(public http: HttpClient, private authService: AuthService, private chatService: ChatService, private configs: Configs) {}
@@ -140,7 +141,8 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 //      console.log("tinkerport got is "+tPort);
 //      console.log("res.data.sessionID got is "+sID);
       
-      this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
+      // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
+      this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
       //action: 'register',
       {}
     , httpOptions)
@@ -180,17 +182,19 @@ this.timer = setInterval(() => {
 
   ngOnDestroy(){
         
-      var tPort:string ;
+      // var tPort:string ;
       var sID :string;
-      tPort =sessionStorage.getItem("tinkerport");
+      // tPort =sessionStorage.getItem("tinkerport");
       sID =localStorage.getItem('res.data.sessionID');
       
-      console.log("tinkerport got is "+tPort);
+      // console.log("tinkerport got is "+tPort);
       console.log("res.data.sessionID got is "+sID);
         //socket.emit('forceDisconnect');
       
-      if (tPort!=null){
-      this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
+      // if (tPort!=null){
+    if (sID!=null){
+      // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
+      this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
     {}, httpOptions)
     .pipe(
       catchError(this.handleErrorObservable)

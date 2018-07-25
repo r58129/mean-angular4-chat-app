@@ -11,10 +11,10 @@ export class ProfileComponent implements OnInit {
 
   details: UserDetails;
 
-  constructor(private auth: AuthService) {}
+  constructor(private authService: AuthService) {}
   
   ngOnInit() {    
-    this.auth.profile().subscribe(user => {
+    this.authService.profile().subscribe(user => {
       this.details = user;
       // console.log('name: ' +user.name);
       console.log('email: ' +user.email);

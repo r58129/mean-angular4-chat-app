@@ -3,6 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators/map';
 import { Router } from '@angular/router';
+import { Configs } from './../configurations';
+import { of } from 'rxjs/observable/of';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { catchError, retry } from 'rxjs/operators';
+import { HttpHeaders } from '@angular/common/http';
+
 
 export interface UserDetails {
   _id: string;
@@ -22,12 +28,20 @@ export interface TokenPayload {
   name?: string;
 }
 
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type':  'application/json'
+    //  'Content-Type':'application/x-www-form-urlencoded'
+    //'Authorization': 'my-auth-token'
+  })
+};
+
 @Injectable()
 export class AuthService {
 
 private token: string;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private configs: Configs) {}
 
   private saveToken(token: string): void {
     localStorage.setItem('mean-token', token);
@@ -121,9 +135,66 @@ private token: string;
   public logout(): void {
     this.token = '';
     window.localStorage.removeItem('mean-token');
-    this.router.navigateByUrl('/');
-    console.log("layout user");
+    this.logoutTinker();
+    console.log("logout tinker");
+    
+    // sessionStorage.removeItem('expressport');
+    // sessionStorage.removeItem('socketioport');
+    // sessionStorage.removeItem('tinkerport');
+    // sessionStorage.clear();
 
+    this.router.navigateByUrl('/');
+    console.log("logout user");
+  }
+
+  private handleErrorObservable (error: Response | any) {
+    console.error(error.message || error);
+    return Observable.throw(error.message || error);
+  }
+
+  // public loginTinker(port:string) :boolean{
+  public loginTinker() :boolean{
+     
+    // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/user/login', {
+    this.http.post (this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/login', {
+      userID: 'admin',
+      Password: 'admin'
+    }, httpOptions)
+    .pipe(
+      catchError(this.handleErrorObservable)
+    )
+    .subscribe(
+        res => {
+          localStorage.setItem('res.data.sessionID', res.data.sessionID);  //Lu test storage
+          this.router.navigate(['/chat/request']);
+          sessionStorage.setItem('loginTinkerDone', "1");
+          return true;
+        });
+
+
+
+    return true;
+  }
+
+  // public logoutTinker(port:string): boolean{
+  public logoutTinker(): boolean{
+    var sID2 = '222';
+    sID2=localStorage.getItem('res.data.sessionID');
+      
+    // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/user/logout'+'?sessionID='+sID2, {
+    this.http.post (this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/logout'+'?sessionID='+sID2, {
+    }, httpOptions)
+      .pipe(
+      catchError(this.handleErrorObservable)
+      )
+      .subscribe(
+        res => {
+          localStorage.removeItem('res.data.sessionID');
+          return true;
+        });
+      sessionStorage.setItem('loginTinkerDone','0');
+      // sessionStorage.removeItem('loginTinkerDone');
+      return true;      
   }
 }
 

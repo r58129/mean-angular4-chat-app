@@ -36,12 +36,12 @@ const appRoutes: Routes = [
   
   // { path: '', component: ApploginComponent, pathMatch: 'full'},
   
-  { path: 'request', component: RequestComponent, 
+  { path: 'chat/request', component: RequestComponent, 
     children:[
       { path: 'chatbox/:id/:id2/:id3/:id4', component: ChatComponent, outlet:'chatOutlet',canActivate: [AuthGuardService]},
   ], canActivate: [AuthGuardService]},
   
-  { path: 'operator', component: OprequestComponent, 
+  { path: 'chat/operator', component: OprequestComponent, 
     children:[
       { path: 'opchatbox/:id', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthGuardService]},
   ], canActivate: [AuthGuardService]},

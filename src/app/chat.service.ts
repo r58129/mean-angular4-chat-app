@@ -28,12 +28,12 @@ export class ChatService {
     //sessionStorage.setItem("expressport",self.userProfile[this.configs.angularAddr+"/expressport"]);
   private serverUrl = this.configs.expressAddr;
     
-  private tinkerUrl = this.configs.tinkerboardAddr;
+  private tinkerUrl = this.configs.tinkerboardAddr +':'+this.configs.tinkerport ;
     
-    updateUrl(){
-        this.serverUrl = "https://airpoint.com.hk"+":"+sessionStorage.getItem("expressport");
-        this.tinkerUrl = "https://airpoint.com.hk"+":"+sessionStorage.getItem("tinkerport");
-    }
+    // updateUrl(){
+    //     this.serverUrl = "https://airpoint.com.hk"+":"+sessionStorage.getItem("expressport");
+    //     this.tinkerUrl = "https://airpoint.com.hk"+":"+sessionStorage.getItem("tinkerport");
+    // }
     
     //sessionStorage.setItem("serverUrl",serverUrl);
    // sessionStorage.setItem("tinkerUrl",tinkerUrl);
@@ -153,7 +153,7 @@ export class ChatService {
  // get customer request except opeartor and robot
   getHumanRequest(human) {
     return new Promise((resolve, reject) => {
-      this.updateUrl();
+      // this.updateUrl();
       this.http.get(this.serverUrl+'/chat/request/human' )
         .map(res => res.json())
         .subscribe(res => {
@@ -167,7 +167,7 @@ export class ChatService {
  // get customer request except opeartor and robot
   getNewRequestCount() {
     return new Promise((resolve, reject) => {
-      this.updateUrl();
+      // this.updateUrl();
       this.http.get(this.serverUrl+'/chat/newrequest/human')
         .map(res => res.json())
         .subscribe(res => {
@@ -181,7 +181,7 @@ export class ChatService {
   // get operator Request
   getOperatorRequest(){
     return new Promise((resolve, reject) => {
-        this.updateUrl();
+        // this.updateUrl();
       this.http.get(this.serverUrl+'/chat/request/operator' )
         .map(res => res.json())
         .subscribe(res => {
