@@ -65,7 +65,7 @@ module.exports.login = function(req, res) {
     // If a user is found
     if(staff){
       console.log("before generateJwt: " + staff);
-      token = staff.generateJwt();  //error
+      token = staff.generateJwt();
       console.log("token: " + token);
       sendJSONresponse(res, 200, {
         "token" : token

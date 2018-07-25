@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit} from '@angular/core';
-import { AuthserviceService } from '../../authservice.service';
+// import { AuthserviceService } from '../../authservice.service';
+import { AuthService, UserDetails } from '../../auth/auth.service';
 import { Configs } from '../../configurations';
 
 import { ChatService } from '../../chat.service';
@@ -25,10 +26,13 @@ export class AppheaderComponent implements OnInit, OnDestroy{
   
   socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
   
-  constructor(public http: HttpClient, public authService: AuthserviceService, private chatService: ChatService, private configs: Configs) {
+  // constructor(public http: HttpClient, public authService: AuthserviceService, private chatService: ChatService, private configs: Configs) {
+
+  // }
+
+  constructor(public http: HttpClient, public authService: AuthService, private chatService: ChatService, private configs: Configs) {
 
   }
-
   // constructor(public authService: AuthserviceService, public configs: Configs) { }
 
   ngOnInit() {
@@ -138,7 +142,8 @@ ngOnDestroy(){
 // }
 
 logout() {
-    this.authService.logout(sessionStorage.getItem("tinkerport"));
+    // this.authService.logout(sessionStorage.getItem("tinkerport"));
+        this.authService.logout();
  //   this.setMessage();
  	// console.log ("print isAuthenticated(): " +this.authService.isAuthenticated());
   }

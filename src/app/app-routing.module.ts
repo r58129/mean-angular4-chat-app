@@ -29,22 +29,22 @@ import { ProfileComponent } from './components/profile/profile.component';
 
 
 const appRoutes: Routes = [
-    { path: '', component: HomeComponent },
-  { path: 'api/login', component: LoginComponent },
+    // { path: '', component: HomeComponent },
+  { path: '', component: LoginComponent, pathMatch: 'full' },
   { path: 'api/register', component: RegisterComponent },
   { path: 'api/profile', component: ProfileComponent, canActivate: [AuthGuardService] },
   
   // { path: '', component: ApploginComponent, pathMatch: 'full'},
   
-  // { path: 'request', component: RequestComponent, 
-  //   children:[
-  //     { path: 'chatbox/:id/:id2/:id3/:id4', component: ChatComponent, outlet:'chatOutlet',canActivate: [AuthguardGuard]},
-  // ], canActivate: [AuthguardGuard]},
+  { path: 'request', component: RequestComponent, 
+    children:[
+      { path: 'chatbox/:id/:id2/:id3/:id4', component: ChatComponent, outlet:'chatOutlet',canActivate: [AuthGuardService]},
+  ], canActivate: [AuthGuardService]},
   
-  // { path: 'operator', component: OprequestComponent, 
-  //   children:[
-  //     { path: 'opchatbox/:id', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthguardGuard]},
-  // ], canActivate: [AuthguardGuard]},
+  { path: 'operator', component: OprequestComponent, 
+    children:[
+      { path: 'opchatbox/:id', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthGuardService]},
+  ], canActivate: [AuthGuardService]},
 
   // { path: 'opchat', component: OpchatComponent, canActivate: [AuthguardGuard] },
   // { path: 'admin', component: AdminComponent , canActivate: [AuthguardGuard]},

@@ -1,11 +1,74 @@
+<!-- <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>AdminLTE 2 | Log in</title>
+  Tell the browser to be responsive to screen width
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+</head> -->
+  <body class="hold-transition fixed login-page" style="height: 100%">   
+    <div class="login-box">
+      <div class="login-logo">
+    <h2><b>Customer</b>Service</h2>
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">Sign in to start your session</p>
+
 <form (submit)="login()">
-  <div class="form-group">
+  <div class="form-group has-feedback">
     <label for="email">Email address</label>
-    <input type="email" class="form-control" name="email" placeholder="Enter email" [(ngModel)]="credentials.email">
+    <input type="email" class="form-control" name="email" placeholder="Email" [(ngModel)]="credentials.email"><span class="glyphicon glyphicon-envelope form-control-feedback"></span>
   </div>
-  <div class="form-group">
+  <div class="form-group has-feedback">
     <label for="password">Password</label>
-    <input type="password" class="form-control" name="password" placeholder="Password" [(ngModel)]="credentials.password">
+    <input type="password" class="form-control" name="password" placeholder="Password" [(ngModel)]="credentials.password"> <span class="glyphicon glyphicon-lock form-control-feedback"></span>
   </div>
-  <button type="submit" class="btn btn-default">Sign in!</button>
+    <div class="row">	
+	<div class="col-xs-8">
+        <div class="checkbox icheck">
+            <!-- <label>
+              <input type="checkbox"> Remember Me
+            </label> -->
+        </div>
+    </div>
+  	<div class="col-xs-4">
+  	<button type="submit" class="btn btn-primary btn-block btn-flat">Sign in</button>
+	</div>
+	</div>
 </form>
+
+<!--     <div class="social-auth-links text-center">
+      <p>- OR -</p>
+      <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in using
+        Facebook</a>
+      <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign in using
+        Google+</a>
+    </div> -->
+    <!-- /.social-auth-links -->
+
+    <a href="#">I forgot my password</a><br>
+    <a routerLink="/api/register" routerLinkActive="active" href="" class="text-center">Register a new membership</a>
+
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery 3 -->
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- iCheck -->
+<script src="../../plugins/iCheck/icheck.min.js"></script>
+<script>
+  $(function () {
+    $('input').iCheck({
+      checkboxClass: 'icheckbox_square-blue',
+      radioClass: 'iradio_square-blue',
+      increaseArea: '20%' /* optional */
+    });
+  });
+</script>
+</body>
+

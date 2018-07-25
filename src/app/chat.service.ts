@@ -4,7 +4,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import 'rxjs/add/operator/map';
 import { Configs } from './configurations';
-import { AuthserviceService } from './authservice.service'
+// import { AuthserviceService } from './authservice.service'
+import { AuthService, TokenPayload } from './auth/auth.service';
 
 // let httpOptions = {
 //   headers: new Headers({
@@ -20,8 +21,8 @@ import { AuthserviceService } from './authservice.service'
 @Injectable()
 export class ChatService {
 
-  constructor(private http : Http, private configs: Configs,private authService: AuthserviceService) { }
-
+  // constructor(private http : Http, private configs: Configs,private authService: AuthserviceService) { }
+  constructor(private http : Http, private configs: Configs,private authService: AuthService) { }
   //private serverUrl = 'https://airpoint.com.hk:3088';
   // private serverUrl = 'https://airpoint.com.hk:4060';
     //sessionStorage.setItem("expressport",self.userProfile[this.configs.angularAddr+"/expressport"]);

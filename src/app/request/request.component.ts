@@ -7,7 +7,8 @@ import 'rxjs/add/observable/interval'
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
 import { Configs } from '../configurations';
-import { AuthserviceService } from '../authservice.service';
+// import { AuthserviceService } from '../authservice.service';
+import { AuthService, TokenPayload } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { catchError, retry } from 'rxjs/operators';
 import { HttpHeaders } from '@angular/common/http';
@@ -54,8 +55,8 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   // socket = io('https://airpoint.com.hk:3637',{secure: true});
   socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
   
-  constructor(public http: HttpClient, private authService: AuthserviceService, private chatService: ChatService, private configs: Configs) {}
-
+  // constructor(public http: HttpClient, private authService: AuthserviceService, private chatService: ChatService, private configs: Configs) {}
+  constructor(public http: HttpClient, private authService: AuthService, private chatService: ChatService, private configs: Configs) {}
   ngOnInit() {
     // var user = JSON.parse(localStorage.getItem("user"));
     // var request = JSON.parse(localStorage.getItem("request"));
@@ -276,7 +277,7 @@ this.timer = setInterval(() => {
       this.requests = res;
     }, (err) => {
         //this.authService.logout(this.authService.userProfile[this.configs.angularAddr+"/tinkerport"]);
-        this.authService.logout(sessionStorage.getItem("tinkerport"));
+        // this.authService.logout(sessionStorage.getItem("tinkerport"));  //TBD
       console.log(err);
     });
   }

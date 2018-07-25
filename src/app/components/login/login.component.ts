@@ -19,8 +19,9 @@ export class LoginComponent {
 
   login() {
     this.auth.login(this.credentials).subscribe(() => {
-      this.router.navigateByUrl('/api/profile');
-       console.log("inside auth.login");
+      // this.router.navigateByUrl('/api/profile');
+      this.router.navigateByUrl('/request');
+      console.log("inside auth.login");
     }, (err) => {
       console.error(err);
     });

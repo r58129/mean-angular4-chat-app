@@ -38,7 +38,7 @@ private token: string;
 
     if (!this.token) {
       this.token = localStorage.getItem('mean-token');
-      console.log("getToken: " +this.token);
+      // console.log("getToken: " +this.token);
     }
     return this.token;
   }
@@ -46,7 +46,7 @@ private token: string;
   public getUserDetails(): UserDetails {
     const token = this.getToken();
     let payload;
-    console.log("getUserDetails: ");
+    // console.log("getUserDetails: ");
     if (token) {
       payload = token.split('.')[1];
       payload = window.atob(payload);
