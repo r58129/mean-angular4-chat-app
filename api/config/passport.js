@@ -22,8 +22,8 @@ passport.use(new LocalStrategy({
         });
       }
       // If credentials are correct, return the user object
-      console.log("Staff email: " + username);
-      console.log("Staff password: " + password);
+      // console.log("Staff email: " + username);
+      // console.log("Staff password: " + password);
       return done(null, staff);
     });
   }

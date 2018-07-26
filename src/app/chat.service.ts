@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, ResponseContentType } from '@angular/http';
+// import { Http, Headers, ResponseContentType } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import 'rxjs/add/operator/map';
@@ -18,17 +18,32 @@ import { AuthService, TokenPayload } from './auth/auth.service';
 //   })
 // };
 
+interface TokenResponse {
+  token: string;
+}
+
+
 @Injectable()
 export class ChatService {
 
+  private token: string;
+
   // constructor(private http : Http, private configs: Configs,private authService: AuthserviceService) { }
-  constructor(private http : Http, private configs: Configs,private authService: AuthService) { }
+  constructor(private http : HttpClient, private configs: Configs,private authService: AuthService) { }
   //private serverUrl = 'https://airpoint.com.hk:3088';
   // private serverUrl = 'https://airpoint.com.hk:4060';
     //sessionStorage.setItem("expressport",self.userProfile[this.configs.angularAddr+"/expressport"]);
   private serverUrl = this.configs.expressAddr;
-    
   private tinkerUrl = this.configs.tinkerboardAddr +':'+this.configs.tinkerport ;
+
+  private getToken(): string {
+
+    if (!this.token) {
+      this.token = localStorage.getItem('mean-token');
+      // console.log("getToken: " +this.token);
+    }
+    return this.token;
+  }
     
     // updateUrl(){
     //     this.serverUrl = "https://airpoint.com.hk"+":"+sessionStorage.getItem("expressport");
@@ -78,7 +93,7 @@ export class ChatService {
   getChatByRoom(room) {    //here we use room as phone_number
     return new Promise((resolve, reject) => {
       this.http.get(this.serverUrl+'/chat/' + room)
-        .map(res => res.json())
+        // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -90,7 +105,7 @@ export class ChatService {
   showChat(id) {
     return new Promise((resolve, reject) => {
         this.http.get(this.serverUrl+'/chat/id/' + id)
-          .map(res => res.json())
+          // .map(res => res.json())
           .subscribe(res => {
             resolve(res)
         }, (err) => {
@@ -102,7 +117,7 @@ export class ChatService {
   saveChat(data) {
     return new Promise((resolve, reject) => {
         this.http.post(this.serverUrl+'/chat', data)
-          .map(res => res.json())
+          // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
           }, (err) => {
@@ -114,7 +129,7 @@ export class ChatService {
   updateChat(id, data) {
     return new Promise((resolve, reject) => {
         this.http.put(this.serverUrl+'/chat/'+id, data)
-          .map(res => res.json())
+          // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
           }, (err) => {
@@ -138,7 +153,7 @@ export class ChatService {
   getAllRequest() {
     return new Promise((resolve, reject) => {
       this.http.get(this.serverUrl+'/chat/request/all' )
-        .map(res => res.json())
+        // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -154,8 +169,9 @@ export class ChatService {
   getHumanRequest(human) {
     return new Promise((resolve, reject) => {
       // this.updateUrl();
-      this.http.get(this.serverUrl+'/chat/request/human' )
-        .map(res => res.json())
+      this.http.get(this.serverUrl+'/chat/request/human')
+      // this.http.get(this.serverUrl+'/chat/request/human', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
+        // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -164,12 +180,27 @@ export class ChatService {
     });
   }
 
+ // // get customer request except opeartor and robot
+ //  getHumanRequest(human) {
+ //    return new Promise((resolve, reject) => {
+ //      // this.updateUrl();
+ //      // this.http.get(this.serverUrl+'/chat/request/human')
+ //      this.http.get(this.serverUrl+'/chat/request/human', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
+ //        .map(res: TokenResponse())
+ //        .subscribe(res => {
+ //          resolve(res);
+ //        }, (err) => {
+ //          reject(err);
+ //        });
+ //    });
+ //  }
+
  // get customer request except opeartor and robot
   getNewRequestCount() {
     return new Promise((resolve, reject) => {
       // this.updateUrl();
       this.http.get(this.serverUrl+'/chat/newrequest/human')
-        .map(res => res.json())
+        // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -183,7 +214,7 @@ export class ChatService {
     return new Promise((resolve, reject) => {
         // this.updateUrl();
       this.http.get(this.serverUrl+'/chat/request/operator' )
-        .map(res => res.json())
+        // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -197,7 +228,7 @@ export class ChatService {
   getRequestByRoom(room) {
     return new Promise((resolve, reject) => {
       this.http.get(this.serverUrl+'/chat/requestroom/' + room)
-        .map(res => res.json())
+        // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -209,7 +240,7 @@ export class ChatService {
   showRequest(id) {
     return new Promise((resolve, reject) => {
         this.http.get(this.serverUrl+'/chat/request' + id)
-          .map(res => res.json())
+          // .map(res => res.json())
           .subscribe(res => {
             resolve(res)
         }, (err) => {
@@ -221,7 +252,7 @@ export class ChatService {
    showRequestSocket(id) {
     return new Promise((resolve, reject) => {
         this.http.get(this.serverUrl+'/chat/requestsid' + id)
-          .map(res => res.json())
+          // .map(res => res.json())
           .subscribe(res => {
             resolve(res)
         }, (err) => {
@@ -233,7 +264,7 @@ export class ChatService {
   saveRequest(data) {
     return new Promise((resolve, reject) => {
         this.http.post(this.serverUrl+'/chat/request', data)
-          .map(res => res.json())
+          // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
           }, (err) => {
@@ -245,7 +276,7 @@ export class ChatService {
   updateRequest(id, data) {
     return new Promise((resolve, reject) => {
         this.http.put(this.serverUrl+'/chat/request'+id, data)
-          .map(res => res.json())
+          // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
           }, (err) => {
@@ -270,7 +301,7 @@ export class ChatService {
   getAllUser() {
     return new Promise((resolve, reject) => {
       this.http.get(this.serverUrl+'/chat/user/all')
-        .map(res => res.json())
+        // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -283,7 +314,7 @@ export class ChatService {
   showUser(id) {
     return new Promise((resolve, reject) => {
         this.http.get(this.serverUrl+'/chat/user' + id)
-          .map(res => res.json())
+          // .map(res => res.json())
           .subscribe(res => {
             resolve(res)
         }, (err) => {
@@ -296,7 +327,7 @@ export class ChatService {
   saveUser(data) {
     return new Promise((resolve, reject) => {
         this.http.post(this.serverUrl+'/chat/user', data)
-          .map(res => res.json())
+          // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
           }, (err) => {
@@ -308,7 +339,7 @@ export class ChatService {
   updateUser(id, data) {
     return new Promise((resolve, reject) => {
         this.http.put(this.serverUrl+'/chat/user'+id, data)
-          .map(res => res.json())
+          // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
           }, (err) => {
@@ -332,7 +363,7 @@ export class ChatService {
   getAllImage() {
     return new Promise((resolve, reject) => {
       this.http.get(this.serverUrl+'/chat/image/all')
-        .map(res => res.json())
+        // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -345,7 +376,7 @@ export class ChatService {
   getImageByRoom(room) {    //here we use room as phone_number
     return new Promise((resolve, reject) => {
       this.http.get(this.serverUrl+'/chat/image' + room)
-        .map(res => res.json())
+        // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -358,7 +389,7 @@ export class ChatService {
   showImage(id) {
     return new Promise((resolve, reject) => {
         this.http.get(this.serverUrl+'/chat/image' + id)
-          .map(res => res.json())
+          // .map(res => res.json())
           .subscribe(res => {
             resolve(res)
         }, (err) => {
@@ -371,7 +402,7 @@ export class ChatService {
   saveImage(object) {
     return new Promise((resolve, reject) => {
         this.http.post(this.serverUrl+'/chat/image', object)
-          .map(res => res.json())
+          // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
           }, (err) => {
@@ -417,8 +448,9 @@ export class ChatService {
       console.log("path: " +path);
 
       // path = sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
-     this.http.get(this.tinkerUrl +'/api/csp/getimage?'+path,{responseType: ResponseContentType.Blob} )
-         .map(res => res.blob())
+     // this.http.get(this.tinkerUrl +'/api/csp/getimage?'+path,{responseType: ResponseContentType.Blob} )  //for old angular http module
+     this.http.get(this.tinkerUrl +'/api/csp/getimage?'+path,{responseType: "blob"} )
+         // .map(res => res.blob())
          .subscribe(res => {
            resolve(res);
            console.log("get image successful");

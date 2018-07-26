@@ -15,6 +15,12 @@ cert: cert
 //ca: ca
 };
 
+var jwt = require('express-jwt');
+var auth = jwt({
+  secret: 'MY_SECRET',
+  userProperty: 'payload'
+});
+
 var server = require('https').createServer(options,app);
 
 var io = require('socket.io')(server,{secure: true});
@@ -332,18 +338,27 @@ router.get('/request/all', function(req, res, next) {
 
 /* GET ALL REQUESTS with phone# and socket id 192.168.0.102:4080/chat/requests/human*/ 
 router.get('/request/human', function(req, res, next) { 
-  Chat.find({ $and: 
-    [ 
-      { phone_number: {  $exists: true } }, 
-      { socket_id: { $exists: true } }, 
-      { nickname: { $exists: false } },
-      { operator_request: { $exists: false } }
-      // { status: "New" } 
-    ]
-  }, function (err, chats) {
-    if (err) return next(err);
-    res.json(chats);
-  })
+// router.get('/request/human', auth, function(req, res, next) { 
+  // if (!req.payload._id) {
+  //   console.log("No payload ID");
+  //   res.status(401).json({
+  //     "message" : "UnauthorizedError:"
+  //   });
+  // } else {
+  //   console.log("with payload ID");
+    Chat.find({ $and: 
+      [ 
+        { phone_number: {  $exists: true } }, 
+        { socket_id: { $exists: true } }, 
+        { nickname: { $exists: false } },
+        { operator_request: { $exists: false } }
+        // { status: "New" } 
+      ]
+    }, function (err, chats) {
+      if (err) return next(err);
+      res.json(chats);
+    })
+  // }  //end else
 });
 
 

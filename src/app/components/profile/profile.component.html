@@ -1,22 +1,32 @@
-<div class="container">
-  <div class="row">
+<div class="content-wrapper">
+<!-- <div class="container"> -->
+  <div class="row no-margin">
     
-     <div class="col-md-6">
+     <!-- <div class="col-md-6"> -->
 
-      <h1 class="form-signin-heading">Your profile</h1>
-
-      <div class="form-horizontal">
-        <div class="form-group">
-          <label class="col-sm-3 control-label">Full name</label>
-          <p class="form-control-static">{{ details?.name }}</p>
+      <!-- <h2 class="form-signin-heading">Your profile</h2> -->
+      <div class="box box-primary direct-chat direct-chat-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Your Profile</h3>
         </div>
-        <div class="form-group">
-          <label class="col-sm-3 control-label">Email</label>
-          <p class="form-control-static">{{ details?.email }}</p>
+      
+
+      <div class="box-body">
+        <div class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Full name</label>
+            <p class="form-control-static">{{ details?.name }}</p>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Email</label>
+            <p class="form-control-static">{{ details?.email }}</p>
+          </div>
         </div>
       </div>
+    </div>  
 
-    </div>
+ 
 
   </div>
+<!-- </div> -->
 </div>

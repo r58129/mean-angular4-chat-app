@@ -1,0 +1,32 @@
+#content-wrapper
+{
+    height: 100%;
+    /*overflow-y: hidden;*/
+    margin-bottom: 0;
+}      
+
+/*.panel .slidedown .glyphicon, .chat .glyphicon*/
+.box .panel .slidedown .glyphicon, .chat .glyphicon
+{
+    /*margin-right: 5px;*/
+    margin-bottom: 0;
+    margin-right: 0;
+    border-collapse: collapse;
+}
+
+
+
+.box-body
+{
+    overflow-y: scroll;
+    /*height: 250px;*/
+   height: 80vh;
+}
+
+.box.box-primary.direct-chat.direct-chat-primary
+{
+    /*margin-bottom: 0;*/
+    /*height: 250px;*/
+   /*height: 75vh;*/
+
+}

@@ -142,21 +142,15 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 //      console.log("res.data.sessionID got is "+sID);
       
       // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
-      this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
-      //action: 'register',
-      {}
-    , httpOptions)
-            .pipe(
+  this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
+    {}, httpOptions)
+      .pipe(
       catchError(this.handleErrorObservable)
     ).subscribe(
         res => {
-//            console.log(sID2);
-//          console.log(res);
-  
-    
     // this.refreshData();
-    this.getHumanRequest();
-            
+    this.getHumanRequest();         
+    console.log('register to tinker');  
         });
       
 // data refresh
