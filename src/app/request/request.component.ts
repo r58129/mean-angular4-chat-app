@@ -261,13 +261,13 @@ this.timer = setInterval(() => {
     } catch(err) { }
   }
 
-  getChatByRoom(room) {
-    this.chatService.getChatByRoom(room).then((res) => {  //from chatService
-      this.chats = res;
-    }, (err) => {
-      console.log(err);
-    });
-  }
+  // getChatByRoom(room) {
+  //   this.chatService.getChatByRoom(room).then((res) => {  //from chatService
+  //     this.chats = res;
+  //   }, (err) => {
+  //     console.log(err);
+  //   });
+  // }
 
   getHumanRequest() {
     var customer_service = "human";
@@ -280,29 +280,29 @@ this.timer = setInterval(() => {
     });
   }
 
-  getRequestByRoom(room) {
-    this.chatService.getRequestByRoom(room).then((res) => {  //from chatService, here room=phone number
-      this.requests = res;
-    }, (err) => {
-      console.log(err);
-    });
-  }
+  // getRequestByRoom(room) {
+  //   this.chatService.getRequestByRoom(room).then((res) => {  //from chatService, here room=phone number
+  //     this.requests = res;
+  //   }, (err) => {
+  //     console.log(err);
+  //   });
+  // }
 
-  getSingleRequest(id) {
-    this.chatService.showRequest(id).then((res) => {  //from chatService, here room=phone number
-      this.requests = res;
-    }, (err) => {
-      console.log(err);
-    });
-  }
+  // getSingleRequest(id) {
+  //   this.chatService.showRequest(id).then((res) => {  //from chatService, here room=phone number
+  //     this.requests = res;
+  //   }, (err) => {
+  //     console.log(err);
+  //   });
+  // }
 
-  getSocketID(id) {
-    this.chatService.showRequestSocket(id).then((res) => {  //from chatService, here room=phone number
-      this.requests = res;
-    }, (err) => {
-      console.log(err);
-    });
-  }
+  // getSocketID(id) {
+  //   this.chatService.showRequestSocket(id).then((res) => {  //from chatService, here room=phone number
+  //     this.requests = res;
+  //   }, (err) => {
+  //     console.log(err);
+  //   });
+  // }
 
 }
 

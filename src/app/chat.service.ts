@@ -92,7 +92,7 @@ export class ChatService {
 
   getChatByRoom(room) {    //here we use room as phone_number
     return new Promise((resolve, reject) => {
-      this.http.get(this.serverUrl+'/chat/' + room)
+      this.http.get(this.serverUrl+'/chat/' + room, { headers: { Authorization: `Bearer ${this.getToken()}` }})
         // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -104,7 +104,7 @@ export class ChatService {
 
   showChat(id) {
     return new Promise((resolve, reject) => {
-        this.http.get(this.serverUrl+'/chat/id/' + id)
+        this.http.get(this.serverUrl+'/chat/id/' + id, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -116,7 +116,7 @@ export class ChatService {
 
   saveChat(data) {
     return new Promise((resolve, reject) => {
-        this.http.post(this.serverUrl+'/chat', data)
+        this.http.post(this.serverUrl+'/chat', data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -128,7 +128,7 @@ export class ChatService {
 
   updateChat(id, data) {
     return new Promise((resolve, reject) => {
-        this.http.put(this.serverUrl+'/chat/'+id, data)
+        this.http.put(this.serverUrl+'/chat/'+id, data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -140,7 +140,7 @@ export class ChatService {
 
   deleteChat(id) {
     return new Promise((resolve, reject) => {
-        this.http.delete(this.serverUrl+'/chat/'+id)
+        this.http.delete(this.serverUrl+'/chat/'+id, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           .subscribe(res => {
             resolve(res);
           }, (err) => {
@@ -152,7 +152,7 @@ export class ChatService {
   // get all Request
   getAllRequest() {
     return new Promise((resolve, reject) => {
-      this.http.get(this.serverUrl+'/chat/request/all' )
+      this.http.get(this.serverUrl+'/chat/request/all', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
         // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -162,16 +162,14 @@ export class ChatService {
     });
   }
 
-    
-    
-    
+
  // get customer request except opeartor and robot
   getHumanRequest(human) {
     return new Promise((resolve, reject) => {
       // this.updateUrl();
-      this.http.get(this.serverUrl+'/chat/request/human')
-      // this.http.get(this.serverUrl+'/chat/request/human', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
-        // .map(res => res.json())
+      // this.http.get(this.serverUrl+'/chat/request/human')
+      this.http.get(this.serverUrl+'/chat/request/human', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
+        // .map(res: TokenResponse())
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -179,27 +177,12 @@ export class ChatService {
         });
     });
   }
-
- // // get customer request except opeartor and robot
- //  getHumanRequest(human) {
- //    return new Promise((resolve, reject) => {
- //      // this.updateUrl();
- //      // this.http.get(this.serverUrl+'/chat/request/human')
- //      this.http.get(this.serverUrl+'/chat/request/human', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
- //        .map(res: TokenResponse())
- //        .subscribe(res => {
- //          resolve(res);
- //        }, (err) => {
- //          reject(err);
- //        });
- //    });
- //  }
 
  // get customer request except opeartor and robot
   getNewRequestCount() {
     return new Promise((resolve, reject) => {
       // this.updateUrl();
-      this.http.get(this.serverUrl+'/chat/newrequest/human')
+      this.http.get(this.serverUrl+'/chat/newrequest/human', { headers: { Authorization: `Bearer ${this.getToken()}` }})
         // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -213,7 +196,7 @@ export class ChatService {
   getOperatorRequest(){
     return new Promise((resolve, reject) => {
         // this.updateUrl();
-      this.http.get(this.serverUrl+'/chat/request/operator' )
+      this.http.get(this.serverUrl+'/chat/request/operator', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
         // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -225,41 +208,41 @@ export class ChatService {
   }
 
   // Request, room refer to phone number
-  getRequestByRoom(room) {
-    return new Promise((resolve, reject) => {
-      this.http.get(this.serverUrl+'/chat/requestroom/' + room)
-        // .map(res => res.json())
-        .subscribe(res => {
-          resolve(res);
-        }, (err) => {
-          reject(err);
-        });
-    });
-  }
+  // getRequestByRoom(room) {
+  //   return new Promise((resolve, reject) => {
+  //     this.http.get(this.serverUrl+'/chat/requestroom/' + room)
+  //       // .map(res => res.json())
+  //       .subscribe(res => {
+  //         resolve(res);
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //   });
+  // }
 
-  showRequest(id) {
-    return new Promise((resolve, reject) => {
-        this.http.get(this.serverUrl+'/chat/request' + id)
-          // .map(res => res.json())
-          .subscribe(res => {
-            resolve(res)
-        }, (err) => {
-          reject(err);
-        });
-    });
-  }
+  // showRequest(id) {
+  //   return new Promise((resolve, reject) => {
+  //       this.http.get(this.serverUrl+'/chat/request' + id)
+  //         // .map(res => res.json())
+  //         .subscribe(res => {
+  //           resolve(res)
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //   });
+  // }
 
-   showRequestSocket(id) {
-    return new Promise((resolve, reject) => {
-        this.http.get(this.serverUrl+'/chat/requestsid' + id)
-          // .map(res => res.json())
-          .subscribe(res => {
-            resolve(res)
-        }, (err) => {
-          reject(err);
-        });
-    });
-  }
+  //  showRequestSocket(id) {
+  //   return new Promise((resolve, reject) => {
+  //       this.http.get(this.serverUrl+'/chat/requestsid' + id)
+  //         // .map(res => res.json())
+  //         .subscribe(res => {
+  //           resolve(res)
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //   });
+  // }
 
   saveRequest(data) {
     return new Promise((resolve, reject) => {
@@ -275,7 +258,7 @@ export class ChatService {
 
   updateRequest(id, data) {
     return new Promise((resolve, reject) => {
-        this.http.put(this.serverUrl+'/chat/request'+id, data)
+        this.http.put(this.serverUrl+'/chat/request/'+id, data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -287,7 +270,7 @@ export class ChatService {
 
   deleteRequest(id) {
     return new Promise((resolve, reject) => {
-        this.http.delete(this.serverUrl+'/chat/request/'+id)
+        this.http.delete(this.serverUrl+'/chat/request/'+id, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           .subscribe(res => {
             resolve(res);
           }, (err) => {
@@ -300,7 +283,7 @@ export class ChatService {
 
   getAllUser() {
     return new Promise((resolve, reject) => {
-      this.http.get(this.serverUrl+'/chat/user/all')
+      this.http.get(this.serverUrl+'/chat/user/all', { headers: { Authorization: `Bearer ${this.getToken()}` }})
         // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -311,9 +294,9 @@ export class ChatService {
   }
 
 
-  showUser(id) {
+  showUser(phoneNum) {
     return new Promise((resolve, reject) => {
-        this.http.get(this.serverUrl+'/chat/user' + id)
+        this.http.get(this.serverUrl+'/chat/userphone/' + phoneNum)
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -336,9 +319,9 @@ export class ChatService {
     });
   }
 
-  updateUser(id, data) {
+  updateUser(phoneNum, data) {
     return new Promise((resolve, reject) => {
-        this.http.put(this.serverUrl+'/chat/user'+id, data)
+        this.http.put(this.serverUrl+'/chat/userupdate/'+phoneNum, data)
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -348,9 +331,9 @@ export class ChatService {
     });
   }
 
-  deleteUser(id) {
+  deleteUser(phoneNum) {
     return new Promise((resolve, reject) => {
-        this.http.delete(this.serverUrl+'/chat/user/'+id)
+        this.http.delete(this.serverUrl+'/chat/userdelete/'+phoneNum, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           .subscribe(res => {
             resolve(res);
           }, (err) => {
@@ -362,7 +345,7 @@ export class ChatService {
 //get all images
   getAllImage() {
     return new Promise((resolve, reject) => {
-      this.http.get(this.serverUrl+'/chat/image/all')
+      this.http.get(this.serverUrl+'/chat/image/all', { headers: { Authorization: `Bearer ${this.getToken()}` }})
         // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -375,7 +358,7 @@ export class ChatService {
   //get image by room
   getImageByRoom(room) {    //here we use room as phone_number
     return new Promise((resolve, reject) => {
-      this.http.get(this.serverUrl+'/chat/image' + room)
+      this.http.get(this.serverUrl+'/chat/image' + room, { headers: { Authorization: `Bearer ${this.getToken()}` }})
         // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -388,7 +371,7 @@ export class ChatService {
 // Show signle image by ID
   showImage(id) {
     return new Promise((resolve, reject) => {
-        this.http.get(this.serverUrl+'/chat/image' + id)
+        this.http.get(this.serverUrl+'/chat/image' + id, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -401,7 +384,7 @@ export class ChatService {
 // Save image to DB
   saveImage(object) {
     return new Promise((resolve, reject) => {
-        this.http.post(this.serverUrl+'/chat/image', object)
+        this.http.post(this.serverUrl+'/chat/image', object, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -411,9 +394,10 @@ export class ChatService {
     });
   }
 
+// delete signle image by ID
   deleteImage(id) {
     return new Promise((resolve, reject) => {
-        this.http.delete(this.serverUrl+'/chat/image/'+id)
+        this.http.delete(this.serverUrl+'/chat/image/'+id, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           .subscribe(res => {
             resolve(res);
           }, (err) => {
