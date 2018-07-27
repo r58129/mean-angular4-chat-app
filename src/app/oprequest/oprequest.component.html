@@ -27,10 +27,10 @@
                     <!-- <th>Status</th> -->
                   </tr>
                 </thead>
-                <tbody>
+                <tbody id="table-body">
                   <tr *ngFor="let op of requests">
-      				<td>{{op.phone_number }}</td>
-                    <td>{{op.updated_at | date: 'medium'}}</td>
+      				    <td>{{op.phone_number }}</td>
+                  <td>{{op.updated_at | date: 'medium'}}</td>
 <!--                     <td>
                     	<div class="pull-right">   	
                              <a [routerLink]="['/operator', {outlets: { opchatOutlet: ['opchatbox', op.phone_number]}}]" routerLinkActive="active" class="btn btn-primary btn-xs" 

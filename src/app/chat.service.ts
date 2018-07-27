@@ -246,7 +246,7 @@ export class ChatService {
 
   saveRequest(data) {
     return new Promise((resolve, reject) => {
-        this.http.post(this.serverUrl+'/chat/request', data)
+        this.http.post(this.serverUrl+'/chat/request', data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -296,7 +296,7 @@ export class ChatService {
 
   showUser(phoneNum) {
     return new Promise((resolve, reject) => {
-        this.http.get(this.serverUrl+'/chat/userphone/' + phoneNum)
+        this.http.get(this.serverUrl+'/chat/userphone/' + phoneNum, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -309,7 +309,7 @@ export class ChatService {
 
   saveUser(data) {
     return new Promise((resolve, reject) => {
-        this.http.post(this.serverUrl+'/chat/user', data)
+        this.http.post(this.serverUrl+'/chat/user', data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -321,7 +321,7 @@ export class ChatService {
 
   updateUser(phoneNum, data) {
     return new Promise((resolve, reject) => {
-        this.http.put(this.serverUrl+'/chat/userupdate/'+phoneNum, data)
+        this.http.put(this.serverUrl+'/chat/userupdate/'+phoneNum, data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res);

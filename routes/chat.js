@@ -471,11 +471,17 @@ router.get('/roomhistory/:room', auth, function(req, res, next) {
 // });
 
 /* SAVE REQUEST */
-router.post('/request', function(req, res, next) {
-  Chat.create(req.body, function (err, post) {
-    if (err) return next(err);
-    res.json(post);
-  });
+router.post('/request', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Chat.create(req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  }
 });
 
 /* UPDATE REQUEST */
@@ -544,27 +550,45 @@ router.get('/user/all', auth, function(req, res, next) {
 // });
 
 /* GET SINGLE user BY phone_number */
-router.get('/userphone/:phone_number', function(req, res, next) {
-  User.find({phone_number:req.params.phone_number}, function (err, users) {
-    if (err) return next(err);
-    res.json(users);
-  });
+router.get('/userphone/:phone_number', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    User.find({phone_number:req.params.phone_number}, function (err, users) {
+      if (err) return next(err);
+      res.json(users);
+    });
+  }
 });
 
 /* SAVE user */
-router.post('/user', function(req, res, next) {
-  User.create(req.body, function (err, post) {
-    if (err) return next(err);
-    res.json(post);
-  });
+router.post('/user', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    User.create(req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  }
 });
 
 /* UPDATE user by user phone number*/
-router.put('/userupdate/:phone_number', function(req, res, next) {
-  User.findOneAndUpdate({phone_number:req.params.phone_number}, req.body, function (err, users) {
-    if (err) return next(err);
-    res.json(users);
-  });
+router.put('/userupdate/:phone_number', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    User.findOneAndUpdate({phone_number:req.params.phone_number}, req.body, function (err, users) {
+      if (err) return next(err);
+      res.json(users);
+    });
+  }
 });
 
 /* DELETE user */

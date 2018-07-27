@@ -86,18 +86,18 @@ private token: string;
       console.log("request post base" );
       // base = this.http.post(`/api/${type}`, user);
       if (type === 'register') {
-      base = this.http.post('https://airpoint.com.hk:4060/api/register', user);
+      base = this.http.post(this.configs.expressAddr +'/api/register', user);
       console.log("register post base" );
       }
       if (type === 'login') {
-      base = this.http.post('https://airpoint.com.hk:4060/api/login', user);
+      base = this.http.post(this.configs.expressAddr +'/api/login', user);
       console.log("login post base" );
       }
       
     } else {
       console.log("request method: GET" );
       // base = this.http.get(`/api/${type}`, { headers: { Authorization: `Bearer ${this.getToken()}` }});
-      base = this.http.get('https://airpoint.com.hk:4060/api/profile', { headers: { Authorization: `Bearer ${this.getToken()}` }});
+      base = this.http.get(this.configs.expressAddr +'/api/profile', { headers: { Authorization: `Bearer ${this.getToken()}` }});
     }
 
     const request = base.pipe(

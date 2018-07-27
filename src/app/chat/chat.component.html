@@ -49,7 +49,7 @@
                                 <!-- <span class="direct-chat-name pull-left">{{ c.nickname }}</span> -->
                                 <!-- <span class="direct-chat-timestamp pull-left">{{ c.updated_at | date: 'medium' }}</span> -->                               
                                 <!-- /.direct-chat-img -->
-                                <img class="direct-chat-img" src="../assets/dist/img/user3-128x128.jpg" alt="Message User Image">
+                                <img class="direct-chat-img" src="../assets/dist/img/customer-128x128.jpg" alt="Message User Image">
                                
                                 <div class="direct-chat-text pull-left"><span class="direct-chat-name pull-left">{{ c.nickname }}</span><br>
                                 <div  *ngIf="c.file_path !== undefine" >
@@ -71,7 +71,7 @@
                                     <span class="direct-chat-timestamp pull-right">{{ c.updated_at | date: 'medium' }}</span>
                                   </div> -->
                                   
-                                  <img class="direct-chat-img" src="../assets/dist/img/user1-128x128.jpg" alt="Message User Image"><!-- /.direct-chat-img -->
+                                  <img class="direct-chat-img" src="../assets/dist/img/csc-128x128.jpg" alt="Message User Image"><!-- /.direct-chat-img -->
                                   <div class="direct-chat-text pull-right">
                                     <span class="direct-chat-name pull-right">{{ c.nickname }}</span><br>
                                     <div  *ngIf="c.filename!==undefine" >
@@ -175,7 +175,7 @@
                       <div class="form-group">
                         <img #image [src]="url" height="300px"><br/>
                         <input style = "display: none" type="file" class="form-control" (change)="onFileSelected($event)" #fileInput [(ngModel)]="filename" name="filename" required="">
-                        <button type="button" class="btn btn-success btn-sm" (click)="fileInput.click()">Select Photo</button>
+                        <button type="button" class="btn btn-success btn-sm" (click)="fileInput.click()">Browse Photo</button>
                       </div>
 
                       <div class="form-group">
