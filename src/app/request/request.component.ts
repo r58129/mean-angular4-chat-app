@@ -66,6 +66,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
     this.scrollTableToBottom();
       
     this.socket.emit('user','admin');
+    console.log("emit admin socket");
 
     // this.socket.on('users', function(data){
     this.socket.on('users', (userid, socket_id) => {

@@ -66,7 +66,7 @@ module.exports.login = function(req, res) {
     if(staff){
       // console.log("before generateJwt: " + staff);
       token = staff.generateJwt();
-      // console.log("token: " + token);
+      console.log("token: " + token);
       sendJSONresponse(res, 200, {
         "token" : token
       });

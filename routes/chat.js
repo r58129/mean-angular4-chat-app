@@ -273,12 +273,13 @@ io.on('connection', function (socket) {
 
 
 /* GET ALL CHATS, THIS IS THE REAL ROOM */
-router.get('/:room', auth, function(req, res, next) {
-  if (!req.payload._id) {
-      res.status(401).json({
-        "message" : "UnauthorizedError:"
-      });
-  } else {
+router.get('/:room', function(req, res, next) {
+// router.get('/:room', auth, function(req, res, next) {
+  // if (!req.payload._id) {
+  //     res.status(401).json({
+  //       "message" : "UnauthorizedError:"
+  //     });
+  // } else {
   // Chat.find({ room: req.params.room }, function (err, chats) {
     Chat.find({ $and:
       [
@@ -290,7 +291,7 @@ router.get('/:room', auth, function(req, res, next) {
       if (err) return next(err);
       res.json(chats);
     });
-  }
+  // }
 });
 
 /* GET SINGLE CHAT BY ID */
@@ -471,17 +472,18 @@ router.get('/roomhistory/:room', auth, function(req, res, next) {
 // });
 
 /* SAVE REQUEST */
-router.post('/request', auth, function(req, res, next) {
-  if (!req.payload._id) {
-    res.status(401).json({
-      "message" : "UnauthorizedError:"
-    });
-  } else {  
+router.post('/request', function(req, res, next) {
+// router.post('/request', auth, function(req, res, next) {
+  // if (!req.payload._id) {
+  //   res.status(401).json({
+  //     "message" : "UnauthorizedError:"
+  //   });
+  // } else {  
     Chat.create(req.body, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });
-  }
+  // }
 });
 
 /* UPDATE REQUEST */
@@ -550,17 +552,18 @@ router.get('/user/all', auth, function(req, res, next) {
 // });
 
 /* GET SINGLE user BY phone_number */
-router.get('/userphone/:phone_number', auth, function(req, res, next) {
-  if (!req.payload._id) {
-    res.status(401).json({
-      "message" : "UnauthorizedError:"
-    });
-  } else {  
+router.get('/userphone/:phone_number', function(req, res, next) {
+// router.get('/userphone/:phone_number', auth, function(req, res, next) {
+  // if (!req.payload._id) {
+  //   res.status(401).json({
+  //     "message" : "UnauthorizedError:"
+  //   });
+  // } else {  
     User.find({phone_number:req.params.phone_number}, function (err, users) {
       if (err) return next(err);
       res.json(users);
     });
-  }
+  // }
 });
 
 /* SAVE user */
@@ -629,12 +632,13 @@ router.get('/image/all', auth, function(req, res, next) {
 });
 
 /* GET IMAGE BY ROOM, THIS IS THE REAL ROOM */
-router.get('/image/:room', auth, function(req, res, next) {
-  if (!req.payload._id) {
-    res.status(401).json({
-      "message" : "UnauthorizedError:"
-    });
-  } else {  
+router.get('/image/:room', function(req, res, next) {
+// router.get('/image/:room', auth, function(req, res, next) {
+  // if (!req.payload._id) {
+  //   res.status(401).json({
+  //     "message" : "UnauthorizedError:"
+  //   });
+  // } else {  
     // Chat.find({ room: req.params.room }, function (err, chats) {
       Chat.find({ $and:
       [
@@ -646,7 +650,7 @@ router.get('/image/:room', auth, function(req, res, next) {
       if (err) return next(err);
       res.json(chats);
     });
-  }
+  // }
 });
 
 /* GET SINGLE image BY ID */

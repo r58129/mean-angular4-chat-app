@@ -125,7 +125,32 @@ export class ChatComponent implements OnInit, AfterViewChecked {
             console.log(err);
           });
 
-        } else {
+        } else {  // else (filePath == 'nonwhatsapp')
+          if (filePath == 'nonwhatsapp'){
+            // extract non whatsapp image from message
+            // var base64header = ((message).split(".")[1]);
+            var base64Image = ((message).split(".")[1]);
+            console.log('base64Image: ' +base64Image);
+
+            //save to DB 
+              this.CusImgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: '', file_path:filePath, image:base64Image };
+              console.log('receive image from customer');
+              console.log(this.CusImgData.room);
+              console.log(this.CusImgData.phone_number);
+              console.log(this.CusImgData.socket_id);
+              console.log(this.CusImgData.message);
+              console.log(this.CusImgData.image);
+              console.log(this.CusImgData.file_path);
+
+              this.chatService.saveImage(this.CusImgData).then((result) => {
+                console.log('save Image from tinker');
+                this.socket.emit('save-image', result);
+              }, (err) => {
+                console.log(err);
+              });
+
+
+          } else {  // whatsapp flow will provide valid file path
         // get admin sessionID
         var sID=localStorage.getItem('res.data.sessionID');
         var fileType = ((filePath).split(".")[1]);
@@ -180,8 +205,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
           });
       
         //sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
-        }  // end else
-      }  //end first else
+        }  // end else whatsapp flow will provide valid file path
+      }  // end else (filePath == 'nonwhatsapp')
+      }  //end else (message.includes('\uD83D\uDCF7'))
     }  // end if (msg !== 'undefine')
   });
 

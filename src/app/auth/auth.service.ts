@@ -83,15 +83,15 @@ private token: string;
     let base;
 
     if (method === 'post') {
-      console.log("request post base" );
+      console.log("request post");
       // base = this.http.post(`/api/${type}`, user);
       if (type === 'register') {
       base = this.http.post(this.configs.expressAddr +'/api/register', user);
-      console.log("register post base" );
+      console.log("register http post");
       }
       if (type === 'login') {
       base = this.http.post(this.configs.expressAddr +'/api/login', user);
-      console.log("login post base" );
+      console.log("login http post");
       }
       
     } else {
@@ -168,8 +168,8 @@ private token: string;
     .subscribe(
         res => {
           localStorage.setItem('res.data.sessionID', res.data.sessionID);  //Lu test storage
-          this.router.navigate(['/chat/request']);
           sessionStorage.setItem('loginTinkerDone', "1");
+          this.router.navigate(['/chat/request']);
           return true;
         });
 
