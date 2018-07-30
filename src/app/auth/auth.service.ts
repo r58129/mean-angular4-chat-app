@@ -156,7 +156,7 @@ private token: string;
 
   // public loginTinker(port:string) :boolean{
   public loginTinker() :boolean{
-     
+     console.log('loginTinker before post');
     // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/user/login', {
     this.http.post (this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/login', {
       userID: 'admin',
@@ -169,12 +169,11 @@ private token: string;
         res => {
           localStorage.setItem('res.data.sessionID', res.data.sessionID);  //Lu test storage
           sessionStorage.setItem('loginTinkerDone', "1");
+           console.log('loginTinker is done');
           this.router.navigate(['/chat/request']);
+          console.log('redirect the link to request');
           return true;
         });
-
-
-
     return true;
   }
 

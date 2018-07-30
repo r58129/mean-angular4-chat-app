@@ -61,7 +61,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
   ngOnInit() {
     // var user = JSON.parse(localStorage.getItem("user"));
     // var request = JSON.parse(localStorage.getItem("request"));
-
+    console.log("request ngOnInit");
     this.getHumanRequest();
     this.scrollTableToBottom();
       

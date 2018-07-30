@@ -22,12 +22,13 @@ export class LoginComponent {
     if (!sessionStorage.getItem('loginTinkerDone'))
       {
         sessionStorage.setItem('loginTinkerDone', "0");
+        console.log('login ngOnInit');
       }
   }
 
   login() {
     this.authService.login(this.credentials).subscribe(() => {
-      
+      console.log('login user is done and now login to tinker');
       //login to tinker
       if (sessionStorage.getItem('loginTinkerDone')=="0"){
         // this.auth.loginTinker(this.configs.angularAddr+"/"+this.configs.tinkerport);
@@ -38,7 +39,7 @@ export class LoginComponent {
       // don't redirect the link here, do this in logintinker
       // this.router.navigateByUrl('/api/profile');
       // this.router.navigateByUrl('/chat/request');
-      console.log("Auth.login is done");
+      console.log("login user is done");
     }, (err) => {
       console.error(err);
     });

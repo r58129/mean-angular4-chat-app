@@ -24,7 +24,8 @@ export class AppheaderComponent implements OnInit, OnDestroy{
   newUser = { nickname: '', room: '' };
   newRequest = { phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
   
-  socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
+   socket = io(this.configs.socketIoServerAddr,{secure: true});
+  // socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
   
   // constructor(public http: HttpClient, public authService: AuthserviceService, private chatService: ChatService, private configs: Configs) {
 
