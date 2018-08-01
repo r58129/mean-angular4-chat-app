@@ -29,6 +29,23 @@
 
 }
 
+/*.table
+{   
+    border-collapse:collapse;
+    table-layout:fixed;
+
+}*/
+
+/*.table-cell
+{
+    max-width: 300px;
+    white-space: -o-pre-wrap; 
+    word-wrap: break-word;
+    white-space: pre-wrap; 
+    white-space: -moz-pre-wrap; 
+    white-space: -pre-wrap;
+}
+*/
 #request-page, #chat-page
 {
     margin-left: 0;

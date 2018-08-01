@@ -11,7 +11,7 @@ import { Configs } from '../../configurations';
 })
 export class LoginComponent {
 
- credentials: TokenPayload = {
+  credentials: TokenPayload = {
     email: '',
     password: ''
   };
@@ -35,11 +35,11 @@ export class LoginComponent {
         this.authService.loginTinker();
         // sessionStorage.setItem('loginTinkerDone', "1");
       }
-      
-      // don't redirect the link here, do this in logintinker
+           
       // this.router.navigateByUrl('/api/profile');
       // this.router.navigateByUrl('/chat/request');
-      console.log("login user is done");
+      this.router.navigate(['/chat/request']);
+      console.log("redirect the link to request");
     }, (err) => {
       console.error(err);
     });

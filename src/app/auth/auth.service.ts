@@ -138,7 +138,7 @@ private token: string;
     this.token = '';
     window.localStorage.removeItem('mean-token');
     this.logoutTinker();
-    console.log("logout tinker");
+    // console.log("logout tinker");
     
     // sessionStorage.removeItem('expressport');
     // sessionStorage.removeItem('socketioport');
@@ -148,6 +148,17 @@ private token: string;
     this.router.navigateByUrl('/');
     console.log("logout user");
   }
+
+  //   public loginStatus(): Observable <any> {
+  //   // const user = this.getUserDetails();
+  //   // if (this.isLoggedIn()) {
+  //   //   return of (true);
+  //   // } else {
+  //   //   return of (false);
+  //   // }
+  //   console.log("inside login status");
+  //   return this.request('get', 'profile');
+  // }
 
   private handleErrorObservable (error: Response | any) {
     console.error(error.message || error);
@@ -170,32 +181,73 @@ private token: string;
           localStorage.setItem('res.data.sessionID', res.data.sessionID);  //Lu test storage
           sessionStorage.setItem('loginTinkerDone', "1");
            console.log('loginTinker is done');
-          this.router.navigate(['/chat/request']);
-          console.log('redirect the link to request');
+          // this.router.navigate(['/chat/request']);
+          // console.log('redirect the link to request');
+
+
+          // console.log('before register to tinker, session id: ' + localStorage.getItem('res.data.sessionID'))
+          this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
+          {}, httpOptions)
+          .pipe(
+            catchError(this.handleErrorObservable)
+          ).subscribe(
+            res => {
+            console.log('register to tinker');  
+          });
+
           return true;
         });
+
+    // this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
+    //   {}, httpOptions)
+    //     .pipe(
+    //     catchError(this.handleErrorObservable)
+    //   ).subscribe(
+    //       res => {      
+    //     console.log('register to tinker');  
+    //     return true;
+    //       });
+
     return true;
   }
 
   // public logoutTinker(port:string): boolean{
   public logoutTinker(): boolean{
-    var sID2 = '222';
-    sID2=localStorage.getItem('res.data.sessionID');
+    var sID = '222';
+    sID=localStorage.getItem('res.data.sessionID');
+
+    // if (sID!=null){
+      // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
+    this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
+    {}, httpOptions)
+      .pipe(
+        catchError(this.handleErrorObservable)
+      )
+      .subscribe(
+        res => {
+          console.log('unregister tinker');
+          return true;
+        });        
+    // } //end if tPort !=null
+  
+
       
     // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/user/logout'+'?sessionID='+sID2, {
-    this.http.post (this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/logout'+'?sessionID='+sID2, {
+    this.http.post (this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/logout'+'?sessionID='+sID, {
     }, httpOptions)
       .pipe(
-      catchError(this.handleErrorObservable)
+        catchError(this.handleErrorObservable)
       )
       .subscribe(
         res => {
           localStorage.removeItem('res.data.sessionID');
+          console.log('logout tinker');
           return true;
         });
-      sessionStorage.setItem('loginTinkerDone','0');
-      // sessionStorage.removeItem('loginTinkerDone');
-      return true;      
+    
+    sessionStorage.setItem('loginTinkerDone','0');
+    // sessionStorage.removeItem('loginTinkerDone');
+    return true;      
   }
 }
 

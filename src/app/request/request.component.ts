@@ -65,74 +65,74 @@ export class RequestComponent implements OnInit, AfterViewChecked {
     this.getHumanRequest();
     this.scrollTableToBottom();
       
-    this.socket.emit('user','admin');
-    console.log("emit admin socket");
+  //   this.socket.emit('user','admin');
+  //   console.log("emit admin socket");
 
-    // this.socket.on('users', function(data){
-    this.socket.on('users', (userid, socket_id) => {
-      // this.socket.on('logRequest', (userid, socket_id) => {
-    // this.socket.on('users', function(userid, socket_id){
-      var date = new Date();
-      // console.log("inside users socket.on");
-      console.log("print userid:" +userid);
-      console.log("print socket.id:" +socket_id);
+  //   // this.socket.on('users', function(data){
+  //   this.socket.on('users', (userid, socket_id) => {
+  //     // this.socket.on('logRequest', (userid, socket_id) => {
+  //   // this.socket.on('users', function(userid, socket_id){
+  //     var date = new Date();
+  //     // console.log("inside users socket.on");
+  //     console.log("print userid:" +userid);
+  //     console.log("print socket.id:" +socket_id);
   
-   if (userid !== 'admin'){
-  	 	console.log("print userid before saveChat: " +userid);
-   		console.log("print socket_id before saveChat: " +socket_id);
-   // use status field to classify the new and old request
-   this.newRequest = {phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer service request', request_status:'New' };
-   // this.newRequest = { room: this.newRequest.room, phone_number: this.newRequest.phone_number, socket_id: this.newRequest.socket_id, message: 'Join this room', updated_at:date };
-   // this.newRequest = Object.assign({ room: userid, phone_number: userid, socket_id: socket_id, message: 'Join this room', updated_at:date }, this.newRequest);
-   	console.log(this.newRequest.room);
-   	console.log(this.newRequest.phone_number);
-   	console.log(this.newRequest.socket_id);
-   	console.log(this.newRequest.message);
-   	console.log(this.newRequest.request_status);
- 	// console.log(this.newRequest.updated_at);
+  //  if (userid !== 'admin'){
+  // 	 	console.log("print userid before saveChat: " +userid);
+  //  		console.log("print socket_id before saveChat: " +socket_id);
+  //  // use status field to classify the new and old request
+  //  this.newRequest = {phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer service request', request_status:'New' };
+  //  // this.newRequest = { room: this.newRequest.room, phone_number: this.newRequest.phone_number, socket_id: this.newRequest.socket_id, message: 'Join this room', updated_at:date };
+  //  // this.newRequest = Object.assign({ room: userid, phone_number: userid, socket_id: socket_id, message: 'Join this room', updated_at:date }, this.newRequest);
+  //  	console.log(this.newRequest.room);
+  //  	console.log(this.newRequest.phone_number);
+  //  	console.log(this.newRequest.socket_id);
+  //  	console.log(this.newRequest.message);
+  //  	console.log(this.newRequest.request_status);
+ 	// // console.log(this.newRequest.updated_at);
 
-    if (this.newRequest.socket_id!=undefined){
-    //check if this socket id exist
-      // console.log("oldSid: " +this.oldSid);
-      console.log("curSid: " +this.curSid);
-      if (this.newRequest.socket_id!=this.curSid){
-      // this.chatService.showRequestSocket(this.newRequest.socket_id).then((result) => {
-      //   if (result == 0){
-      //     console.log( result +" entry found. Updating DB..." );
+  //   if (this.newRequest.socket_id!=undefined){
+  //   //check if this socket id exist
+  //     // console.log("oldSid: " +this.oldSid);
+  //     console.log("curSid: " +this.curSid);
+  //     if (this.newRequest.socket_id!=this.curSid){
+  //     // this.chatService.showRequestSocket(this.newRequest.socket_id).then((result) => {
+  //     //   if (result == 0){
+  //     //     console.log( result +" entry found. Updating DB..." );
 
-          this.curSid = this.newRequest.socket_id;
-          console.log("curSid: " +this.curSid);
-          console.log("socket_id: " +this.newRequest.socket_id);
+  //         this.curSid = this.newRequest.socket_id;
+  //         console.log("curSid: " +this.curSid);
+  //         console.log("socket_id: " +this.newRequest.socket_id);
 
-          this.chatService.saveRequest(this.newRequest).then((result) => {
-            this.socket.emit('save-message', result);
-            console.log( "Updated DB" );
-          }, (err) => {
-          console.log(err);
-          });
-      //   } else{
-      //     console.log("duplicated entry, will not update DB");
-      //   }
+  //         this.chatService.saveRequest(this.newRequest).then((result) => {
+  //           this.socket.emit('save-message', result);
+  //           console.log( "Updated DB" );
+  //         }, (err) => {
+  //         console.log(err);
+  //         });
+  //     //   } else{
+  //     //     console.log("duplicated entry, will not update DB");
+  //     //   }
 
-      // }, (err) => {
-      //   console.log(err);
-      // });
+  //     // }, (err) => {
+  //     //   console.log(err);
+  //     // });
 
-   //  setTimeout(()=> {
-    // this.chatService.saveRequest(this.newRequest).then((result) => {
-   //    this.socket.emit('save-message', result);
-    //   }, (err) => {
-    //     console.log(err);
-    //   });
-   //  },2000);
+  //  //  setTimeout(()=> {
+  //   // this.chatService.saveRequest(this.newRequest).then((result) => {
+  //  //    this.socket.emit('save-message', result);
+  //   //   }, (err) => {
+  //   //     console.log(err);
+  //   //   });
+  //  //  },2000);
   
-      }  else {  //this.newRequest.socket_id!=this.curSid
-        console.log("duplicated entry, will not update DB");
-      }
-    }  // (this.newRequest.socket_id!=undefined)
-  }    //if (userid !== 'admin')
+  //     }  else {  //this.newRequest.socket_id!=this.curSid
+  //       console.log("duplicated entry, will not update DB");
+  //     }
+  //   }  // (this.newRequest.socket_id!=undefined)
+  // }    //if (userid !== 'admin')
 
-  });
+  // });
 
 //      var tPort:string ;
 //      var sID :string;
@@ -143,16 +143,17 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 //      console.log("res.data.sessionID got is "+sID);
       
       // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
-  this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
-    {}, httpOptions)
-      .pipe(
-      catchError(this.handleErrorObservable)
-    ).subscribe(
-        res => {
-    // this.refreshData();
-    this.getHumanRequest();         
-    console.log('register to tinker');  
-        });
+// register to tinker board
+  // this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
+  //   {}, httpOptions)
+  //     .pipe(
+  //     catchError(this.handleErrorObservable)
+  //   ).subscribe(
+  //       res => {
+  //   // this.refreshData();
+  //   this.getHumanRequest();         
+  //   console.log('register to tinker');  
+  //       });
       
 // data refresh
   // this.refreshData();
@@ -164,7 +165,7 @@ export class RequestComponent implements OnInit, AfterViewChecked {
 this.timer = setInterval(() => {
     // this.refreshData();
     this.getHumanRequest();
-    console.log("refresh requests");
+    // console.log("refresh requests");
   }, 3000);
 
   // this.chatService.data$.takeUntil(this.unsubscribe)
@@ -178,46 +179,46 @@ this.timer = setInterval(() => {
   ngOnDestroy(){
         
       // var tPort:string ;
-      var sID :string;
-      // tPort =sessionStorage.getItem("tinkerport");
-      sID =localStorage.getItem('res.data.sessionID');
+//       var sID :string;
+//       // tPort =sessionStorage.getItem("tinkerport");
+//       sID =localStorage.getItem('res.data.sessionID');
       
-      // console.log("tinkerport got is "+tPort);
-      console.log("res.data.sessionID got is "+sID);
-        //socket.emit('forceDisconnect');
+//       // console.log("tinkerport got is "+tPort);
+//       console.log("res.data.sessionID got is "+sID);
+//         //socket.emit('forceDisconnect');
       
-      // if (tPort!=null){
-    if (sID!=null){
-      // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
-      this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
-    {}, httpOptions)
-    .pipe(
-      catchError(this.handleErrorObservable)
-    ).subscribe(
-        res => {
+//       // if (tPort!=null){
+//     if (sID!=null){
+//       // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
+//       this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
+//     {}, httpOptions)
+//     .pipe(
+//       catchError(this.handleErrorObservable)
+//     ).subscribe(
+//         res => {
                 
-    this.unsubscribe.next();
-    this.unsubscribe.complete();
-//            console.log(sID2);
-//          console.log(res);
-            this.socket.disconnect();
-                if (this.timer){
-                    clearInterval(this.timer);
-                    console.log('stop admin request refresh');
-                    }
-      //return true;
-        });
+//     this.unsubscribe.next();
+//     this.unsubscribe.complete();
+// //            console.log(sID2);
+// //          console.log(res);
+//             this.socket.disconnect();
+//                 if (this.timer){
+//                     clearInterval(this.timer);
+//                     console.log('stop admin request refresh');
+//                     }
+//       //return true;
+//         });
           
-    } //end if tPort !=null
-    else  {
+//     } //end if tPort !=null
+//     else  {
             this.unsubscribe.next();
             this.unsubscribe.complete();
-            this.socket.disconnect();
+            // this.socket.disconnect();
                 if (this.timer){
                     clearInterval(this.timer);
                     console.log('stop admin request refresh');
                 }
-            }
+            // }  //end else
 
   }
 
@@ -250,11 +251,11 @@ this.timer = setInterval(() => {
   // }
 
     
-      private handleErrorObservable (error: Response | any) {
+  private handleErrorObservable (error: Response | any) {
 	//console.error(error.message || error);
 	//return Observable.throw(error.message || error);
           return "0";
-    }
+  }
     
   scrollTableToBottom(): void {
     try {
