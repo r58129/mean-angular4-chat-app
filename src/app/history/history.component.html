@@ -1,0 +1,124 @@
+
+<div class="content-wrapper">
+      <div class="box box-primary direct-chat direct-chat-primary" *ngIf="joinned; else joinroom">
+             <div class="box-header with-border">
+                    <!-- <div class="panel-heading"> -->
+                      <!-- <span class="glyphicon glyphicon-comment"></span>  -->
+                      {{ msgData.room }}
+                      
+                      <div class="btn-group pull-right no-padding"> 
+                        <form (ngSubmit)="logout()">
+              
+                      <div class="form-group btn-group pull-right">
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.db_id" name="db_id"  >
+                      </div>
+                      <div class="form-group btn-group pull-right no-margin ">
+                        <button type="submit" class="btn btn-default btn-xs" > Exit </button>
+                      </div>
+                    </form>
+                  </div>
+                  </div>
+                  <!-- /.box-body -->
+                  <div #scrollMe class="box-body" >
+                    <!-- <ul class="chat"> -->
+                      <!-- <li *ngFor="let c of chats"> -->
+                    <div *ngFor="let c of chats">
+                        <!-- <ul class="chat">
+                            <li *ngFor="let c of chats"> -->
+                            <!-- Message. Default to the left -->
+                            <div class="direct-chat-msg">
+                              <div class="direct-chat-info clearfix" *ngIf="(c.nickname==msgData.room) || (c.nickname==undefine); else rightchat">
+  
+                                <img class="direct-chat-img" src="../assets/dist/img/customer-128x128.jpg" alt="Message User Image">
+                               
+                                <div class="direct-chat-text pull-left"><span class="direct-chat-name pull-left">{{ c.nickname }}</span><br>
+                                <div  *ngIf="c.file_path !== undefine" >
+                                <div class="pull-left">
+                                  <img id="displayGetImage" [src]="c.image">
+                                </div><br>
+                                </div>
+
+                                <div class="pull-left">{{ c.message }}</div><br>
+                                <small class="direct-chat-timestamp pull-right">{{ c.updated_at | date: 'medium' }}</small>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- </div> -->
+                              <ng-template #rightchat>
+                                <div class="direct-chat-msg right">
+                                  <div class="direct-chat-info clearfix">
+                                    <!-- <div  *ngIf="c.nickname!==robot"> -->
+                                      <img class="direct-chat-img" src="../assets/dist/img/csc-128x128.jpg" alt="Message User Image"><!-- /.direct-chat-img -->
+                                      <div class="direct-chat-text pull-right">
+                                      <span class="direct-chat-name pull-right">{{ c.nickname }}</span><br>
+                                        <div  *ngIf="c.filename!==undefine" >
+                                        <div class="pull-right">
+                                        <img id="displayImage" [src]="c.image">
+                                        </div><br>
+                                        </div>
+                                        <div class="pull-right">{{ c.message }}
+                                        </div><br>
+                                        <small class="direct-chat-timestamp pull-left">{{ c.updated_at | date: 'medium' }}</small>
+                                      </div>
+                                    <!-- </div> -->
+                                    
+<!--                                     <div  *ngIf="c.nickname==robot">
+                                      <img class="direct-chat-img" src="../assets/dist/img/mAI_logo.jpg" alt="Message Robot Image">
+                                      <div class="direct-chat-text pull-right" id= "robot">
+                                      <span class="direct-chat-name pull-right">{{ c.nickname }}</span><br>
+                                        <div  *ngIf="c.filename!==undefine" >
+                                        <div class="pull-right">
+                                        <img id="displayImage" [src]="c.image">
+                                        </div><br>
+                                        </div>
+                                        <div class="pull-right">{{ c.message }}
+                                        </div><br>
+                                        <small class="direct-chat-timestamp pull-left">{{ c.updated_at | date: 'medium' }}</small>
+                                      </div>
+                                    </div> -->
+                              
+                                  </div>
+                                </div>
+                              </ng-template>
+
+
+                            </div>
+                          <!-- </li> -->
+                        <!-- </ul> -->
+                  </div>
+              </div>
+              
+              <ng-template #joinroom>
+                <div class="box box-primary direct-chat direct-chat-primary">
+                  <div class="box-header with-border">
+                    <h3 class="box-title"> View Customer Chat History</h3>
+                  </div>
+                  <div class="box-body">
+                    <!-- <h2>Select Customer</h2> -->
+                    <form (ngSubmit)="joinRoom()" #joinForm="ngForm">
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.nickname" placeholder="Input user name" name="nickname"  >
+                      </div>
+                      <div class="form-group">
+                        <input type="text" class="form-control" [(ngModel)]="newUser.room" name="room" placeholder="Input phone number"required="">
+                      </div>
+<!--                       <div class="form-group">
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.socket_id" name="socket_id" >
+                      </div> -->
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.db_id" name="db_id"  >
+                      </div>
+ <!--                      <div class="form-group">
+                        <input type="hidden" class="form-control" [(ngModel)]="newUser.request_status" name="request_status"  >
+                      </div> -->
+                      <div class="form-group">
+                        <button type="submit" id = "btn-view" class="btn btn-success" [disabled]="!joinForm.form.valid"> View </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </ng-template>
+
+    
+          </div>
+

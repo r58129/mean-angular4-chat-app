@@ -34,6 +34,7 @@ import { AuthService } from './auth/auth.service';
 import { AuthGuardService } from './auth/auth.guard.service';
 import { HomeComponent } from './components/home/home.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { HistoryComponent } from './history/history.component';
 // import { EmojiModule } from 'angular-emoji/dist';
 
 // import { ApphovertableComponent } from './components/apphovertable/apphovertable.component';
@@ -63,7 +64,8 @@ import { ProfileComponent } from './components/profile/profile.component';
     RegisterComponent,
     LoginComponent,
     HomeComponent,
-    ProfileComponent
+    ProfileComponent,
+    HistoryComponent
     //CallbackComponent
     // ApphovertableComponent
   ],

@@ -204,7 +204,20 @@ export class ChatService {
           reject(err);
         });
     });
+  }
 
+  // get all chats in room
+  getAllChatHistory(phoneNum){
+    return new Promise((resolve, reject) => {
+        // this.updateUrl();
+      this.http.get(this.serverUrl+'/chat/roomhistory/' +phoneNum, { headers: { Authorization: `Bearer ${this.getToken()}` }} )
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
   }
 
   // Request, room refer to phone number

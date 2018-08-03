@@ -26,7 +26,7 @@ import { AuthService } from './auth/auth.service';
 import { AuthGuardService } from './auth/auth.guard.service';
 import { HomeComponent } from './components/home/home.component';
 import { ProfileComponent } from './components/profile/profile.component';
-
+import { HistoryComponent } from './history/history.component';
 
 const appRoutes: Routes = [
     // { path: '', component: HomeComponent },
@@ -45,6 +45,8 @@ const appRoutes: Routes = [
     children:[
       { path: 'opchatbox/:id', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthGuardService]},
   ], canActivate: [AuthGuardService]},
+ 
+  { path: 'chat/history', component: HistoryComponent, canActivate: [AuthGuardService] },
 
   // { path: 'opchat', component: OpchatComponent, canActivate: [AuthguardGuard] },
   // { path: 'admin', component: AdminComponent , canActivate: [AuthguardGuard]},

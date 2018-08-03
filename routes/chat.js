@@ -272,7 +272,7 @@ io.on('connection', function (socket) {
 }); //io.on
 
 
-/* GET ALL CHATS, THIS IS THE REAL ROOM */
+/* GET ALL NON ROBOT CHATS, THIS IS THE REAL ROOM */
 router.get('/:room', function(req, res, next) {
 // router.get('/:room', auth, function(req, res, next) {
   // if (!req.payload._id) {
@@ -435,7 +435,7 @@ router.get('/request/operator', auth, function(req, res, next) {
 
 // db.inventory.find( { $and: [ { price: { $ne: 1.99 } }, { price: { $exists: true } } ] } )
 
-/* GET ALL REQUESTS in same room 192.168.0.102:4080/chat/roomhistory/phone#*/ 
+/* GET ALL CHATS in the room 192.168.0.102:4080/chat/roomhistory/phone#*/ 
 router.get('/roomhistory/:room', auth, function(req, res, next) {
   if (!req.payload._id) {
     res.status(401).json({
