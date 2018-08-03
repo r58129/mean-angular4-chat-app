@@ -15,14 +15,14 @@
   <div class="login-box-body">
     <p class="login-box-msg">Sign in to start your session</p>
 
-<form (submit)="login()">
+<form (submit)="login()" #loginForm="ngForm">
   <div class="form-group has-feedback">
     <label for="email">Email address</label>
-    <input type="email" class="form-control" name="email" placeholder="Email" [(ngModel)]="credentials.email"><span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+    <input type="email" class="form-control" name="email" placeholder="Email" [(ngModel)]="credentials.email" required=""><span class="glyphicon glyphicon-envelope form-control-feedback"></span>
   </div>
   <div class="form-group has-feedback">
     <label for="password">Password</label>
-    <input type="password" class="form-control" name="password" placeholder="Password" [(ngModel)]="credentials.password"> <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+    <input type="password" class="form-control" name="password" placeholder="Password" [(ngModel)]="credentials.password" required=""> <span class="glyphicon glyphicon-lock form-control-feedback"></span>
   </div>
     <div class="row">	
 	<div class="col-xs-8">
@@ -33,7 +33,7 @@
         </div>
     </div>
   	<div class="col-xs-4">
-  	<button type="submit" class="btn btn-primary btn-block btn-flat">Sign in</button>
+  	<button type="submit" class="btn btn-primary btn-block btn-flat"[disabled]="!loginForm.form.valid">Sign in</button>
 	</div>
 	</div>
 </form>
