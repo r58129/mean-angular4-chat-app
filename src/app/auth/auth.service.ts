@@ -36,6 +36,12 @@ const httpOptions = {
   })
 };
 
+// const httpHeaderOptions = {
+//   headers: new HttpHeaders({
+//     'Content-Type':  'text/html'
+//   })
+// };
+
 @Injectable()
 export class AuthService {
 
@@ -198,15 +204,16 @@ private token: string;
           return true;
         });
 
-    // this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
-    //   {}, httpOptions)
-    //     .pipe(
-    //     catchError(this.handleErrorObservable)
-    //   ).subscribe(
-    //       res => {      
-    //     console.log('register to tinker');  
-    //     return true;
-    //       });
+        // register to multichat server
+        this.http.post (this.configs.multiChatdAddr+'/api/csp/register?action=register&sessionID='+this.configs.multiChatCode, 
+          {}, httpOptions)
+            .pipe(
+            catchError(this.handleErrorObservable)
+          ).subscribe(
+              res => {      
+            console.log('register to mutlichat server');  
+            return true;
+              });
 
     return true;
   }
@@ -229,9 +236,7 @@ private token: string;
           return true;
         });        
     // } //end if tPort !=null
-  
-
-      
+        
     // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/user/logout'+'?sessionID='+sID2, {
     this.http.post (this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/logout'+'?sessionID='+sID, {
     }, httpOptions)
@@ -245,6 +250,31 @@ private token: string;
           return true;
         });
     
+    //unregister multichat server
+    this.http.post (this.configs.multiChatdAddr+'/api/csp/unregister?action=unregister&sessionID='+this.configs.multiChatCode, 
+    {}, httpOptions)
+      .pipe(
+        catchError(this.handleErrorObservable)
+      )
+      .subscribe(
+        res => {
+          console.log('unregister multichat server');
+          return true;
+        });        
+    // } //end if tPort !=null
+        
+    // this.http.post (this.configs.multiChatdAddr+'/api/user/logout'+'?sessionID='+this.configs.multiChatCode, {
+    // }, httpOptions)
+    //   .pipe(
+    //     catchError(this.handleErrorObservable)
+    //   )
+    //   .subscribe(
+    //     res => {
+    //       console.log('logout multichat server');
+    //       return true;
+    //     });
+
+
     sessionStorage.setItem('loginTinkerDone','0');
     // sessionStorage.removeItem('loginTinkerDone');
     return true;      

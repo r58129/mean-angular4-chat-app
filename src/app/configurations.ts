@@ -11,6 +11,10 @@ export class Configs {
   socketIoServerAddr: string = 'https://airpoint.com.hk:3637';   
   tinkerboardAddr: string = 'https://airpoint.com.hk';
   tinkerport: string = '8006';
+
+  multiChatdAddr: string = 'https://ea6aa49f.ngrok.io';
+  // multiChatport: string = '3991';
+  multiChatCode: string = 'Aptc123456';
   
 
   // angularAddr: string = 'https://airpoint.com.hk:4080';
