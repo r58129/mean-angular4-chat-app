@@ -6,11 +6,15 @@ export class Configs {
   
   //    constructor(public authService: AuthserviceService) {}
     
-  angularAddr: string = 'https://airpoint.com.hk:3890';
-  expressAddr: string = 'https://airpoint.com.hk:3285';
-  socketIoServerAddr: string = 'https://airpoint.com.hk:3284';   
+  angularAddr: string = 'https://airpoint.com.hk:4080';
+  expressAddr: string = 'https://airpoint.com.hk:4060';
+  socketIoServerAddr: string = 'https://airpoint.com.hk:3637';   
   tinkerboardAddr: string = 'https://airpoint.com.hk';
-  tinkerport: string = '8009';
+  tinkerport: string = '8006';
+
+  multiChatdAddr: string = 'https://ea6aa49f.ngrok.io';
+  // multiChatport: string = '3991';
+  multiChatCode: string = 'Aptc123456';
   
 
   // angularAddr: string = 'https://airpoint.com.hk:4080';
