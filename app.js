@@ -25,11 +25,11 @@ var gracefulShutdown;
 
 //update this port for nodejs express addr
 global.expressIp = 'https://airpoint.com.hk';
-global.expressPort = 4060;
-global.socketIoPort = 3637;
+global.expressPort = 3285;
+global.socketIoPort = 3284;
 
 global.dbIp = 'mongodb://192.168.0.102/';
-global.dbName = 'chatService';
+global.dbName = 'chatServiceDemo2';
 
 // var dbURI = global.dbIp +global.dbName;
 

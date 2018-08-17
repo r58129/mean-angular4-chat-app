@@ -6,11 +6,11 @@ export class Configs {
   
   //    constructor(public authService: AuthserviceService) {}
     
-  angularAddr: string = 'https://airpoint.com.hk:4080';
-  expressAddr: string = 'https://airpoint.com.hk:4060';
-  socketIoServerAddr: string = 'https://airpoint.com.hk:3637';   
+  angularAddr: string = 'https://airpoint.com.hk:3890';
+  expressAddr: string = 'https://airpoint.com.hk:3285';
+  socketIoServerAddr: string = 'https://airpoint.com.hk:3284';   
   tinkerboardAddr: string = 'https://airpoint.com.hk';
-  tinkerport: string = '8006';
+  tinkerport: string = '8009';
   
 
   // angularAddr: string = 'https://airpoint.com.hk:4080';
