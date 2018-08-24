@@ -26,8 +26,9 @@ var server = require('https').createServer(options,app);
 var io = require('socket.io')(server,{secure: true});
 var Chat = require('../models/Chat.js');
 var User = require('../models/User.js');
+var Contact = require('../models/Contact.js');
 // var Staff = require('../models/Staff.js');
-// var Request = require('../models/Request.js');
+
 
 
 var userSocketID = new Array();
@@ -442,27 +443,6 @@ router.get('/roomhistory/:room', auth, function(req, res, next) {
   }
 });
 
-/* GET SINGLE REQUEST BY ID */
-// router.get('/request/:id', auth, function(req, res, next) {
-//   if (!req.payload._id) {
-//     res.status(401).json({
-//       "message" : "UnauthorizedError:"
-//     });
-//   } else {
-//     Chat.findById(req.params.id, function (err, post) {
-//       if (err) return next(err);
-//       res.json(post);
-//     });
-//   }
-// });
-
-/* GET SINGLE REQUEST BY socket ID */
-// router.get('/requestsid/:socket_id', function(req, res, next) {
-//   Chat.find({socket_id:req.params.socket_id}, function (err, chats) {
-//     if (err) return next(err);
-//     res.json(chats);
-//   });
-// });
 
 /* SAVE REQUEST */
 router.post('/request', function(req, res, next) {
@@ -691,5 +671,79 @@ router.delete('/image/:id', auth, function(req, res, next) {
   }
 });
 
+//get all contact id
+router.get('/contact/all', function(req, res, next) { 
+// router.get('/contact/user', auth, function(req, res, next) { 
+  // if (!req.payload._id) {
+  //   res.status(401).json({
+  //     "message" : "UnauthorizedError:"
+  //   });
+  // } else {
+    Contact.find(req.body, function (err, contacts) {
+      if (err) return next(err);
+      res.json(contacts);
+    })
+  // }  //end else
+});
+
+// get id using name and package type
+router.get('/contact/:name', function(req, res, next) { 
+// router.get('/contact/user', auth, function(req, res, next) { 
+  // if (!req.payload._id) {
+  //   res.status(401).json({
+  //     "message" : "UnauthorizedError:"
+  //   });
+  // } else {
+    Contact.find({name:req.params.name}, function (err, contacts) {
+      if (err) return next(err);
+      res.json(contacts);
+    })
+  // }  //end else
+});
+
+/* SAVE contact */
+router.post('/contact', function(req, res, next) {
+// router.post('/contact', auth, function(req, res, next) {
+  // if (!req.payload._id) {
+  //   res.status(401).json({
+  //     "message" : "UnauthorizedError:"
+  //   });
+  // } else {  
+    Contact.create(req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  // }
+});
+
+/* UPDATE contact */
+router.put('/contact/:id', function(req, res, next) {
+// router.put('/contact/:id', auth, function(req, res, next) {
+//   if (!req.payload._id) {
+//     res.status(401).json({
+//       "message" : "UnauthorizedError:"
+//     });
+//   } else {  
+    Contact.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  // }
+});
+
+/* DELETE conact */
+router.delete('/contact/:id', function(req, res, next) {
+// router.delete('/contact/:id', auth, function(req, res, next) {
+  // if (!req.payload._id) {
+  //   res.status(401).json({
+  //     "message" : "UnauthorizedError:"
+  //   });
+  // } else {  
+    Contact.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  // }
+});
 
 module.exports = router;
