@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService, TokenPayload } from '../../auth/auth.service';
+import { AuthService, TokenPayload, UserDetails } from '../../auth/auth.service';
 import { Router } from '@angular/router';
 import { Configs } from '../../configurations';
 
@@ -15,6 +15,8 @@ export class LoginComponent {
     email: '',
     password: ''
   };
+
+  details: UserDetails;
 
   constructor(private authService: AuthService, private router: Router, private configs: Configs) {}
 
@@ -35,7 +37,25 @@ export class LoginComponent {
         this.authService.loginTinker();
         // sessionStorage.setItem('loginTinkerDone', "1");
       }
-           
+      
+      this.authService.profile().subscribe(user => {
+      this.details = user;
+      // console.log('name: ' +user.name);
+      console.log('email: ' +user.email);
+      console.log('baseAddress: ' +user.baseAddress);
+      console.log('expressPort: ' +user.expressPort);
+      console.log('tinkerPort: ' +user.tinkerPort);
+      console.log('sokcetioPort: ' +user.sokcetioPort);
+      localStorage.setItem('baseAddress', user.baseAddress);
+      localStorage.setItem('expressPort', user.expressPort);
+      localStorage.setItem('tinkerPort', user.tinkerPort);
+      localStorage.setItem('sokcetioPort', user.sokcetioPort);
+
+
+    }, (err) => {
+      console.error(err);
+    });
+
       // this.router.navigateByUrl('/api/profile');
       // this.router.navigateByUrl('/chat/request');
       this.router.navigate(['/chat/request']);

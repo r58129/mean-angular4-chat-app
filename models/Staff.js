@@ -24,7 +24,18 @@ var StaffSchema = new mongoose.Schema({
   //   required: true,
   // },
   hash: String,
-  salt: String
+  salt: String,
+  companyName: String,
+  baseAddress: String,
+  expressPort: String,  
+  tinkerPort: String,
+  sokcetioPort: String,
+  mongodbName: String,
+  phoneNumber: String,
+  online: String,
+  reserve1: String,
+  reserve2: String
+
 });
 
 StaffSchema.methods.setPassword = function(password){

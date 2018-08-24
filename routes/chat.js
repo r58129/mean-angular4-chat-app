@@ -350,13 +350,6 @@ router.delete('/:id', auth, function(req, res, next) {
   }
 });
 
-/* GET home page. */   /* Lewis */
-// router.get('/', function(req, res) {
-//   //  res.send("Hello world 2 !!!");
-//   //res.send('index');
-//     res.sendFile(path.join(distDir,'index.html'));
-// });
-
 
 /* GET ALL REQUESTS 192.168.0.102:4080/chat/request/all*/ 
 router.get('/request/all', auth, function(req, res, next) {
@@ -581,17 +574,18 @@ router.post('/user', auth, function(req, res, next) {
 });
 
 /* UPDATE user by user phone number*/
-router.put('/userupdate/:phone_number', auth, function(req, res, next) {
-  if (!req.payload._id) {
-    res.status(401).json({
-      "message" : "UnauthorizedError:"
-    });
-  } else {  
+router.put('/userupdate/:phone_number', function(req, res, next) {
+// router.put('/userupdate/:phone_number', auth, function(req, res, next) {
+  // if (!req.payload._id) {
+  //   res.status(401).json({
+  //     "message" : "UnauthorizedError:"
+  //   });
+  // } else {  
     User.findOneAndUpdate({phone_number:req.params.phone_number}, req.body, function (err, users) {
       if (err) return next(err);
       res.json(users);
     });
-  }
+  // }
 });
 
 /* DELETE user */
