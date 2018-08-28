@@ -6,17 +6,17 @@ export class Configs {
   
   //    constructor(public authService: AuthserviceService) {}
     
-  // angularAddr: string = 'https://airpoint.com.hk:4080';
-  // expressAddr: string = 'https://airpoint.com.hk:4060';
-  // socketIoServerAddr: string = 'https://airpoint.com.hk:3637';   
-  // tinkerboardAddr: string = 'https://airpoint.com.hk';
-  // tinkerport: string = '8006';
+  angularAddr: string = 'https://airpoint.com.hk:4080';
+  expressAddr: string = 'https://airpoint.com.hk:4060';
+  socketIoServerAddr: string = 'https://airpoint.com.hk:3637';   
+  tinkerboardAddr: string = 'https://airpoint.com.hk';
+  tinkerport: string = '8006';
 
-  angularAddr: string = localStorage.getItem('baseAddress');
-  expressAddr: string =localStorage.getItem('baseAddress') +":"+localStorage.getItem('expressPort');
-  socketIoServerAddr: string =localStorage.getItem('baseAddress') +":"+localStorage.getItem('sokcetioPort');
-  tinkerboardAddr: string =localStorage.getItem('baseAddress');
-  tinkerport: string =localStorage.getItem('tinkerPort');
+  // angularAddr: string = localStorage.getItem('baseAddress');
+  // expressAddr: string =localStorage.getItem('baseAddress') +":"+localStorage.getItem('expressPort');
+  // socketIoServerAddr: string =localStorage.getItem('baseAddress') +":"+localStorage.getItem('sokcetioPort');
+  // tinkerboardAddr: string =localStorage.getItem('baseAddress');
+  // tinkerport: string =localStorage.getItem('tinkerPort');
 
   multiChatdAddr: string = 'https://ea6aa49f.ngrok.io';
   // multiChatport: string = '3991';

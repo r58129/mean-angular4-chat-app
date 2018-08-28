@@ -29,7 +29,7 @@ var StaffSchema = new mongoose.Schema({
   baseAddress: String,
   expressPort: String,  
   tinkerPort: String,
-  sokcetioPort: String,
+  sokcetIoPort: String,
   mongodbName: String,
   phoneNumber: String,
   online: String,

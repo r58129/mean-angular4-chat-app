@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OperatorComponent } from './operator.component';
+import { MultichatComponent } from './multichat.component';
 
-describe('OperatorComponent', () => {
-  let component: OperatorComponent;
-  let fixture: ComponentFixture<OperatorComponent>;
+describe('MultichatComponent', () => {
+  let component: MultichatComponent;
+  let fixture: ComponentFixture<MultichatComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OperatorComponent ]
+      declarations: [ MultichatComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OperatorComponent);
+    fixture = TestBed.createComponent(MultichatComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

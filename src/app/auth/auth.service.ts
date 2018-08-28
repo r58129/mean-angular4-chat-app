@@ -175,6 +175,8 @@ private token: string;
   public loginTinker() :boolean{
      console.log('loginTinker before post');
     // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/user/login', {
+
+    // this.http.post ( localStorage.getItem('baseAddress')+':'+ localStorage.getItem('tinkerPort')+'/api/user/login', { 
     this.http.post (this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/login', {
       userID: 'admin',
       Password: 'admin'
@@ -193,6 +195,7 @@ private token: string;
 
           // console.log('before register to tinker, session id: ' + localStorage.getItem('res.data.sessionID'))
           this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
+          // this.http.post (localStorage.getItem('baseAddress')+":"+localStorage.getItem('tinkerPort')+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
           {}, httpOptions)
           .pipe(
             catchError(this.handleErrorObservable)
@@ -224,7 +227,7 @@ private token: string;
     sID=localStorage.getItem('res.data.sessionID');
 
     // if (sID!=null){
-      // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
+    // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
     this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
     {}, httpOptions)
       .pipe(
@@ -277,6 +280,11 @@ private token: string;
 
     sessionStorage.setItem('loginTinkerDone','0');
     // sessionStorage.removeItem('loginTinkerDone');
+    // localStorage.removeItem('expressAddr');
+    // localStorage.removeItem('baseAddress');
+    // localStorage.removeItem('socketIoPort');
+    // localStorage.removeItem('tinkerPort');
+
     return true;      
   }
 }

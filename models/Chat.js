@@ -13,6 +13,7 @@ var ChatSchema = new mongoose.Schema({
   image: String,
   file_path: String,
   operator_request: String,
+  type: String, // indicate diff chat apps, e.g. line, wechat, messenger, twilioWhatApp, twilioSMS
   updated_at: { type: Date, default: Date.now }
 });
 

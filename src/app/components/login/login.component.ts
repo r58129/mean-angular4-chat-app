@@ -31,6 +31,7 @@ export class LoginComponent {
   login() {
     this.authService.login(this.credentials).subscribe(() => {
       console.log('login user is done and now login to tinker');
+
       //login to tinker
       if (sessionStorage.getItem('loginTinkerDone')=="0"){
         // this.auth.loginTinker(this.configs.angularAddr+"/"+this.configs.tinkerport);
@@ -38,23 +39,20 @@ export class LoginComponent {
         // sessionStorage.setItem('loginTinkerDone', "1");
       }
       
-      this.authService.profile().subscribe(user => {
-      this.details = user;
-      // console.log('name: ' +user.name);
-      console.log('email: ' +user.email);
-      console.log('baseAddress: ' +user.baseAddress);
-      console.log('expressPort: ' +user.expressPort);
-      console.log('tinkerPort: ' +user.tinkerPort);
-      console.log('sokcetioPort: ' +user.sokcetioPort);
-      localStorage.setItem('baseAddress', user.baseAddress);
-      localStorage.setItem('expressPort', user.expressPort);
-      localStorage.setItem('tinkerPort', user.tinkerPort);
-      localStorage.setItem('sokcetioPort', user.sokcetioPort);
-
-
-    }, (err) => {
-      console.error(err);
-    });
+    //   this.authService.profile().subscribe(user => {
+    //   this.details = user;
+    //   // console.log('name: ' +user.name);
+    //   console.log('email: ' +user.email);
+    //   // console.log('baseAddress: ' +user.baseAddress);
+    //   // // console.log('expressPort: ' +user.expressPort);
+    //   // console.log('tinkerPort: ' +user.tinkerPort);
+    //   // console.log('sokcetIoPort: ' +user.sokcetIoPort);
+    //   // localStorage.setItem('baseAddress', user.baseAddress);
+    //   // localStorage.setItem('tinkerPort', user.tinkerPort);
+    //   // localStorage.setItem('sokcetIoPort', user.sokcetIoPort);
+    // }, (err) => {
+    //   console.error(err);
+    // });
 
       // this.router.navigateByUrl('/api/profile');
       // this.router.navigateByUrl('/chat/request');

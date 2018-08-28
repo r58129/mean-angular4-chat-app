@@ -11,7 +11,7 @@ import { AppsettingsComponent } from './components/appsettings/appsettings.compo
 import { ApploginComponent } from './components/applogin/applogin.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AdminComponent } from './admin/admin.component';
-import { OperatorComponent } from './operator/operator.component';
+// import { OperatorComponent } from './operator/operator.component';
 import { RequestComponent } from './request/request.component';
 //import { ServiceComponent } from './service/service.component';
 // import { AuthguardGuard } from './authguard.guard';
@@ -27,6 +27,8 @@ import { AuthGuardService } from './auth/auth.guard.service';
 import { HomeComponent } from './components/home/home.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { HistoryComponent } from './history/history.component';
+import { MultichatComponent } from './multichat/multichat.component';
+import { MultichatReqComponent } from './multichat-req/multichat-req.component';
 
 const appRoutes: Routes = [
     // { path: '', component: HomeComponent },
@@ -44,6 +46,11 @@ const appRoutes: Routes = [
   { path: 'chat/operator', component: OprequestComponent, 
     children:[
       { path: 'opchatbox/:id', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthGuardService]},
+  ], canActivate: [AuthGuardService]},
+
+  { path: 'chat/multichat', component: MultichatReqComponent, 
+    children:[
+      { path: 'multichatbox/:id', component: MultichatComponent, outlet:'multichatOutlet',canActivate: [AuthGuardService]},
   ], canActivate: [AuthGuardService]},
  
   { path: 'chat/history', component: HistoryComponent, canActivate: [AuthGuardService] },

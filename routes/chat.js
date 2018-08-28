@@ -44,6 +44,9 @@ var userSocketIDOperatorChannel  = {};
 var operatorSocketIDOperatorChannel = {};
 var usernameOperatorChannel = {};
 
+var userSocketIDOperatorChannelNonAndroid = {};
+var operatorSocketIDOperatorChannelNonAndroid = {};
+
 var port=global.socketIoPort;
 server.listen(port);
 console.log('Socket.io is listening on port:' + port);
@@ -82,6 +85,10 @@ io.on('connection', function (socket) {
     console.log(atou[socket.id]+' , '+utoa[userSocketID]);
   });
 
+  socket.on('connecting', function(msg){
+    console.log('connecting: '+ msg);
+  });
+
   socket.on('connectuserOperatorSession', function(phoneNumber){
     io.to(userSocketIDOperatorChannel).emit('operatorConnect',phoneNumber);
     usernameOperatorChannel = phoneNumber;
@@ -111,23 +118,71 @@ io.on('connection', function (socket) {
     if (operatorSocketIDOperatorChannel == socket.id){
       console.log('Operator sending msg "' + JSON.stringify(msg.message) + '" to ' + usernameOperatorChannel);
       // io.to(socket.id).emit('chat',socket.userid + ' (' + usernameOperatorChannel + '): '+ ': '+ JSON.stringify(msg.message));
-      // io.to(socket.id).emit('chat',socket.userid , usernameOperatorChannel ,JSON.stringify(msg.message));
+      // io.to(socket.id).emit('chat',socket.userid , usernameOperatorChannel ,JSON.stringify(msg.message));    
+      // var jsonMesg = {};
+      // jsonMesg.type = "text";
+      // jsonMesg.path = "nil";
+      // jsonMesg.message = msg;
       io.to(userSocketIDOperatorChannel).emit('operatorToUser',msg);
-
-      // modify this to json object
-    // var obj = JSON.parse(msg);
-    // var phoneNum = obj.sessionID;
-    // var message = obj.message;
+      // io.to(userSocketIDOperatorChannel).emit('operatorToUser',jsonMesg);
     }
     if (userSocketIDOperatorChannel == socket.id) {
-      console.log(usernameOperatorChannel + ' sending msg "' + msg + '" to operator');
+      console.log(usernameOperatorChannel + ' sending msg "' + JSON.stringify(msg.message) + '" to operator');
       // io.to(socket.id).emit('chat', msg);
       // io.to(socket.id).emit('chat', usernameOperatorChannel, msg);
       io.to(operatorSocketIDOperatorChannel).emit('chat', msg);  //Ben
+    }    
+  });
+
+  socket.on('connectuserOperatorSessionNonAndroid', function(phoneNumber){
+    io.to(userSocketIDOperatorChannelNonAndroid).emit('operatorConnectNonAndroid',phoneNumber);
+    usernameOperatorChannel = phoneNumber;
+    console.log('Connecting to: '+ phoneNumber);
+    // ioHttp.to(socket.id).emit('users', {users: 'Connecting to: ' + phoneNumber + '.....'});
+   io.to(socket.id).emit('users', phoneNumber, socket.id );  //Ben
+  });
+
+  socket.on('addContactOperatorSessionNonAndroid', function(phoneNumber){
+    console.log('Add Contact: '+ phoneNumber);
+    // ioHttp.to(operatorSocketIDOperatorChannelNonAndroid).emit('users', {users: 'Connected to: ' + phoneNumber});
+  });
+
+  socket.on('deleteContactOperatorSessionNonAndroid', function(phoneNumber){
+    console.log('Delete Contact: '+ phoneNumber);
+    // ioHttp.to(operatorSocketIDOperatorChannelNonAndroid).emit('users', {users: ''});
+  });
+
+
+  socket.on('disconnectuserOperatorSessionNonAndroid', function(phoneNumber){
+    io.to(userSocketIDOperatorChannelNonAndroid).emit('operatorConnectNonAndroid','disconnect');  // '' means disconnect on mutlichat server
+    console.log('disconnected: '+ phoneNumber);
+    // ioHttp.to(socket.id).emit('users', {users: 'Disconnecting: ' + phoneNumber + '.....'});
+  });
+
+  socket.on('chatMessageOperatorSessionNonAndroid', function(msg, package){
+    console.log(msg+" "+package);
+    if (operatorSocketIDOperatorChannelNonAndroid == socket.id){
+      console.log('OperatorNonAndroid sending msg "' + JSON.stringify(msg.message) + '" to ' + usernameOperatorChannel);
+      // ioHttp.to(socket.id).emit('chat',socket.userid + ' (' + usernameOperatorChannel + '): '+ ': '+ msg);
+      var jsonMesg = {};
+      jsonMesg.type = "text";
+      jsonMesg.path = "nil";
+      jsonMesg.message = msg;
+      jsonMesg.sender = usernameOperatorChannel;
+      jsonMesg.package = package;
+      io.to(userSocketIDOperatorChannelNonAndroid).emit('operatorToUserNonAndroid',msg);  //Ben
+      console.log("usernameOperatorChannel: " + usernameOperatorChannel );
+      console.log("package: " + package );
+      console.log("operatorSocketIDOperatorChannelNonAndroid: " + socket.id );
+    }
+    if (userSocketIDOperatorChannelNonAndroid == socket.id) {
+      console.log(usernameOperatorChannel + ' sending msg "' + JSON.stringify(msg.message) + '" to operator');
+      // ioHttp.to(socket.id).emit('chat',msg);
+      io.to(operatorSocketIDOperatorChannelNonAndroid).emit('chat',msg);
     }
     
   });
-
+  
   socket.on('user', function(userid){
     console.log("socket.on(users)" +userid);
     if(userid=='admin'){
@@ -146,6 +201,13 @@ io.on('connection', function (socket) {
       userSocketIDOperatorChannel = socket.id;
       operatorSessionUserConnected = true;
       // io.to(socket.id).emit('users', userid, socket.id); //Ben
+    } else if (userid == 'operatorNonAndroid') {
+      console.log("emit socket.on(operatorNonAndroid)" +socket.id);
+      operatorSocketIDOperatorChannelNonAndroid = socket.id;
+      io.to(socket.id).emit('users', userid, socket.id); //Ben, just to get the socket id
+    } else if (userid == 'operatorSessionUserNonAndroid'){
+      console.log("emit socket.on(operatorSessionUserNonAndroid)" +socket.id);
+      userSocketIDOperatorChannelNonAndroid = socket.id;
     } else {
       console.log(' Customer Lu log userid is '+ userid);   //userid is tel number
       

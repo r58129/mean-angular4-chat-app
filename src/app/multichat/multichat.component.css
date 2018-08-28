@@ -1,0 +1,85 @@
+/*.panel .slidedown .glyphicon, .chat .glyphicon*/
+.box .panel .slidedown .glyphicon, .chat .glyphicon
+{
+    /*margin-right: 5px;*/
+    margin-right: 0;
+    border-collapse: collapse;
+}
+
+.panel-body
+{
+    overflow-y: scroll;
+    /*height: 250px;*/
+    height: 75vh;
+}
+
+.box-body
+{
+    overflow-y: scroll;
+    /*height: 250px;*/
+   height: 75vh;
+
+}
+
+.box.box-primary.direct-chat.direct-chat-primary
+{
+    margin-bottom: 0;
+    /*height: 250px;*/
+   /*height: 75vh;*/
+
+}
+
+#chat-page
+{
+    margin-left: 0;
+    margin-right: 0;
+/*    width: 100%;
+    height: 100%;
+*/}
+
+.direct-chat-text.pull-right
+{
+    max-width: 80vw;
+    margin-right: 10px;
+    margin-left: 10px;
+    background:#c2f0c2;
+    border-color:#c2f0c2;
+    /*color:#fff;*/
+}
+
+.direct-chat-text.pull-left
+{
+    max-width: 80vw;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+
+#btn-photo{
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+#displayImage, #displayGetImage{
+    
+    max-height: 20vw;
+    max-width: 30vw;
+}
+
+::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar
+{
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #555;
+}

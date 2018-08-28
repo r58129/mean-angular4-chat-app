@@ -23,7 +23,7 @@ import { AppsettingsComponent } from './components/appsettings/appsettings.compo
 import { ApploginComponent } from './components/applogin/applogin.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AdminComponent } from './admin/admin.component';
-import { OperatorComponent } from './operator/operator.component';
+// import { OperatorComponent } from './operator/operator.component';
 import { RequestComponent } from './request/request.component';
 import { OpchatComponent } from './opchat/opchat.component';
 import { OprequestComponent } from './oprequest/oprequest.component';
@@ -35,6 +35,8 @@ import { AuthGuardService } from './auth/auth.guard.service';
 import { HomeComponent } from './components/home/home.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { HistoryComponent } from './history/history.component';
+import { MultichatComponent } from './multichat/multichat.component';
+import { MultichatReqComponent } from './multichat-req/multichat-req.component';
 // import { EmojiModule } from 'angular-emoji/dist';
 
 // import { ApphovertableComponent } from './components/apphovertable/apphovertable.component';
@@ -57,7 +59,7 @@ import { HistoryComponent } from './history/history.component';
     ApploginComponent,
     PagenotfoundComponent,
     AdminComponent,
-    OperatorComponent,
+    // OperatorComponent,
     RequestComponent,
     OpchatComponent,
     OprequestComponent,
@@ -65,7 +67,9 @@ import { HistoryComponent } from './history/history.component';
     LoginComponent,
     HomeComponent,
     ProfileComponent,
-    HistoryComponent
+    HistoryComponent,
+    MultichatComponent,
+    MultichatReqComponent
     //CallbackComponent
     // ApphovertableComponent
   ],
