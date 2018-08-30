@@ -485,6 +485,18 @@ export class ChatService {
     });
   }
 
+  getNASocketIo() {    //get socketio from mutli chat server
+    return new Promise((resolve, reject) => {
+      this.http.get(this.configs.multiChatAddr+'/api/csp/refreshSocketIo'+this.configs.multiChatPort)
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
   private handleError(error: any): Promise<any> {
     return Promise.reject(error.message || error);
   }

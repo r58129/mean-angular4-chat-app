@@ -164,13 +164,13 @@ io.on('connection', function (socket) {
     if (operatorSocketIDOperatorChannelNonAndroid == socket.id){
       console.log('OperatorNonAndroid sending msg "' + JSON.stringify(msg.message) + '" to ' + usernameOperatorChannel);
       // ioHttp.to(socket.id).emit('chat',socket.userid + ' (' + usernameOperatorChannel + '): '+ ': '+ msg);
-      var jsonMesg = {};
-      jsonMesg.type = "text";
-      jsonMesg.path = "nil";
-      jsonMesg.message = msg;
-      jsonMesg.sender = usernameOperatorChannel;
-      jsonMesg.package = package;
-      io.to(userSocketIDOperatorChannelNonAndroid).emit('operatorToUserNonAndroid',msg);  //Ben
+      // var jsonMesg = {};
+      // jsonMesg.type = "text";
+      // jsonMesg.path = "nil";
+      // jsonMesg.message = msg;
+      // jsonMesg.sender = usernameOperatorChannel;
+      // jsonMesg.package = package;
+      io.to(userSocketIDOperatorChannelNonAndroid).emit('operatorToUserNonAndroid',msg);
       console.log("usernameOperatorChannel: " + usernameOperatorChannel );
       console.log("package: " + package );
       console.log("operatorSocketIDOperatorChannelNonAndroid: " + socket.id );

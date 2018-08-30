@@ -48,6 +48,18 @@ export class AppheaderComponent implements OnInit, OnDestroy{
     this.socket.emit('user','admin');
     // console.log("emit admin socket");
 
+    // register to multichat server
+    this.http.post (this.configs.multiChatAddr+'/api/csp/register'+this.configs.multiChatPort+'?action=register&sessionID='+this.configs.multiChatCode, 
+          // this.http.post (this.configs.multiChatAddr+'/api/csp/register?action=register&sessionID='+this.configs.multiChatCode, 
+          {}, httpOptions)
+            .pipe(
+            catchError(this.handleErrorObservable)
+            ).subscribe(
+              res => {      
+            console.log('register to mutlichat server');  
+            return true;
+            });
+
     this.socket.on('users', (userid, socket_id) => {
     
       var date = new Date();
@@ -142,6 +154,19 @@ export class AppheaderComponent implements OnInit, OnDestroy{
     // this.unsubscribe.next();
     // this.unsubscribe.complete();
     // //socket.emit('forceDisconnect');
+    //unregister multichat server
+    // this.http.post (this.configs.multiChatAddr+'/api/csp/unregister?action=unregister&sessionID='+this.configs.multiChatCode, 
+    this.http.post (this.configs.multiChatAddr+'/api/csp/unregister'+this.configs.multiChatPort+'?action=unregister&sessionID='+this.configs.multiChatCode, 
+    {}, httpOptions)
+      .pipe(
+        catchError(this.handleErrorObservable)
+      )
+      .subscribe(
+        res => {
+          console.log('unregister multichat server');
+          return true;
+        });
+
     console.log('appheader ngOnDestroy');  
     this.socket.disconnect();
     if (this.timer){

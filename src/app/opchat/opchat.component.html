@@ -116,6 +116,18 @@
                       <div class="form-group">
                         <input type="text" class="form-control" [(ngModel)]="newUser.request_status" name="request_status"  >
                       </div> -->
+                    <div class="form-group">
+                      <select class="form-control" [(ngModel)]="newUser.type" name="type" required="" >
+                        <option value ="" disabled selected >Select Apps Name</option>
+                        <option value="whatsapp"> WhatsApp </option>
+                        <option value="line"> Line </option>
+                        <option value="wechat"> Wechat </option>
+                        <option value="messenger"> Messenger </option>
+                        <option value="twilioWhatsApp"> Twilio WhatsApp </option>
+                        <option value="twilioSMS"> Twilio SMS </option>
+                      </select>
+                    </div>
+
                       <div class="form-group">
                         <button type="submit" class="btn btn-success" [disabled]="!joinForm.form.valid">Connect</button>
                       </div>

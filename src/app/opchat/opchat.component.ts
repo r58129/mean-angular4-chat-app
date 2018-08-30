@@ -26,9 +26,11 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   joinned: boolean = false;
   connected: boolean = false;
   notSelected: boolean = true;
-  appName: string ='whatsapp';  // appName=whatsapp means from android, nonwhatsapp = from non android
+  appName: string;  // appName=whatsapp means from android, nonwhatsapp = from non android
+  package: string;
+  // naSocketId: ;
 
-  newUser = { nickname: '',socket_id: '', room: '' , db_id:'', operator_request:''};  //for operator
+  newUser = { nickname: '',socket_id: '', room: '' , db_id:'', operator_request:'', type:''};  //for operator
   newOpRequest = { phone_number: '', socket_id: '', room:'', message: '', operator_request:'' };  //for customer
   msgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
@@ -55,11 +57,19 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
   var user = JSON.parse(localStorage.getItem("user"));
 
-  this.socket.emit('user','operatorNonAndroid');
-  // this.socket.emit('user','operator');
+  
+  this.socket.emit('user','operator');
 
   //For non android chat apps
-  // this.socket.emit('user','operatorNonAndroid');
+  this.socket.emit('user','operatorNonAndroid');
+
+  
+  this.chatService.getNASocketIo().then((res) => {  //from chatService
+    // this.naSocketId = res;
+      console.log('get socketid from mutlichat service' +res);
+    }, (err) => {
+      console.log(err);
+    });
 
   this.socket.on('users', (userid, socket_id) => {
 
@@ -69,7 +79,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
       console.log("socket.id: " +socket_id);
 
       this.newUser.socket_id = socket_id;
-   
+
    //customer will join the room while operator won't do it again.
    // if (userid != 'operator'){ 
    if ((userid != 'operator') && (userid != 'operatorNonAndroid')){ 
@@ -398,27 +408,28 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     } else if (this.appName == 'nonwhatsapp') {
       console.log("operatorNonAndroid is sending a message: " +message);
       // this.socket.emit('chat message',message);  //from admin to customer
-      var objNA = { type:"text", path:"null", message: message, sender:this.newUser.room, package: "messenger" };
-      this.socket.emit('chatMessageOperatorSessionNonAndroid', objNA, "messenger");  //send json object from op to customer
-      console.log("operatorNonAndroid is sending object: " +objNA +" messenger");
+      var objNA = { type:"text", path:"null", message: message, sender:this.newUser.room, package: this.newUser.type };
+      this.socket.emit('chatMessageOperatorSessionNonAndroid', objNA, this.newUser.type);  //send json object from op to customer
+      console.log("operatorNonAndroid is sending object: " +objNA + this.newUser.type);
 
     }
 
   }
 
   Connect(phone_number){
-    
-    // if (true){
-      // this.appName = 'whatsapp';
-      // console.log('text message from in whatsapp: ' +this.appName);
-      // console.log("operator join the room: " +phone_number);
-      // this.socket.emit('connectuserOperatorSession', phone_number);  
-    // } else {
+    console.log('type:' +this.newUser.type );
+    // select which app you connected to
+    if (this.newUser.type == 'whatsapp'){
+      this.appName = 'whatsapp';
+      console.log('text message from in whatsapp: ' +this.newUser.type);
+      console.log("operator join the room: " +phone_number);
+      this.socket.emit('connectuserOperatorSession', phone_number);  
+    } else {
       this.appName = 'nonwhatsapp';
-      console.log('text message in nonwhatsapp : ' +this.appName);
+      console.log('operatorNonAndroid connect to : ' +this.newUser.type);
       console.log("operatorNonAndroid join the room: " +phone_number);
       this.socket.emit('connectuserOperatorSessionNonAndroid', phone_number);  
-    // }
+    }
     
   }
 
@@ -465,7 +476,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     console.log("room: " + this.newUser.room);
     console.log("socket_id: " + this.newUser.socket_id);
     console.log("message: " + this.msgData.message);
-    console.log("appname: " + this.appName);
+    console.log("apptype: " + this.newUser.type);
 
     var flow = this.appName;
     console.log("appname: " + flow);    
@@ -531,13 +542,13 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
       console.log('jsonMesg.message: ' +jsonMesgNA.message);
 
       jsonMesgNA.sender = this.newUser.room;
-      jsonMesgNA.package = "messenger";
+      jsonMesgNA.package = this.newUser.type;
 
             // var objNA = { type:"text", path:"null", message: message, sender:this.newUser.room, package: "wechat" };
       // this.socket.emit('chatMessageOperatorSessionNonAndroid', objNA, "wechat");  //send json object from op to customer
       // console.log("operatorNonAndroid is sending object: " +objNA +" wechat");
       
-      this.socket.emit('chatMessageOperatorSessionNonAndroid', jsonMesgNA, "messenger");
+      this.socket.emit('chatMessageOperatorSessionNonAndroid', jsonMesgNA, this.newUser.type);
       this.notSelected = true;
 
     }

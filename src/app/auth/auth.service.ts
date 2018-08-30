@@ -208,15 +208,16 @@ private token: string;
         });
 
         // register to multichat server
-        this.http.post (this.configs.multiChatdAddr+'/api/csp/register?action=register&sessionID='+this.configs.multiChatCode, 
-          {}, httpOptions)
-            .pipe(
-            catchError(this.handleErrorObservable)
-          ).subscribe(
-              res => {      
-            console.log('register to mutlichat server');  
-            return true;
-              });
+        // this.http.post (this.configs.multiChatAddr+'/api/csp/register'+this.configs.multiChatPort+'?action=register&sessionID='+this.configs.multiChatCode, 
+          // this.http.post (this.configs.multiChatAddr+'/api/csp/register?action=register&sessionID='+this.configs.multiChatCode, 
+          // {}, httpOptions)
+          //   .pipe(
+          //   catchError(this.handleErrorObservable)
+          //   ).subscribe(
+          //     res => {      
+          //   console.log('register to mutlichat server');  
+          //   return true;
+          //   });
 
     return true;
   }
@@ -253,17 +254,18 @@ private token: string;
           return true;
         });
     
-    //unregister multichat server
-    this.http.post (this.configs.multiChatdAddr+'/api/csp/unregister?action=unregister&sessionID='+this.configs.multiChatCode, 
-    {}, httpOptions)
-      .pipe(
-        catchError(this.handleErrorObservable)
-      )
-      .subscribe(
-        res => {
-          console.log('unregister multichat server');
-          return true;
-        });        
+    // //unregister multichat server
+    // this.http.post (this.configs.multiChatAddr+'/api/csp/unregister?action=unregister&sessionID='+this.configs.multiChatCode, 
+    // // this.http.post (this.configs.multiChatAddr+'/api/csp/unregister'+this.configs.multiChatPort+'?action=unregister&sessionID='+this.configs.multiChatCode, 
+    // {}, httpOptions)
+    //   .pipe(
+    //     catchError(this.handleErrorObservable)
+    //   )
+    //   .subscribe(
+    //     res => {
+    //       console.log('unregister multichat server');
+    //       return true;
+    //     });        
     // } //end if tPort !=null
         
     // this.http.post (this.configs.multiChatdAddr+'/api/user/logout'+'?sessionID='+this.configs.multiChatCode, {
