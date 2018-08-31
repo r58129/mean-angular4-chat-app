@@ -76,6 +76,12 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       // console.log(this.newUser.request_status);     
     });
 
+    this.route.params.subscribe(params =>{
+      // console.log(params);
+      this.newUser.request_status = params['id5'];
+      // console.log(this.newUser.request_status);     
+    });
+
     var user = JSON.parse(localStorage.getItem("user"));
     // var request = JSON.parse(localStorage.getItem("request"));
 
@@ -398,12 +404,22 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   SendForm(message){
+  if (this.appName == 'whatsapp'){ 
     console.log("admin is sending a message: " +message);
     // this.socket.emit('chat message',message);  //from admin to customer
     var obj = { type:"text", path:"null", message: message };
-    this.socket.emit('chat message', obj);  //send json object from admin to customer
+    this.socket.emit('chat message', obj, );  //send json object from admin to customer
     console.log("admin is sending object: " +obj);
     // return false;
+  } else if (this.appName == 'nonwhatsapp') {
+      console.log("adminNonAndroid is sending a message: " +message);
+      // this.socket.emit('chat message',message);  //from admin to customer
+      var objNA = { type:"text", path:"null", message: message, sender:this.newUser.room, package: "wechat" };
+      this.socket.emit('chat message', objNA, "wechat");  //send json object from op to customer
+      console.log("adminNonAndroid is sending object: " +objNA + "wechat");
+
+    }
+
   }
 
   Connect(socket_id){
@@ -527,18 +543,21 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       this.socket.emit('chat message', jsonMesg);
       this.notSelected = true;
 
-      } else {
+      } else if (this.appName == 'nonwhatsapp'){
 
       console.log('skip posting to tinker board');
-      var jsonMesg = {type:'', path:'', message:''};
-      jsonMesg.type = "image";
-      jsonMesg.path = this.selectedFile.name;
+      var jsonMesgNA = {type:'', path:'', message:'', sender:'', package:''};
+      jsonMesgNA.type = "image";
+      jsonMesgNA.path = this.selectedFile.name;
 
       // jsonMesg.message = this.url;
       jsonMesg.message = ((this.url).split(",")[1]);
       console.log('jsonMesg.type: ' +jsonMesg.type);
       console.log('jsonMesg.path: ' +jsonMesg.path);
       console.log('jsonMesg.message: ' +jsonMesg.message);
+
+      jsonMesgNA.sender = this.newUser.room;
+      jsonMesgNA.package = "wechat";
       
       this.socket.emit('chat message', jsonMesg);
       this.notSelected = true;

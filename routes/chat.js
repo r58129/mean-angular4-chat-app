@@ -184,6 +184,29 @@ io.on('connection', function (socket) {
   });
   
   socket.on('user', function(userid){
+    // console.log("userid: " +userid);
+    // console.log("sender: " +userid.sender);
+    // console.log("package: " +userid.package);
+    // try {
+    //   if ((userid.sender != undefined) && (userid.package != undefined)) {
+    //     // var userid = userid.sender;  
+    //     // var package = userid.package;
+    //     console.log("sender isJson " +userid.sender);
+    //     console.log("package isJson " +userid.package);
+    //   } else {
+    //     // userid = userid;
+    //     console.log("userid is not Json " +userid);
+    //   }
+            
+    // } catch(e){
+    //   console.log("Exception: userid is not JSON!!! ");
+    // }
+    // if (isJSON(userid) == true){
+    //   console.log("userid: " +userid.sender);
+    //   console.log("package: " +userid.package);
+    // } else {
+    //   console.log("userid: " +userid);
+    // }
     console.log("socket.on(users)" +userid);
     if(userid=='admin'){
       adminSocketID.push(socket.id);
@@ -334,6 +357,18 @@ io.on('connection', function (socket) {
 
 }); //io.on
 
+
+function isJSON(userid) {
+   var ret = true;
+   try {
+      JSON.parse(userid);
+      console.log("userid isJSON " );
+   }catch(e) {
+      ret = false;
+      console.log("userid is not JSON " );
+   }
+   return ret;
+}
 
 /* GET ALL NON ROBOT CHATS, THIS IS THE REAL ROOM */
 router.get('/:room', function(req, res, next) {

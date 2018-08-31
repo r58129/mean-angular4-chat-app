@@ -35,7 +35,7 @@
                     	<div class="pull-right">   	
                   <!--       <div [ngClass] ="setButtonColor()">
                           <a [routerLink]="['/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id, r.request_status]}}]" routerLinkActive="active" [(ngModel)]="setColor">{{r.request_status}}</a> -->
-							            <a [routerLink]="['/chat/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id, r.request_status]}}]" routerLinkActive="active" class="btn btn-xs" 
+							            <a [routerLink]="['/chat/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id, r.request_status, r.package]}}]" routerLinkActive="active" class="btn btn-xs" 
                           [ngClass]="{
                           ' btn-danger ':r.request_status === 'New',
                           ' btn-warning ':r.request_status === 'Working',

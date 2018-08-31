@@ -40,7 +40,7 @@ const appRoutes: Routes = [
   
   { path: 'chat/request', component: RequestComponent, 
     children:[
-      { path: 'chatbox/:id/:id2/:id3/:id4', component: ChatComponent, outlet:'chatOutlet',canActivate: [AuthGuardService]},
+      { path: 'chatbox/:id/:id2/:id3/:id4/:id5', component: ChatComponent, outlet:'chatOutlet',canActivate: [AuthGuardService]},
   ], canActivate: [AuthGuardService]},
   
   { path: 'chat/operator', component: OprequestComponent, 
