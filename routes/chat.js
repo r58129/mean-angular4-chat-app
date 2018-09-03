@@ -207,7 +207,7 @@ io.on('connection', function (socket) {
     // } else {
     //   console.log("userid: " +userid);
     // }
-    console.log("socket.on(users)" +userid);
+    console.log("socket.on(users)" +userid +" "+socket.id);
     if(userid=='admin'){
       adminSocketID.push(socket.id);
       // io.to(socket.id).emit('users',{users:userSocketIDAndUsername});  //orginal
@@ -279,16 +279,32 @@ io.on('connection', function (socket) {
   socket.on('disconnect', function(){
     if (socket.userid != null){
 
+      // if ((socket.userid.sender !=undefined) && (socket.userid.package!=undefined)){
+      //   io.to(utoa[socket.id]).emit('disconnect', socket.userid.sender); 
+      //   console.log( 'user ' + socket.userid.sender + ' disconnected');
+      //   console.log( 'user ' + socket.userid.package + ' disconnected'); 
+      // } else {
+      // io.to(utoa[socket.id]).emit('disconnect', socket.userid);
+      // //io.to(utoa[socket.id]).emit('disconnect',socket.userid + " disconnected");
+      // console.log(socket.userid + ' disconnected');
+      // }
+
       if (socket.userid == 'admin'){
         // adminSocketID.pop();
 
+
         var index = adminSocketID.indexOf(socket.id);
         if (index > -1) {
+          io.to(atou[socket.id]).emit('disconnect', socket.userid);
+          console.dir("emit admin disconnect " +socket.userid +socket.id);
           adminSocketID.splice(index, 1);
         }
 
         console.dir("print array " +adminSocketID);
         console.log("remove admin socket.on(users) from array" +socket.id);
+        
+
+
       }
 
 
@@ -323,15 +339,26 @@ io.on('connection', function (socket) {
           // io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername}); //no need it new UI
         }
         console.log( 'user ' + socket.userid + ' disconnected');
+
+
+        // update db request_status to 'Quit'if customer quit the queue, Ben
+
       }
 
       if (socket.userid == 'operatorSessionUser'){
         operatorSessionUserConnected = false;
         console.log( 'operatorSessionUser' + socket.userid + ' disconnected');
       }
+
+      if ((socket.userid.sender !=undefined) && (socket.userid.package!=undefined)){
+        io.to(utoa[socket.id]).emit('disconnect', socket.userid.sender); 
+        console.log( 'user ' + socket.userid.sender + ' disconnected');
+        console.log( 'user ' + socket.userid.package + ' disconnected'); 
+      } else {
       io.to(utoa[socket.id]).emit('disconnect', socket.userid);
       //io.to(utoa[socket.id]).emit('disconnect',socket.userid + " disconnected");
       console.log(socket.userid + ' disconnected');
+    }
 
     }
   });
@@ -340,7 +367,7 @@ io.on('connection', function (socket) {
 
   // save-message
   socket.on('save-message', function (data) {
-    console.log("save-message: " +data);
+    console.log("save-message: " +data.package);
     io.emit('new-message', { message: data });
   });
 

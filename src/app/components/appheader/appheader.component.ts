@@ -29,7 +29,7 @@ export class AppheaderComponent implements OnInit, OnDestroy{
   curSid:string = "0"; 
   joinned: boolean = false;
   newUser = { nickname: '', room: '' };
-  newRequest = { package:'', phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
+  newRequest = { type:'', phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
   package: string;
   
   socket = io(this.configs.socketIoServerAddr,{secure: true});
@@ -50,8 +50,8 @@ export class AppheaderComponent implements OnInit, OnDestroy{
     // console.log("emit admin socket");
 
     // register to multichat server
-    this.http.post (this.configs.multiChatAddr+'/api/csp/register'+this.configs.multiChatPort+'?action=register&sessionID='+this.configs.multiChatCode, 
-    // this.http.post (this.configs.multiChatAddr+'/api/csp/register?action=register&sessionID='+this.configs.multiChatCode, 
+    // this.http.post (this.configs.multiChatAddr+'/api/csp/register'+this.configs.multiChatPort+'?action=register&sessionID='+this.configs.multiChatCode, 
+    this.http.post (this.configs.multiChatAddr+'/api/csp/register?action=register&sessionID='+this.configs.multiChatCode, 
     {}, httpOptions)
     .pipe(
     catchError(this.handleErrorObservable)
@@ -65,34 +65,36 @@ export class AppheaderComponent implements OnInit, OnDestroy{
     
       var date = new Date();
       // console.log("inside users socket.on");
-      console.log("print userid:" +userid);
-      console.log("print socket.id:" +socket_id);
+      // console.log("print userid:" +userid);
+      // console.log("print socket.id:" +socket_id);
 
     if ((userid.sender != undefined) && (userid.package != undefined)){
-      userid = userid.sender;
       this.package = userid.package;
+      userid = userid.sender;
       console.log("print userid.sender: " +userid);
       console.log("print userid.package: " +this.package);
+      console.log("print socket.id:" +socket_id);
     } else {
       userid = userid;
       this.package = 'whatsapp';
       console.log("print userid: " +userid);
       console.log("print package: " +this.package);
+      console.log("print socket.id:" +socket_id);
     }
       
   
-   if (userid !== 'admin'){
+   if (userid != 'admin'){
   	 	console.log("print userid before saveChat: " +userid);
    		console.log("print socket_id before saveChat: " +socket_id);
       console.log("print package before saveChat: " +this.package);
    // use status field to classify the new and old request
-   this.newRequest = {package: this.package, phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer service request', request_status:'New' };
+   this.newRequest = {type: this.package, phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer service request', request_status:'New' };
    	console.log(this.newRequest.room);
    	console.log(this.newRequest.phone_number);
    	console.log(this.newRequest.socket_id);
    	console.log(this.newRequest.message);
    	console.log(this.newRequest.request_status);
-     console.log(this.newRequest.package);
+     console.log(this.newRequest.type);
  	// console.log(this.newRequest.updated_at);
 
     if (this.newRequest.socket_id!=undefined){
@@ -171,8 +173,8 @@ export class AppheaderComponent implements OnInit, OnDestroy{
     // this.unsubscribe.complete();
     // //socket.emit('forceDisconnect');
     //unregister multichat server
-    // this.http.post (this.configs.multiChatAddr+'/api/csp/unregister?action=unregister&sessionID='+this.configs.multiChatCode, 
-    this.http.post (this.configs.multiChatAddr+'/api/csp/unregister'+this.configs.multiChatPort+'?action=unregister&sessionID='+this.configs.multiChatCode, 
+    this.http.post (this.configs.multiChatAddr+'/api/csp/unregister?action=unregister&sessionID='+this.configs.multiChatCode, 
+    // this.http.post (this.configs.multiChatAddr+'/api/csp/unregister'+this.configs.multiChatPort+'?action=unregister&sessionID='+this.configs.multiChatCode, 
     {}, httpOptions)
       .pipe(
         catchError(this.handleErrorObservable)
