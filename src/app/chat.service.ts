@@ -138,6 +138,30 @@ export class ChatService {
     });
   }
 
+  getChatStatusBySocket(sid) {
+    return new Promise((resolve, reject) => {
+        this.http.get(this.serverUrl+'/chat/socket/'+sid, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+          // .map(res => res.json())
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }
+
+  updateChatBySocket(sid, data) {
+    return new Promise((resolve, reject) => {
+        this.http.put(this.serverUrl+'/chat/socket/'+sid, data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+          // .map(res => res.json())
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }
+
   deleteChat(id) {
     return new Promise((resolve, reject) => {
         this.http.delete(this.serverUrl+'/chat/'+id, { headers: { Authorization: `Bearer ${this.getToken()}` }})
@@ -487,7 +511,8 @@ export class ChatService {
 
   getNASocketIo() {    //get socketio from mutli chat server
     return new Promise((resolve, reject) => {
-      this.http.get(this.configs.multiChatAddr+'/api/csp/refreshSocketIo'+this.configs.multiChatPort)
+      // this.http.get(this.configs.multiChatAddr+'/api/csp/refreshSocketIo'+this.configs.multiChatPort)
+      this.http.get(this.configs.multiChatAddr+'/api/csp/refreshSocketIo')
         // .map(res => res.json())
         .subscribe(res => {
           resolve(res);

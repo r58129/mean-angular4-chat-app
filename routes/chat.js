@@ -184,7 +184,30 @@ io.on('connection', function (socket) {
   });
   
   socket.on('user', function(userid){
-    console.log("socket.on(users)" +userid);
+    // console.log("userid: " +userid);
+    // console.log("sender: " +userid.sender);
+    // console.log("package: " +userid.package);
+    // try {
+    //   if ((userid.sender != undefined) && (userid.package != undefined)) {
+    //     // var userid = userid.sender;  
+    //     // var package = userid.package;
+    //     console.log("sender isJson " +userid.sender);
+    //     console.log("package isJson " +userid.package);
+    //   } else {
+    //     // userid = userid;
+    //     console.log("userid is not Json " +userid);
+    //   }
+            
+    // } catch(e){
+    //   console.log("Exception: userid is not JSON!!! ");
+    // }
+    // if (isJSON(userid) == true){
+    //   console.log("userid: " +userid.sender);
+    //   console.log("package: " +userid.package);
+    // } else {
+    //   console.log("userid: " +userid);
+    // }
+    console.log("socket.on(users)" +userid +" "+socket.id);
     if(userid=='admin'){
       adminSocketID.push(socket.id);
       // io.to(socket.id).emit('users',{users:userSocketIDAndUsername});  //orginal
@@ -256,16 +279,32 @@ io.on('connection', function (socket) {
   socket.on('disconnect', function(){
     if (socket.userid != null){
 
+      // if ((socket.userid.sender !=undefined) && (socket.userid.package!=undefined)){
+      //   io.to(utoa[socket.id]).emit('disconnect', socket.userid.sender); 
+      //   console.log( 'user ' + socket.userid.sender + ' disconnected');
+      //   console.log( 'user ' + socket.userid.package + ' disconnected'); 
+      // } else {
+      // io.to(utoa[socket.id]).emit('disconnect', socket.userid);
+      // //io.to(utoa[socket.id]).emit('disconnect',socket.userid + " disconnected");
+      // console.log(socket.userid + ' disconnected');
+      // }
+
       if (socket.userid == 'admin'){
         // adminSocketID.pop();
 
+
         var index = adminSocketID.indexOf(socket.id);
         if (index > -1) {
+          io.to(atou[socket.id]).emit('disconnect', socket.userid);
+          console.dir("emit admin disconnect " +socket.userid +socket.id);
           adminSocketID.splice(index, 1);
         }
 
         console.dir("print array " +adminSocketID);
         console.log("remove admin socket.on(users) from array" +socket.id);
+        
+
+
       }
 
 
@@ -281,6 +320,9 @@ io.on('connection', function (socket) {
       // for(var i in adminSocketID){
       //   io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername});
       // }
+
+        io.emit('customerQuit', socket.userid, socket.id);
+
         var index = userSocketIDAndUsername.indexOf(socket.userid + ' (' + socket.id + ')');
         if (index > -1) {
           userSocketIDAndUsername.splice(index, 1);
@@ -300,15 +342,26 @@ io.on('connection', function (socket) {
           // io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername}); //no need it new UI
         }
         console.log( 'user ' + socket.userid + ' disconnected');
+
+
+        // update db request_status to 'Quit'if customer quit the queue, Ben
+
       }
 
       if (socket.userid == 'operatorSessionUser'){
         operatorSessionUserConnected = false;
         console.log( 'operatorSessionUser' + socket.userid + ' disconnected');
       }
+
+      if ((socket.userid.sender !=undefined) && (socket.userid.package!=undefined)){
+        io.to(utoa[socket.id]).emit('disconnect', socket.userid.sender); 
+        console.log( 'user ' + socket.userid.sender + ' disconnected');
+        console.log( 'user ' + socket.userid.package + ' disconnected'); 
+      } else {
       io.to(utoa[socket.id]).emit('disconnect', socket.userid);
       //io.to(utoa[socket.id]).emit('disconnect',socket.userid + " disconnected");
       console.log(socket.userid + ' disconnected');
+    }
 
     }
   });
@@ -317,7 +370,7 @@ io.on('connection', function (socket) {
 
   // save-message
   socket.on('save-message', function (data) {
-    console.log("save-message: " +data);
+    console.log("save-message: " +data.package);
     io.emit('new-message', { message: data });
   });
 
@@ -334,6 +387,18 @@ io.on('connection', function (socket) {
 
 }); //io.on
 
+
+function isJSON(userid) {
+   var ret = true;
+   try {
+      JSON.parse(userid);
+      console.log("userid isJSON " );
+   }catch(e) {
+      ret = false;
+      console.log("userid is not JSON " );
+   }
+   return ret;
+}
 
 /* GET ALL NON ROBOT CHATS, THIS IS THE REAL ROOM */
 router.get('/:room', function(req, res, next) {
@@ -393,6 +458,37 @@ router.put('/:id', auth, function(req, res, next) {
     });
   } else {
     Chat.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  }
+});
+
+
+/* GET chat request by socket id */
+router.get('/socket/:socket_id',  function(req, res, next) {
+// router.get('/socket/:socket_id', auth, function(req, res, next) {
+//   if (!req.payload._id) {
+//     res.status(401).json({
+//       "message" : "UnauthorizedError:"
+//     });
+//   } else {
+    Chat.find({socket_id:req.params.socket_id}, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  // }
+});
+
+/* UPDATE chat request by socket id*/
+// router.put('/socket/:socket_id', function(req, res, next) {
+router.put('/socket/:socket_id', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Chat.findOneAndUpdate({socket_id:req.params.socket_id}, req.body, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });

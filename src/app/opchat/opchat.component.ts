@@ -30,12 +30,12 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   package: string;
   // naSocketId: ;
 
-  newUser = { nickname: '',socket_id: '', room: '' , db_id:'', operator_request:'', type:''};  //for operator
-  newOpRequest = { phone_number: '', socket_id: '', room:'', message: '', operator_request:'' };  //for customer
-  msgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
-  imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
-  CusImgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', file_path:'', image: '' };  
-  CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
+  newUser = { type:'', nickname: '',socket_id: '', room: '' , db_id:'', operator_request:''};  //for operator
+  newOpRequest = { type:'', phone_number: '', socket_id: '', room:'', message: '', operator_request:'' };  //for customer
+  msgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
+  imgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
+  CusImgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '', file_path:'', image: '' };  
+  CusMsgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   
   // socket = io('https://airpoint.com.hk:3637',{secure: true});
   //socket = io('https://192.168.0.102:3637',{secure: true});
@@ -75,8 +75,19 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
       var date = new Date();
       // console.log("inside users socket.on");
-      console.log("userid: " +userid);
-      console.log("socket.id: " +socket_id);
+    // if ((userid.sender != undefined) && (userid.package != undefined)){
+    //   this.package = userid.package;
+    //   userid = userid.sender;
+    //   console.log("print userid.sender: " +userid);
+    //   console.log("print userid.package: " +this.package);
+    //   console.log("print socket.id:" +socket_id);
+    // } else {
+    //   userid = userid;
+    //   this.package = 'whatsapp';
+    //   console.log("print userid: " +userid);
+    //   console.log("print package: " +this.package);
+    //   console.log("print socket.id:" +socket_id);
+    // }
 
       this.newUser.socket_id = socket_id;
 
@@ -84,12 +95,13 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
    // if (userid != 'operator'){ 
    if ((userid != 'operator') && (userid != 'operatorNonAndroid')){ 
    // use status field to classify the new and old request
-   this.newOpRequest = {phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer joined', operator_request:'true' };
+   this.newOpRequest = {type: this.newUser.type, phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer joined', operator_request:'true' };
      // console.log(this.newOpRequest.room);
      console.log(this.newOpRequest.phone_number);
      console.log(this.newOpRequest.socket_id);
      console.log(this.newOpRequest.message);
      console.log(this.newOpRequest.operator_request);
+     console.log(this.newOpRequest.type);
    // // console.log(this.newRequest.updated_at);
 
   // this.chatService.saveRequest(this.newRequest).then( function(result)  {
@@ -129,7 +141,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
         //   console.log('text message from in whatsapp: ' +this.appName);
         // }
     
-        this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
+        this.CusMsgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
         // console.log(this.CusMsgData.room);
         // console.log(this.CusMsgData.phone_number);
         // console.log(this.CusMsgData.socket_id);
@@ -145,7 +157,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
         if ((!filePath) || (filePath == "Timeout")){
           console.log("filePath is null or Timeout");
 
-          this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: "Sent Photo Failed!" };
+          this.CusMsgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: "Sent Photo Failed!" };
           // console.log(this.CusMsgData.room);
           // console.log(this.CusMsgData.phone_number);
           // console.log(this.CusMsgData.socket_id);
@@ -165,7 +177,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
             console.log('base64Image: ' +base64Image);
 
             //save to DB 
-              this.CusImgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: '', file_path:filePath, image:base64Image };
+              this.CusImgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: '', file_path:filePath, image:base64Image };
               console.log('receive image from customer');
               console.log(this.CusImgData.room);
               console.log(this.CusImgData.phone_number);
@@ -213,7 +225,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
               var getImage = evt.target.result;
               console.log(evt.target.result);
 
-              this.CusImgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message, file_path:completePath, image:getImage };
+              this.CusImgData = {type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message, file_path:completePath, image:getImage };
               console.log('receive image from customer');
               console.log(this.CusImgData.room);
               console.log(this.CusImgData.phone_number);
@@ -266,7 +278,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     if(user!==null) {
       // this.getChatByRoom(user.room);  //from chatService
       // this.getRequestByRoom(request.phone_number);  //testing
-      this.msgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
+      this.msgData = { type: user.type, phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
       this.joinned = true;
       this.scrollToBottom();
     }
@@ -280,7 +292,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
       if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
           user=JSON.parse(localStorage.getItem("user"));
         this.chats.push(data.message);
-        this.msgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
+        this.msgData = { type: user.type, phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
         this.scrollToBottom();
             }
         }
@@ -297,7 +309,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
         // this.chats.push(data.message, data.filename);
         console.log("new-image: " + data.filename);
         this.chats.push(data);
-        this.imgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '', 
+        this.imgData = { type: user.type, phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '', 
         filename: user.filename, image: user.image}
         // this.RetrievePhoto(data);
         this.scrollToBottom();
@@ -350,12 +362,12 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     localStorage.setItem("user", JSON.stringify(this.newUser));
     this.getChatByRoom(this.newUser.room);
     
-    this.msgData = {phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
+    this.msgData = {type: this.newUser.type, phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
       room: this.newUser.room, nickname: this.newUser.nickname, message: '' };
     
     this.joinned = true;
     
-    this.socket.emit('save-message', { phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
+    this.socket.emit('save-message', { type: this.newUser.type, phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
       room: this.newUser.room, nickname: this.newUser.nickname, message: ' Operator joined', updated_at: date });
 
     // this.socket.emit('user', this.newUser.room);
@@ -384,7 +396,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     var room =this.newUser.room;
     var user = JSON.parse(localStorage.getItem("user"));
     
-    this.socket.emit('save-message', { phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
+    this.socket.emit('save-message', { type:user.type, phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
     localStorage.removeItem("user");
     this.joinned = false;
 
@@ -426,6 +438,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
       this.socket.emit('connectuserOperatorSession', phone_number);  
     } else {
       this.appName = 'nonwhatsapp';
+      this.package = this.newUser.type;
       console.log('operatorNonAndroid connect to : ' +this.newUser.type);
       console.log("operatorNonAndroid join the room: " +phone_number);
       this.socket.emit('connectuserOperatorSessionNonAndroid', phone_number);  
@@ -476,13 +489,14 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     console.log("room: " + this.newUser.room);
     console.log("socket_id: " + this.newUser.socket_id);
     console.log("message: " + this.msgData.message);
-    console.log("apptype: " + this.newUser.type);
+    console.log("flow: " + this.appName);
+    console.log("type: " + this.newUser.type);
 
     var flow = this.appName;
     console.log("appname: " + flow);    
 
     //save to DB
-    this.imgData = {phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
+    this.imgData = {type:this.newUser.type, phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
       room: this.newUser.room, nickname: this.newUser.nickname, 
       // message: this.msgData.message, filename: this.selectedFile.name, image:uploadImage }; 
             message: this.msgData.message, filename: this.selectedFile.name, image:this.url }; 

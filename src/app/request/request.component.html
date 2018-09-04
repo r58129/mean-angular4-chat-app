@@ -22,6 +22,7 @@
                 <table class="table">
                   <thead>
                   <tr>
+                    <th>Apps</th>
                     <th>Customer</th>
                     <th>Time</th>
                     <th>Status</th>
@@ -29,17 +30,19 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let r of requests">
-      				      <td>{{r.phone_number}}</td>
+      				      <td>{{r.type}}</td>
+                    <td>{{r.phone_number}}</td>
                     <td>{{r.updated_at | date: 'medium'}}</td>
                     <td>
                     	<div class="pull-right">   	
                   <!--       <div [ngClass] ="setButtonColor()">
                           <a [routerLink]="['/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id, r.request_status]}}]" routerLinkActive="active" [(ngModel)]="setColor">{{r.request_status}}</a> -->
-							            <a [routerLink]="['/chat/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id, r.request_status]}}]" routerLinkActive="active" class="btn btn-xs" 
+							            <a [routerLink]="['/chat/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id, r.request_status, r.type]}}]" routerLinkActive="active" class="btn btn-xs" 
                           [ngClass]="{
                           ' btn-danger ':r.request_status === 'New',
                           ' btn-warning ':r.request_status === 'Working',
-                          ' btn-success ':r.request_status === 'Done'
+                          ' btn-success ':r.request_status === 'Done',
+                          ' btn-primary ':r.request_status === 'Quit'
                           }">
                           {{r.request_status}}</a>
                         <!-- </div> -->

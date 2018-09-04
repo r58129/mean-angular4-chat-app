@@ -28,12 +28,12 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   joinned: boolean = false;
   notSelected: boolean = true;
 
-  newUser = { nickname: '', room: '' ,socket_id: '', db_id:'', request_status:''};
-  msgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
+  newUser = { type:'', nickname: '', room: '' ,socket_id: '', db_id:'', request_status:''};
+  msgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: { data:Buffer, contentType:'' }};
-  imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
-  CusImgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', file_path:'', image: '' };
-  CusMsgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
+  imgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
+  CusImgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '', file_path:'', image: '' };
+  CusMsgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // socket = io('http://localhost:4000');
   // socket = io('https://airpoint.com.hk:3637',{secure: true});
   //socket = io('https://192.168.0.102:3637',{secure: true});
@@ -76,6 +76,16 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       // console.log(this.newUser.request_status);     
     });
 
+    this.route.params.subscribe(params =>{
+      // console.log(params);
+      if (this.newUser.type != undefined){
+        this.newUser.type = params['id5'];
+      } else {
+        this.newUser.type = "whatsapp";
+      }
+      // console.log(this.newUser.request_status);     
+    });
+
     var user = JSON.parse(localStorage.getItem("user"));
     // var request = JSON.parse(localStorage.getItem("request"));
 
@@ -94,6 +104,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     console.log("print customer message:" +message);
     console.log("print customer photoPath:" +filePath);
 
+    // get Apps type
+    // var type=localStorage.getItem('user.type');
+
     if (msg !== 'undefine'){
 
       if (!message.includes('\uD83D\uDCF7')){
@@ -107,7 +120,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
           console.log('text message from in whatsapp: ' +this.appName);
         }
     
-        this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
+        this.CusMsgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
         // console.log(this.CusMsgData.room);
         // console.log(this.CusMsgData.phone_number);
         // console.log(this.CusMsgData.socket_id);
@@ -123,7 +136,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         if ((!filePath) || (filePath == "Timeout")){
           console.log("filePath is null or Timeout");
 
-          this.CusMsgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: "Sent Photo Failed!" };
+          this.CusMsgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: "Sent Photo Failed!" };
           // console.log(this.CusMsgData.room);
           // console.log(this.CusMsgData.phone_number);
           // console.log(this.CusMsgData.socket_id);
@@ -143,7 +156,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
             console.log('base64Image: ' +base64Image);
 
             //save to DB 
-              this.CusImgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: '', file_path:filePath, image:base64Image };
+              this.CusImgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: '', file_path:filePath, image:base64Image };
               console.log('receive image from customer');
               console.log(this.CusImgData.room);
               console.log(this.CusImgData.phone_number);
@@ -191,7 +204,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
               var getImage = evt.target.result;
               console.log(evt.target.result);
 
-              this.CusImgData = { phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message, file_path:completePath, image:getImage };
+              this.CusImgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message, file_path:completePath, image:getImage };
               console.log('receive image from customer');
               console.log(this.CusImgData.room);
               console.log(this.CusImgData.phone_number);
@@ -229,7 +242,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     // this.SendForm(goodbye);
     // console.log("goodbye");
 
-    this.CusMsgData = { phone_number: userid, socket_id: 'socket_id', room:userid , nickname:userid , message: message };
+    this.CusMsgData = { type: this.newUser.type, phone_number: userid, socket_id: 'socket_id', room:userid , nickname:userid , message: message };
       console.log(this.CusMsgData.room);
       console.log(this.CusMsgData.phone_number);
       console.log(this.CusMsgData.socket_id);
@@ -247,7 +260,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     if(user!==null) {
       // this.getChatByRoom(user.room);  //from chatService
       // this.getRequestByRoom(request.phone_number);  //testing
-      this.msgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
+      this.msgData = { type: user.type, phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
       this.joinned = true;
       this.scrollToBottom();
     }
@@ -260,7 +273,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
           user=JSON.parse(localStorage.getItem("user"));
         this.chats.push(data.message);
-        this.msgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
+        this.msgData = { type: user.type, phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
         this.scrollToBottom();
             }
         }
@@ -277,7 +290,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         // this.chats.push(data.message, data.filename);
         console.log("new-image: " + data.filename);
         this.chats.push(data);
-        this.imgData = { phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '', 
+        this.imgData = { type: user.type, phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '', 
         filename: user.filename, image: user.image}
         // this.RetrievePhoto(data);
         this.scrollToBottom();
@@ -293,7 +306,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   ngOnDestroy(){
         
         //socket.emit('forceDisconnect');
-    this.socket.disconnect();
+    // this.socket.disconnect();
     // if (this.timer){
     //   clearInterval(this.timer);
     //   console.log('stop refreshing');
@@ -327,10 +340,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     var date = new Date();
     localStorage.setItem("user", JSON.stringify(this.newUser));
     this.getChatByRoom(this.newUser.room);
-    this.msgData = {phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
+    this.msgData = {type: this.newUser.type, phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
       room: this.newUser.room, nickname: this.newUser.nickname, message: '' };
     this.joinned = true;
-    this.socket.emit('save-message', { phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
+    this.socket.emit('save-message', {type: this.newUser.type, phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
       room: this.newUser.room, nickname: this.newUser.nickname, message: 'Join this room', updated_at: date });
 
     //get db id
@@ -341,7 +354,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     console.log('request status: ' +currentStatus)
 
     //update request_status to working when admin has joined the room
-    if (currentStatus !== "Done")
+    if (currentStatus == "New")
     {
       this.chatService.updateChat(db_id, updateStatus).then((res) => {  //from chatService
         console.log("status updated");
@@ -349,8 +362,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         console.log(err);
       });
 
+    } else {  //wont' udpate when status is Working, Done and Quit
+      console.log("status is NOT updated");  
     }
-    console.log("status is NOT updated");
+    
 
   }
 
@@ -369,7 +384,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     console.log("disconnect customer and logout the room");
     var date = new Date();
     var user = JSON.parse(localStorage.getItem("user"));
-    this.socket.emit('save-message', { phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
+    this.socket.emit('save-message', { type:user.type, phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
     localStorage.removeItem("user");
     this.joinned = false;
 
@@ -379,7 +394,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     console.log('request_id: ' +db_id);
     var updateStatus = { request_status:"Done"};
 
-   if (currentStatus !== "Done")
+   if ((currentStatus == "New") || (currentStatus == "Working"))
     {
       this.chatService.updateChat(db_id, updateStatus).then((res) => {  //from chatService
         console.log("status updated");
@@ -398,12 +413,22 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   SendForm(message){
+  if (this.appName == 'whatsapp'){ 
     console.log("admin is sending a message: " +message);
     // this.socket.emit('chat message',message);  //from admin to customer
     var obj = { type:"text", path:"null", message: message };
-    this.socket.emit('chat message', obj);  //send json object from admin to customer
+    this.socket.emit('chat message', obj, );  //send json object from admin to customer
     console.log("admin is sending object: " +obj);
     // return false;
+  } else if (this.appName == 'nonwhatsapp') {
+      console.log("adminNonAndroid is sending a message: " +message);
+      // this.socket.emit('chat message',message);  //from admin to customer
+      var objNA = { type:"text", path:"null", message: message, sender:this.newUser.room, package: this.newUser.type };
+      this.socket.emit('chat message', objNA, this.newUser.type );  //send json object from op to customer
+      console.log("adminNonAndroid is sending object: " +objNA + this.newUser.type);
+
+    }
+
   }
 
   Connect(socket_id){
@@ -447,7 +472,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     console.log("room: " + this.newUser.room);
     console.log("socket_id: " + this.newUser.socket_id);
     console.log("message: " + this.msgData.message);
-    console.log("appname: " + this.appName);
+    console.log("flow: " + this.appName);
+    console.log("type: " + this.newUser.type);
 
     var flow = this.appName;
     console.log("appname: " + flow);    
@@ -481,7 +507,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     // }
 
     //save to DB
-    this.imgData = {phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
+    this.imgData = {type:this.newUser.type, phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
       room: this.newUser.room, nickname: this.newUser.nickname, 
       // message: this.msgData.message, filename: this.selectedFile.name, image:uploadImage }; 
             message: this.msgData.message, filename: this.selectedFile.name, image:this.url }; 
@@ -527,20 +553,23 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       this.socket.emit('chat message', jsonMesg);
       this.notSelected = true;
 
-      } else {
+      } else if (this.appName == 'nonwhatsapp'){
 
       console.log('skip posting to tinker board');
-      var jsonMesg = {type:'', path:'', message:''};
-      jsonMesg.type = "image";
-      jsonMesg.path = this.selectedFile.name;
+      var jsonMesgNA = {type:'', path:'', message:'', sender:'', package:''};
+      jsonMesgNA.type = "image";
+      jsonMesgNA.path = this.selectedFile.name;
 
       // jsonMesg.message = this.url;
-      jsonMesg.message = ((this.url).split(",")[1]);
-      console.log('jsonMesg.type: ' +jsonMesg.type);
-      console.log('jsonMesg.path: ' +jsonMesg.path);
-      console.log('jsonMesg.message: ' +jsonMesg.message);
+      jsonMesgNA.message = ((this.url).split(",")[1]);
+      console.log('jsonMesg.type: ' +jsonMesgNA.type);
+      console.log('jsonMesg.path: ' +jsonMesgNA.path);
+      console.log('jsonMesg.message: ' +jsonMesgNA.message);
+
+      jsonMesgNA.sender = this.newUser.room;
+      jsonMesgNA.package = this.newUser.type;
       
-      this.socket.emit('chat message', jsonMesg);
+      this.socket.emit('chat message', jsonMesgNA);
       this.notSelected = true;
 
     }
