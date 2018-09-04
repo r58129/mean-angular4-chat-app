@@ -155,7 +155,7 @@ export class AppheaderComponent implements OnInit, OnDestroy{
       // console.log("print socket.id:" +socketID);
     }
 
-    if ((userid != "transport close") && (userid != "operatorSessionUserNonAndroid")){
+    if ((userid != "transport close") && (userid != "operatorSessionUserNonAndroid") && (userid !="operatorNonAndroid")){
       console.log("print userid: " +userid);
       console.log("print package: " +this.package);
       console.log("print socket.id:" +socketID);
@@ -180,7 +180,9 @@ export class AppheaderComponent implements OnInit, OnDestroy{
       } else {
           console.log("status is not updated");
       }
-    }  // if (this.requests[0].request_status != undefined){
+    }  else {// if (this.requests[0].request_status != undefined){
+          console.log("request_status is undefined");
+    }
     }, (err) => {
       console.log(err);
     });
