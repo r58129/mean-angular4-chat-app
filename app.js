@@ -24,12 +24,12 @@ var gracefulShutdown;
 // mongoose.Promise = global.Promise;
 
 //update this port for nodejs express addr
-global.expressIp = 'https://airpoint.com.hk';
-global.expressPort = 4060;
-global.socketIoPort = 3637;
+global.expressIp = 'https://cs.roboassistant.ai';
+global.expressPort = 3006;
+global.socketIoPort = 3005;
 
-global.dbIp = 'mongodb://192.168.0.102/';
-global.dbName = 'chatService';
+global.dbIp = 'mongodb://192.168.1.100/';
+global.dbName = 'blade02bay1';
 
 // var dbURI = global.dbIp +global.dbName;
 
