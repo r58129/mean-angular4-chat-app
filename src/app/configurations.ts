@@ -6,11 +6,11 @@ export class Configs {
   
   //    constructor(public authService: AuthserviceService) {}
     
-  angularAddr: string = 'https://airpoint.com.hk:4080';
-  expressAddr: string = 'https://airpoint.com.hk:4060';
-  socketIoServerAddr: string = 'https://airpoint.com.hk:3637';   
-  tinkerboardAddr: string = 'https://airpoint.com.hk';
-  tinkerport: string = '8006';
+  angularAddr: string = 'https://cs.roboassistant.ai:3102';
+  expressAddr: string = 'https://cs.roboassistant.ai:3006';
+  socketIoServerAddr: string = 'https://cs.roboassistant.ai:3005';   
+  tinkerboardAddr: string = 'https://cs.roboassistant.ai';
+  tinkerport: string = '8014';
 
   // angularAddr: string = localStorage.getItem('baseAddress');
   // expressAddr: string =localStorage.getItem('baseAddress') +":"+localStorage.getItem('expressPort');
@@ -18,9 +18,9 @@ export class Configs {
   // tinkerboardAddr: string =localStorage.getItem('baseAddress');
   // tinkerport: string =localStorage.getItem('tinkerPort');
 
-  multiChatAddr: string = 'https://cs.roboassistant.ai';
+  multiChatAddr: string = 'https://51a4596b.ngrok.io';
   // multiChatAddr: string = 'https://a76d2e33.ngrok.io';
-  multiChatPort: string = '3991';
+  multiChatPort: string = '3993';
   multiChatCode: string = 'Aptc123456';
   
 
