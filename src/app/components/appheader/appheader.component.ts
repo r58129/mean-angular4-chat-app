@@ -28,10 +28,12 @@ export class AppheaderComponent implements OnInit, OnDestroy{
   timer: any;
   curSid:string = "0"; 
   joinned: boolean = false;
+  package: string;
+
   newUser = { nickname: '', room: '' };
   newRequest = { type:'', phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
-  package: string;
-  
+  CusMsgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
+
   socket = io(this.configs.socketIoServerAddr,{secure: true});
   // socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
   
@@ -132,6 +134,61 @@ export class AppheaderComponent implements OnInit, OnDestroy{
     }  // (this.newRequest.socket_id!=undefined)
   	}	  //if 
   });  //end socket
+
+  this.socket.on('customerQuit', function(userid, socketID){
+    console.log('App header customerQuit: ' + userid);
+    console.log("socketID in customerQuit: " +socketID);
+    // console.log("curSid in customerQuit: " +this.curSid);  
+    // var message = "User quit!";
+
+    if ((userid.sender != undefined) && (userid.package != undefined)){
+      this.package = userid.package;
+      userid = userid.sender;
+      // console.log("print userid.sender: " +userid);
+      // console.log("print userid.package: " +this.package);
+      // console.log("print socket.id:" +socketID);
+    } else {
+      userid = userid;
+      this.package = 'whatsapp';
+      // console.log("print userid: " +userid);
+      // console.log("print package: " +this.package);
+      // console.log("print socket.id:" +socketID);
+    }
+
+    if ((userid != "transport close") && (userid != "operatorSessionUserNonAndroid")){
+      console.log("print userid: " +userid);
+      console.log("print package: " +this.package);
+      console.log("print socket.id:" +socketID);
+
+    //update request_status to quit when customer is quit
+    var updateStatus = { request_status:"Quit"};
+
+    this.chatService.getChatStatusBySocket(socketID).then((res) => {  //from chatService
+      this.requests = res;
+      if (this.requests[0].request_status != undefined){
+        var curStatus = this.requests[0].request_status;
+        console.log("get request status: " + JSON.stringify(this.requests[0]));
+        console.log("get request status: " + this.requests[0].request_status);
+        console.log("curStatus: " + curStatus);
+
+      if (curStatus == "New"){
+        this.chatService.updateChatBySocket(socketID, updateStatus).then((res) => {  //from chatService
+          console.log("status updated to Quit");
+        }, (err) => {
+          console.log(err);
+        });
+      } else {
+          console.log("status is not updated");
+      }
+    }  // if (this.requests[0].request_status != undefined){
+    }, (err) => {
+      console.log(err);
+    });
+
+  }  // if ((userid != "transport close") || (userid != "operatorSessionUserNonAndroid"))
+  }.bind(this));
+  
+    
     
   // console.log('before register to tinker, session id: ' + localStorage.getItem('res.data.sessionID'))
   // this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 

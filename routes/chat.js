@@ -320,6 +320,9 @@ io.on('connection', function (socket) {
       // for(var i in adminSocketID){
       //   io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername});
       // }
+
+        io.emit('customerQuit', socket.userid, socket.id);
+
         var index = userSocketIDAndUsername.indexOf(socket.userid + ' (' + socket.id + ')');
         if (index > -1) {
           userSocketIDAndUsername.splice(index, 1);
@@ -455,6 +458,37 @@ router.put('/:id', auth, function(req, res, next) {
     });
   } else {
     Chat.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  }
+});
+
+
+/* GET chat request by socket id */
+router.get('/socket/:socket_id',  function(req, res, next) {
+// router.get('/socket/:socket_id', auth, function(req, res, next) {
+//   if (!req.payload._id) {
+//     res.status(401).json({
+//       "message" : "UnauthorizedError:"
+//     });
+//   } else {
+    Chat.find({socket_id:req.params.socket_id}, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  // }
+});
+
+/* UPDATE chat request by socket id*/
+// router.put('/socket/:socket_id', function(req, res, next) {
+router.put('/socket/:socket_id', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Chat.findOneAndUpdate({socket_id:req.params.socket_id}, req.body, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });
