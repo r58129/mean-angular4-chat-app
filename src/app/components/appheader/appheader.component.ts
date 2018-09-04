@@ -94,7 +94,7 @@ export class AppheaderComponent implements OnInit, OnDestroy{
    	console.log(this.newRequest.socket_id);
    	console.log(this.newRequest.message);
    	console.log(this.newRequest.request_status);
-     console.log(this.newRequest.type);
+    console.log(this.newRequest.type);
  	// console.log(this.newRequest.updated_at);
 
     if (this.newRequest.socket_id!=undefined){

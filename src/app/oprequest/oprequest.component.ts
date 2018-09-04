@@ -28,7 +28,7 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
   timer: any;
   joinned: boolean = false;
   newUser = { nickname: '', room: '' };
-  newRequest = { phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
+  newRequest = {type:'', phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
   // newRequest = { room:'', phone_number: '', message: '', socket_id:'',updated_at:'' };
   // chatRequest = { room: '', admin_name:'', phone_number: '', message: '', updated_at:'' };
   // socket = io('http://localhost:4000');
