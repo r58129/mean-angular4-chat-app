@@ -830,33 +830,35 @@ router.delete('/image/:id', auth, function(req, res, next) {
 });
 
 //get all contact id
-router.get('/contact/all', function(req, res, next) { 
-// router.get('/contact/user', auth, function(req, res, next) { 
-  // if (!req.payload._id) {
-  //   res.status(401).json({
-  //     "message" : "UnauthorizedError:"
-  //   });
-  // } else {
+// router.get('/contact/all', function(req, res, next) { 
+router.get('/contact/all', auth, function(req, res, next) { 
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {
     Contact.find(req.body, function (err, contacts) {
       if (err) return next(err);
       res.json(contacts);
     })
-  // }  //end else
+  }  //end else
 });
 
 // get id using name and package type
-router.get('/contact/:name', function(req, res, next) { 
-// router.get('/contact/user', auth, function(req, res, next) { 
-  // if (!req.payload._id) {
-  //   res.status(401).json({
-  //     "message" : "UnauthorizedError:"
-  //   });
-  // } else {
-    Contact.find({name:req.params.name}, function (err, contacts) {
+// router.get('/contact/:name', function(req, res, next) { 
+router.get('/contact/:name', auth, function(req, res, next) { 
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {
+    // Contact.find({name:req.params.name}, function (err, contacts) {
+      var search = req.params.name;
+    Contact.find({'name': new RegExp(search,'i')}, function (err, contacts) {
       if (err) return next(err);
       res.json(contacts);
     })
-  // }  //end else
+  }  //end else
 });
 
 /* SAVE contact */

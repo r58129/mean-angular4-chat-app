@@ -29,6 +29,16 @@
 
 }
 
+#return-to-table{
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+#search-by-name
+{
+    max-width: 200px;
+}
+
 #oprequest-page, #opchat-page
 {
     margin-left: 0;
@@ -36,6 +46,8 @@
 /*    width: 100%;
     height: 100%;
 */}
+
+
 
 #content-wrapper
 {
