@@ -27,6 +27,9 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
   interval: any;
   timer: any;
   joinned: boolean = false;
+  notSearch: boolean = true;
+  contacts: any;  //contacts
+  searchName: any;
   newUser = { nickname: '', room: '' };
   newRequest = {type:'', phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
   // newRequest = { room:'', phone_number: '', message: '', socket_id:'',updated_at:'' };
@@ -78,23 +81,6 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
     } catch(err) { }
   }
 
-  // getChatByRoom(room) {
-  //   this.chatService.getChatByRoom(room).then((res) => {  //from chatService
-  //     this.chats = res;
-  //   }, (err) => {
-  //     console.log(err);
-  //   });
-  // }
-
-  // getHumanRequest() {
-  //   var customer_service = "human";
-  //   this.chatService.getHumanRequest(customer_service).then((res) => {  //from chatService, 
-  //     this.requests = res;
-  //   }, (err) => {
-  //     console.log(err);
-  //   });
-  // }
-
   getOperatorRequest(){
   	var operator_request = "true";
     this.chatService.getOperatorRequest().then((res) => {  //from chatService, 
@@ -105,29 +91,31 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
 
   }
 
-  // getRequestByRoom(room) {
-  //   this.chatService.getRequestByRoom(room).then((res) => {  //from chatService, here room=phone number
-  //     this.requests = res;
-  //   }, (err) => {
-  //     console.log(err);
-  //   });
-  // }
+  returnToTable(){
+    this.notSearch = true;
+    console.log("return to table view");
+  }
 
-  // getSingleRequest(id) {
-  //   this.chatService.showRequest(id).then((res) => {  //from chatService, here room=phone number
-  //     this.requests = res;
-  //   }, (err) => {
-  //     console.log(err);
-  //   });
-  // }
+  search(){
+  this.notSearch = false;
+  console.log("searching: " + this.searchName);
 
-  // getSocketID(id) {
-  //   this.chatService.showRequestSocket(id).then((res) => {  //from chatService, here room=phone number
-  //     this.requests = res;
-  //   }, (err) => {
-  //     console.log(err);
-  //   });
-  // }
+    if ((this.searchName == undefined) || (this.searchName == "")){
+      this.chatService.getAllContact().then((res) => {  //from chatService, 
+        this.contacts = res;
+      }, (err) => {
+        console.log(err);
+      });
+
+    } else {
+
+    this.chatService.getContactByName(this.searchName).then((res) => {  //from chatService, 
+        this.contacts = res;
+      }, (err) => {
+        console.log(err);
+      });
+    }
+  }
 
 }
 
