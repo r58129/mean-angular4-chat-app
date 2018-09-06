@@ -6,8 +6,8 @@ var app = express();
 //var server = require('http').createServer(app);
 
 var fs = require('fs');
-var key = fs.readFileSync('routes/encryption/pk.pem');
-var cert = fs.readFileSync( 'routes/encryption/cert2.pem' );
+var key = fs.readFileSync('routes/encryption/privkey.pem');
+var cert = fs.readFileSync( 'routes/encryption/cert.pem' );
 
 var options = {
 key: key,
@@ -699,16 +699,16 @@ router.get('/userphone/:phone_number', function(req, res, next) {
 
 /* SAVE user */
 router.post('/user', auth, function(req, res, next) {
-  if (!req.payload._id) {
-    res.status(401).json({
-      "message" : "UnauthorizedError:"
-    });
-  } else {  
+//  if (!req.payload._id) {
+//    res.status(401).json({
+//      "message" : "UnauthorizedError:"
+//    });
+//  } else {  
     User.create(req.body, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });
-  }
+//  }
 });
 
 /* UPDATE user by user phone number*/
