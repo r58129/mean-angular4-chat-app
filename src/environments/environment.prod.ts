@@ -6,15 +6,15 @@ export class Configs {
   
   //    constructor(public authService: AuthserviceService) {}
     
-  angularAddr: string = 'https://cs.roboassistant.ai:3890';
-  expressAddr: string = 'https://cs.roboassistant.ai:3285';
-  socketIoServerAddr: string = 'https://cs.roboassistant.ai:3284';   
-  tinkerboardAddr: string = 'https://cs.roboassistant.ai';
-  tinkerport: string = '8009';
+  angularAddr: string = '';
+  expressAddr: string = '';
+  socketIoServerAddr: string = '';   
+  tinkerboardAddr: string = '';
+  tinkerport: string = '';
 
-  multiChatdAddr: string = 'https://ea6aa49f.ngrok.io';
-  // multiChatport: string = '3991';
-  multiChatCode: string = 'Aptc123456';
+  multiChatAddr: string = '';
+  multiChatPort: string = '';
+  multiChatCode: string = '';
   
 
   // angularAddr: string = 'https://airpoint.com.hk:4080';

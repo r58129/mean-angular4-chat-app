@@ -28,7 +28,10 @@
       "environments": {
         "dev": "environments/environment.ts",
         "prod": "environments/environment.prod.ts",
-          "prod2": "environments/environment.prod2.ts"
+          "blade01bay2": "environments/environment.blade01bay2.ts",
+          "blade02bay1": "environments/environment.blade02bay1.ts",
+          "blade02bay2": "environments/environment.blade02bay2.ts",
+          "blade03bay1": "environments/environment.blade03bay1.ts"
       }
     }
   ],
