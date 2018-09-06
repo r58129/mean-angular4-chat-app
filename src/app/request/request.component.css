@@ -36,16 +36,19 @@
 
 }*/
 
-/*.table-cell
+/*#request-table*/
+/*.ui-datatable-data> tr> td
 {
-    max-width: 300px;
-    white-space: -o-pre-wrap; 
+    max-width: 150px;
     word-wrap: break-word;
-    white-space: pre-wrap; 
-    white-space: -moz-pre-wrap; 
-    white-space: -pre-wrap;
-}
-*/
+    word-break: break-all;
+    overflow-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    
+}*/
+
 #request-page, #chat-page
 {
     margin-left: 0;

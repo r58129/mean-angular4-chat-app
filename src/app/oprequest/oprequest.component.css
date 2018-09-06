@@ -29,6 +29,21 @@
 
 }
 
+/*#table-body{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+
+}*/
+/*.ui-datatable-data> tr> td
+{
+    max-width: 150px;
+    word-wrap: break-word;
+    white-space: nowrap; 
+    
+}*/
+
 #return-to-table{
     margin-right: 10px;
     margin-left: 10px;
