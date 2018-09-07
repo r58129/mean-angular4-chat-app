@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy} from '@angular/core';
 import { AuthService, UserDetails } from '../../auth/auth.service';
-import { Configs } from '../../configurations';
+//import { Configs } from '../../configurations';
+import { Configs } from '../../../environments/environment';
 import { ChatService } from '../../chat.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as io from 'socket.io-client';
@@ -52,8 +53,8 @@ export class AppheaderComponent implements OnInit, OnDestroy{
     // console.log("emit admin socket");
 
     // register to multichat server
-    // this.http.post (this.configs.multiChatAddr+'/api/csp/register'+this.configs.multiChatPort+'?action=register&sessionID='+this.configs.multiChatCode, 
-    this.http.post (this.configs.multiChatAddr+'/api/csp/register?action=register&sessionID='+this.configs.multiChatCode, 
+     this.http.post (this.configs.multiChatAddr+'/api/csp/register'+this.configs.multiChatPort+'?action=register&sessionID='+this.configs.multiChatCode, 
+    //this.http.post (this.configs.multiChatAddr+'/api/csp/register?action=register&sessionID='+this.configs.multiChatCode, 
     {}, httpOptions)
     .pipe(
     catchError(this.handleErrorObservable)
@@ -232,8 +233,8 @@ export class AppheaderComponent implements OnInit, OnDestroy{
     // this.unsubscribe.complete();
     // //socket.emit('forceDisconnect');
     //unregister multichat server
-    this.http.post (this.configs.multiChatAddr+'/api/csp/unregister?action=unregister&sessionID='+this.configs.multiChatCode, 
-    // this.http.post (this.configs.multiChatAddr+'/api/csp/unregister'+this.configs.multiChatPort+'?action=unregister&sessionID='+this.configs.multiChatCode, 
+    //this.http.post (this.configs.multiChatAddr+'/api/csp/unregister?action=unregister&sessionID='+this.configs.multiChatCode, 
+     this.http.post (this.configs.multiChatAddr+'/api/csp/unregister'+this.configs.multiChatPort+'?action=unregister&sessionID='+this.configs.multiChatCode, 
     {}, httpOptions)
       .pipe(
         catchError(this.handleErrorObservable)

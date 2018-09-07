@@ -4,7 +4,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
 import { Buffer } from 'buffer';
-import { Configs } from '../configurations';
+//import { Configs } from '../configurations';
+import { Configs } from '../../environments/environment';
+
 
 @Component({
   selector: 'app-multichat',
