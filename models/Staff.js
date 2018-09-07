@@ -6,14 +6,14 @@ var StaffSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
-    required: true
-    // trim: true
+    required: true,
+    lowercase: true,
+    trim: true
   },
   name: {
     type: String,
-    // unique: true,
-    required: true
-    // trim: true
+    required: true,
+    trim: true
   },
   // password: {
   //   type: String,
@@ -23,8 +23,18 @@ var StaffSchema = new mongoose.Schema({
   //   type: String,
   //   required: true,
   // },
-  hash: String,
-  salt: String,
+  hash: {
+    type: String
+  },
+  salt: {
+    type: String
+  },
+  reset_password_token: {
+    type: String
+  },
+  reset_password_expires: {
+    type: Date
+  },
   companyName: String,
   baseAddress: String,
   expressPort: String,  

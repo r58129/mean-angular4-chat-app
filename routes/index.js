@@ -16,6 +16,7 @@ router.get('/profile', auth, ctrlProfile.profileRead);
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
 
-// router.post('/forgotPassword', ctrlAuth.login);
+router.post('/forgotpwd', ctrlAuth.forgotPassword);
+router.post('/resetpwd', ctrlAuth.resetPassword);
 
 module.exports = router;
