@@ -132,3 +132,5 @@ npm start
 Execute on client side:
 ng serve -o --port 4080 --host 0.0.0.0 --ssl true --ssl-key ./routes/encryption/pk.pem --ssl-cert ./routes/encryption/cert2.pem --public airpoint.com.hk
 
+export GOOGLE_APPLICATION_CREDENTIALS="/home/bchong/Webapps/googleCredentials.json"
+

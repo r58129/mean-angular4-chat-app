@@ -19,7 +19,7 @@ export class Configs {
   // tinkerport: string =localStorage.getItem('tinkerPort');
 
   // multiChatAddr: string = 'https://cs.roboassistant.ai';
-  multiChatAddr: string = 'https://16c1afdb.ngrok.io';
+  multiChatAddr: string = 'https://843f0d4a.ngrok.io'; 
   multiChatPort: string = '3993';
   multiChatCode: string = 'Aptc123456';
   

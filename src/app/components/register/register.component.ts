@@ -16,6 +16,7 @@ export class RegisterComponent {
   };
 
   confirm: string;
+  // companyName: string;
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -25,6 +26,7 @@ export class RegisterComponent {
     console.log("this.credentials.email: " + this.credentials.email);
     console.log("this.credentials.password: " + this.credentials.password);
     console.log("this.confirm.password: " + this.confirm);
+    // console.log("this.confirm.password: " + this.companyName);
 
     if (this.confirm == this.credentials.password){
     this.authService.register(this.credentials).subscribe(() => {

@@ -698,17 +698,18 @@ router.get('/userphone/:phone_number', function(req, res, next) {
 });
 
 /* SAVE user */
-router.post('/user', auth, function(req, res, next) {
-  if (!req.payload._id) {
-    res.status(401).json({
-      "message" : "UnauthorizedError:"
-    });
-  } else {  
+router.post('/user', function(req, res, next) {
+// router.post('/user', auth, function(req, res, next) {
+  // if (!req.payload._id) {
+  //   res.status(401).json({
+  //     "message" : "UnauthorizedError:"
+  //   });
+  // } else {  
     User.create(req.body, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });
-  }
+  // }
 });
 
 /* UPDATE user by user phone number*/
