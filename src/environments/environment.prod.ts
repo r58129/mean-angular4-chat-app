@@ -22,11 +22,14 @@ export class Configs {
   tinkerboardAddr: string = 'https://airpoint.com.hk';
   tinkerport: string = '8006';
 
-  // multiChatAddr: string = 'https://cs.roboassistant.ai';
-  multiChatAddr: string = 'https://843f0d4a.ngrok.io'; 
+  ngrok: boolean = true;  //true = ngrok, false = 443 route server
+
+  multiChatNgrokAddr: string = 'https://843f0d4a.ngrok.io'; 
+  multiChatAddr: string = 'https://cs.roboassistant.ai'; 
   multiChatPort: string = '3991';
   multiChatCode: string = 'Aptc123456';
   
+
 
   // angularAddr: string = 'https://airpoint.com.hk:4080';
   // expressAddr: string = 'https://airpoint.com.hk';

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService, TokenPayload } from '../../auth/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-reset-password',
@@ -12,35 +12,47 @@ export class ResetPasswordComponent {
   credentials: TokenPayload = {
     email: '',
     name: '',
-    password: ''
+    password: '',
+    resetToken:''
   };
 
   confirm: string;
+  token: string;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private route: ActivatedRoute, private router: Router) {}
+
+  ngOnInit() {
+  
+      this.route.params.subscribe(params =>{
+      // console.log(params);
+      this.credentials.resetToken = params['token'];
+      // this.credentials.name = this.token;
+      console.log(this.credentials.resetToken);     
+    });
+
+  }
 
   resetPassword() {
-    console.log("inside forgot password components: " +this.confirm);
-    // console.log("this.credentials.name: " + this.credentials.name);
-    // console.log("this.credentials.email: " + this.credentials.email);
-    console.log("this.credentials.password: " + this.credentials.password);
-    // console.log("this.confirm.password: " + this.confirm);
+    
+    console.log("inside reset password components: " +this.credentials.password);
+    console.log("this.credentials.password: " + this.confirm);
+    console.log("token: " +this.credentials.resetToken);
 
-    // if (this.confirm == this.credentials.password){
-    // this.authService.register(this.credentials).subscribe(() => {
-    //   console.log("inside auth.register");
-  
-    //   // this.router.navigateByUrl('/api/profile');
-    //   // this.router.navigateByUrl('/');
-    //   this.authService.logout();
-    //   // this.router.navigate('/api/profile');
-    // }, (err) => {
-    //   console.error(err);
-    //   console.log("you get error in auth.register");
-    // });
-    // } else {
-    //   console.log("Retype password");
-    // }
+    if ( this.credentials.password == this.confirm){
+      console.log('password match');
+    this.authService.resetPassword(this.credentials).subscribe(() => {
+      console.log('post reset password ');
+
+      // this.router.navigate(['/']);
+      console.log("redirect the link to login");
+      this.authService.logout();
+    }, (err) => {
+      console.error(err);
+    });
+  } else {
+
+    console.log("passwords do not match!!")
+  }
 
   }
 

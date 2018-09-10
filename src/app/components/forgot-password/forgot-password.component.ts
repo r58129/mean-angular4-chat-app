@@ -22,8 +22,8 @@ export class ForgotPasswordComponent {
     console.log("inside forgot password components: " +this.credentials.email);
 	this.authService.forgotPassword(this.credentials).subscribe(() => {
       console.log('post forgot password link');
-
-      this.router.navigate(['/']);
+      // this.authService.logout();
+      this.router.navigateByUrl('/');
       console.log("redirect the link to login");
     }, (err) => {
       console.error(err);

@@ -37,7 +37,7 @@ const appRoutes: Routes = [
   { path: '', component: LoginComponent, pathMatch: 'full' },
   { path: 'api/register', component: RegisterComponent },
   { path: 'api/forgotpwd', component: ForgotPasswordComponent },
-  { path: 'api/resetpwd', component: ResetPasswordComponent },
+  { path: 'api/resetpwd/:token', component: ResetPasswordComponent },
   { path: 'api/profile', component: ProfileComponent, canActivate: [AuthGuardService] },
   
   // { path: '', component: ApploginComponent, pathMatch: 'full'},

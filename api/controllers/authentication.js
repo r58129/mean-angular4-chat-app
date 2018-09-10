@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Staff = mongoose.model('Staff');
 var async = require('async');
 var crypto = require('crypto');
-
+var fs = require('fs');
 const {google} = require('googleapis');
 const scopes = [
   // 'https://mail.google.com/',
@@ -111,18 +111,67 @@ function getDateTime() {
 
 var settings;
 
-function sendemailResetPassword(index, e){
-  var message = settings.mappings[index].customer + "'s server is down, server ip: " + settings.mappings[index].internalIp + ", port: " + settings.mappings[index].internalPort;
-  var raw = makeBody('eng@airpoint.com.hk', 'support@airpoint.com.hk', getDateTime() + ' Alert!! This airpoint server is down!! ' + message, message + "\n" + e);
-  gmail.users.messages.send({
-    auth: googleAuth,
-    userId: 'me',
-    resource: {
-      raw: raw
-    }
+function sendResetPasswordEmail(email, name, url, e){
+
+  console.log("sendResetPasswordEmail: " +email + url);
+
+  // Load google api client secrets from a local file.
+  fs.readFile('credentials.json', (err, content) => {
+  if (err) return console.log('Error loading client secret file:', err);
+    // Authorize a client with credentials, then call the Gmail API.
+  authorize(JSON.parse(content), function(oAuth2Client){
+      googleAuth = oAuth2Client;
+      gmail = google.gmail({version: 'v1', oAuth2Client});
+
+      // var raw = makeBody('eng@airpoint.com.hk', 'support@airpoint.com.hk', 'Airpoint Webhook server up: ' + getDateTime()  ,  'Airpoint Webhook server up: ' + getDateTime());
+      var message = "Hello, +\n\n"
+                + "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n"
+                + "Please click on the following link, or paste this into your browser to complete the process:\n\n" 
+                + url +"\n\n" 
+                + "If you did not request this, please ignore this email and your password will remain unchanged.\n\n"
+                + "Cheers";
+      var raw = makeBody(email, 'support@airpoint.com.hk', getDateTime() + ' Password Reset ', message);
+      gmail.users.messages.send({
+          auth: oAuth2Client,
+          userId: 'me',
+          resource: {
+              raw: raw
+          }
+      });  
   });
+});
 
 }
+
+function sendPasswordUpdatedEmail(email, name, e){
+
+  console.log("sendPasswordUpdatedEmail: " +email);
+
+  // Load google api client secrets from a local file.
+  fs.readFile('credentials.json', (err, content) => {
+  if (err) return console.log('Error loading client secret file:', err);
+    // Authorize a client with credentials, then call the Gmail API.
+  authorize(JSON.parse(content), function(oAuth2Client){
+      googleAuth = oAuth2Client;
+      gmail = google.gmail({version: 'v1', oAuth2Client});
+
+      // var raw = makeBody('eng@airpoint.com.hk', 'support@airpoint.com.hk', 'Airpoint Webhook server up: ' + getDateTime()  ,  'Airpoint Webhook server up: ' + getDateTime());
+      var message = "Hello, +\n\n"
+                    + "This is a confirmation that the password for your account " + email + " has just been changed.\n\n"
+                    + "Cheers";
+      var raw = makeBody(email, 'support@airpoint.com.hk', getDateTime() + ' Your password has been changed ', message);
+      gmail.users.messages.send({
+          auth: oAuth2Client,
+          userId: 'me',
+          resource: {
+              raw: raw
+          }
+      });  
+  });
+});
+
+}
+
 
 //in reality, this code would have a number of error traps, 
 //validating form inputs and catching errors in the save function. 
@@ -229,50 +278,92 @@ module.exports.forgotPassword = function(req, res) {
     },
     function(staff, token, done) {
       console.log("update token to db" +token);
-      Staff.findByIdAndUpdate({ _id: staff._id }, { reset_password_token: token, reset_password_expires: Date.now() + 86400000 }, { upsert: true, new: true }).exec(function(err, new_staff) {
+      Staff.findByIdAndUpdate({ _id: staff._id }, 
+        { 
+          reset_password_token: token, 
+          reset_password_expires: Date.now() + 3600000  //expires after 1 hour =1*3600*1000
+        }, 
+        { upsert: true, new: true }).exec(function(err, new_staff) {
         done(err, token, new_staff);
       });
     },
     function(token, staff, done) {
+
       console.log("ready to send email");
-      var data = {
-        to: staff.email,
-        from: email,
-        template: 'forgot-password-email',
-        subject: 'Password help has arrived!',
-        context: {
-          url: global.expressIp+':'+global.expressPort+'/api/resetpwd?token=' + token,
-          name: user.fullName.split(' ')[0]
-        }
-      };
+      var url = global.expressIp+':'+global.angularPort+'/api/resetpwd/' + token;
+      
 
       //user google mail api
-      // smtpTransport.sendMail(data, function(err) {
-      //   if (!err) {
-      //     return res.json({ message: 'Kindly check your email for further instructions' });
-      //   } else {
-      //     return done(err);
-      //   }
-      // });
-    }
+      sendResetPasswordEmail(staff.email, staff.name, url, function(err) {
+        // if (!err) {
+        //   console.log(" send email with no error");
+        //   return res.json({ message: 'Kindly check your email for further instructions' });
+        // } else {
+        //   console.log("error");
+        //   return done(err);
+        // }
+      });
+      sendJSONresponse(res, 200, "email will be sent");
+    } 
   ], function(err) {
     return res.status(422).json({ message: err });
   });
-
-
-
 };
 
-module.exports.resetPassword = function(req, res) {
+module.exports.resetPassword = function(req, res,) {
 
-  console.log("resetPassword...");
+  console.log("resetPassword..." +req.body.password);
   if(!req.body.password) {
     sendJSONresponse(res, 400, {
-      "message": "A valid email is required"
+      "message": "A password is required"
     });
     return;
   }
 
+  console.log("reset token..." +req.body.resetToken);
 
+  Staff.findOne({
+    reset_password_token: req.body.resetToken,
+    reset_password_expires: {
+      $gt: Date.now()
+    }
+  }).exec(function(err, staff) {
+    console.log("password: " +req.body.password);
+    if (!err && staff) {
+      // if (!req.body.password) {
+        // staff.hash_password = bcrypt.hashSync(req.body.newPassword, 10);
+        staff.reset_password_token = undefined;
+        staff.reset_password_expires = undefined;
+        console.log("clear reset temp password... ");
+
+        staff.setPassword(req.body.password);
+
+        staff.save(function(err) {
+          var token;
+          if (err) {
+            sendJSONresponse(res, 422, err);
+          } else {
+            token = staff.generateJwt();
+            sendJSONresponse(res, 200, {
+            "token" : token
+            });
+
+            sendPasswordUpdatedEmail(staff.email, staff.name, function(err) {
+              // console.log("sendPasswordUpdatedEmail... ");
+              // if (!err) {
+              //   return res.json({ message: 'Kindly check your email for further instructions' });
+              // } else {
+              //   return done(err);
+              // }
+            });
+          }
+        });
+
+    } else {
+      return res.status(400).send({
+        message: 'Password reset token is invalid or has expired.'
+      });
+    }
+  });
 
 };

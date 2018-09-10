@@ -16,6 +16,9 @@ router.get('/profile', auth, ctrlProfile.profileRead);
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
 
+// password reset
+// router.get('/resetpwd', ctrlAuth.resetPassword);
+
 router.post('/forgotpwd', ctrlAuth.forgotPassword);
 router.post('/resetpwd', ctrlAuth.resetPassword);
 

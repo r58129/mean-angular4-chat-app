@@ -13,8 +13,8 @@ var http = require('https');
  */
 
 var fs = require('fs');
-var key = fs.readFileSync('routes/encryption/pk.pem');
-var cert = fs.readFileSync( 'routes/encryption/cert2.pem' );
+var key = fs.readFileSync('routes/encryption/privkey.pem');
+var cert = fs.readFileSync( 'routes/encryption/cert.pem' );
 var ca = fs.readFileSync( 'routes/encryption/mydomain.crt' );
 
 var options = {

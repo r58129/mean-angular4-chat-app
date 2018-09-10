@@ -27,6 +27,7 @@ export interface TokenPayload {
   email: string;
   password: string;
   name?: string;
+  resetToken?: string;
 }
 
 const httpOptions = {
@@ -37,16 +38,12 @@ const httpOptions = {
   })
 };
 
-// const httpHeaderOptions = {
-//   headers: new HttpHeaders({
-//     'Content-Type':  'text/html'
-//   })
-// };
 
 @Injectable()
 export class AuthService {
 
 private token: string;
+private resetToken: string;
 
   constructor(private http: HttpClient, private router: Router, private configs: Configs) {}
 
@@ -153,6 +150,7 @@ private token: string;
   public resetPassword(user: TokenPayload): Observable<any> {
     console.log("inside resetPassword auth.service");
     console.log("password: " + user.password);
+    console.log("token: " + user.resetToken);
     return this.request('post', 'resetpwd', user);
   }
 

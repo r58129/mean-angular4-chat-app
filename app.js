@@ -26,6 +26,7 @@ var gracefulShutdown;
 //update this port for nodejs express addr
 // global.expressIp = 'https://cs.roboassistant.ai';
 global.expressIp = 'https://airpoint.com.hk';
+global.angularPort = 4080;  //use in sending email
 global.expressPort = 4060;
 global.socketIoPort = 3637;
 

@@ -15,14 +15,6 @@ var StaffSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  // password: {
-  //   type: String,
-  //   required: true,
-  // },
-  // passwordConf: {
-  //   type: String,
-  //   required: true,
-  // },
   hash: {
     type: String
   },
@@ -43,6 +35,7 @@ var StaffSchema = new mongoose.Schema({
   mongodbName: String,
   phoneNumber: String,
   online: String,
+  valid: String,
   reserve1: String,
   reserve2: String
 
