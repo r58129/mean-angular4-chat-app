@@ -40,18 +40,20 @@ export class ResetPasswordComponent {
 
     if ( this.credentials.password == this.confirm){
       console.log('password match');
-    this.authService.resetPassword(this.credentials).subscribe(() => {
+      this.authService.resetPassword(this.credentials).subscribe(() => {
       console.log('post reset password ');
-
-      // this.router.navigate(['/']);
       console.log("redirect the link to login");
+      
+      if (window.alert('Password has been reset! Please login to start your session.')){
       this.authService.logout();
+      }
+
     }, (err) => {
       console.error(err);
     });
   } else {
-
-    console.log("passwords do not match!!")
+    window.alert('Passwords do not match!');
+    console.log("Passwords do not match!")
   }
 
   }

@@ -49,13 +49,13 @@ const appRoutes: Routes = [
   
   { path: 'chat/operator', component: OprequestComponent, 
     children:[
-      { path: 'opchatbox/:id', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthGuardService]},
+      { path: 'opchatbox/:id/:id2', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthGuardService]},
   ], canActivate: [AuthGuardService]},
 
-  { path: 'chat/multichat', component: MultichatReqComponent, 
-    children:[
-      { path: 'multichatbox/:id', component: MultichatComponent, outlet:'multichatOutlet',canActivate: [AuthGuardService]},
-  ], canActivate: [AuthGuardService]},
+  // { path: 'chat/multichat', component: MultichatReqComponent, 
+  //   children:[
+  //     { path: 'multichatbox/:id', component: MultichatComponent, outlet:'multichatOutlet',canActivate: [AuthGuardService]},
+  // ], canActivate: [AuthGuardService]},
  
   { path: 'chat/history', component: HistoryComponent, canActivate: [AuthGuardService] },
 

@@ -34,13 +34,16 @@ export class RegisterComponent {
   
       // this.router.navigateByUrl('/api/profile');
       // this.router.navigateByUrl('/');
-      this.authService.logout();
+      if (window.alert('Successfully registered! Please login to start your session.')){
+        this.authService.logout();
+      }
       // this.router.navigate('/api/profile');
     }, (err) => {
       console.error(err);
       console.log("you get error in auth.register");
     });
     } else {
+      window.alert('Passwords do not match!');
       console.log("Retype password");
     }
 

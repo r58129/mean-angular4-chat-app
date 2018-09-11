@@ -50,11 +50,16 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   ngOnInit() {
 //      history.pushState({},"Edit","");
 
-  // this.route.params.subscribe(params =>{
-  //     // console.log(params);
-  //     this.newUser.room = params['id'];
-  //     // console.log(this.newUser.room);     
-  // });
+  this.route.params.subscribe(params =>{
+      // console.log(params);
+      this.newUser.room = params['id'];
+      // console.log(this.newUser.room);     
+  });
+  this.route.params.subscribe(params =>{
+      // console.log(params);
+      this.newUser.type = params['id2'];
+      // console.log(this.newUser.type);     
+  });
 
   var user = JSON.parse(localStorage.getItem("user"));
 
