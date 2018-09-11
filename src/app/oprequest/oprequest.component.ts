@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
+import { Component, Output, EventEmitter, HostListener, OnInit, OnDestroy, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { ChatService } from '../chat.service';
 import { Router } from '@angular/router';
 import { Subject} from 'rxjs/Subject';
@@ -31,6 +31,8 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
   notSearch: boolean = true;
   contacts: any;  //contacts
   searchName: any;
+  id:string;
+  appName:string;
   newUser = { nickname: '', room: '' };
   newRequest = {type:'', phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
   // newRequest = { room:'', phone_number: '', message: '', socket_id:'',updated_at:'' };
@@ -43,6 +45,14 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
   socket = io(this.configs.socketIoServerAddr,{secure: true});
   
   constructor(private chatService: ChatService, private configs: Configs) {}
+
+  // @HostListener('click')
+  // clickedCopy() {
+  //   console.log('this.id' + this.id);
+  //   console.log('this.appName' + this.appName);
+
+  //   this.chatService.copyInfo(this.id, this.appName);
+  // }
 
   ngOnInit() {
 

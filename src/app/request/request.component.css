@@ -29,12 +29,19 @@
 
 }
 
-/*.table
+.table
 {   
     border-collapse:collapse;
     table-layout:fixed;
-
-}*/
+    width: 100%;
+    min-width: 200px;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 /*#request-table*/
 /*.ui-datatable-data> tr> td

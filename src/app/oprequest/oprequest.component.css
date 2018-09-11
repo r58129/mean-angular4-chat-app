@@ -29,20 +29,19 @@
 
 }
 
-/*#table-body{
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 150px;
-
-}*/
-/*.ui-datatable-data> tr> td
-{
-    max-width: 150px;
+.table
+{   
+    border-collapse:collapse;
+    table-layout:auto;
+    width: 100%;
+    min-width: 200px;
     word-wrap: break-word;
-    white-space: nowrap; 
-    
-}*/
+    word-break: break-all;
+    overflow-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 #return-to-table{
     margin-right: 10px;
