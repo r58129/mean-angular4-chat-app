@@ -512,14 +512,24 @@ export class ChatService {
 
   getNASocketIo() {    //get socketio from mutli chat server
     return new Promise((resolve, reject) => {
-       this.http.get(this.configs.multiChatAddr+'/api/csp/refreshSocketIo'+this.configs.multiChatPort)
-      //this.http.get(this.configs.multiChatAddr+'/api/csp/refreshSocketIo')
+    if (this.configs.ngrok){  //ngrok
+      this.http.get(this.configs.multiChatNgrokAddr+'/api/csp/refreshSocketIo')
         // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
         }, (err) => {
           reject(err);
         });
+      } else {  //443 server
+       this.http.get(this.configs.multiChatAddr+'/api/csp/refreshSocketIo'+this.configs.multiChatPort) 
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+
+      }
     });
   }
 

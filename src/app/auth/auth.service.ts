@@ -27,6 +27,7 @@ export interface TokenPayload {
   email: string;
   password: string;
   name?: string;
+  resetToken?: string;
 }
 
 const httpOptions = {
@@ -37,16 +38,12 @@ const httpOptions = {
   })
 };
 
-// const httpHeaderOptions = {
-//   headers: new HttpHeaders({
-//     'Content-Type':  'text/html'
-//   })
-// };
 
 @Injectable()
 export class AuthService {
 
 private token: string;
+private resetToken: string;
 
   constructor(private http: HttpClient, private router: Router, private configs: Configs) {}
 
@@ -86,7 +83,7 @@ private token: string;
     }
   }
 
-  private request(method: 'post'|'get', type: 'login'|'register'|'profile', user?: TokenPayload): Observable<any> {
+  private request(method: 'post'|'get', type: 'login'|'register'|'profile'|'forgotpwd'|'resetpwd', user?: TokenPayload): Observable<any> {
     let base;
 
     if (method === 'post') {
@@ -99,6 +96,14 @@ private token: string;
       if (type === 'login') {
       base = this.http.post(this.configs.expressAddr +'/api/login', user);
       console.log("login http post");
+      }
+      if (type === 'forgotpwd') {
+      base = this.http.post(this.configs.expressAddr +'/api/forgotpwd', user);
+      console.log("forgotpwd http post");
+      }
+      if (type === 'resetpwd') {
+      base = this.http.post(this.configs.expressAddr +'/api/resetpwd', user);
+      console.log("resetpwd http post");
       }
       
     } else {
@@ -134,6 +139,19 @@ private token: string;
   public login(user: TokenPayload): Observable<any> {
     console.log("inside login auth.service");
     return this.request('post', 'login', user);
+  }
+
+  public forgotPassword(user: TokenPayload): Observable<any> {
+    console.log("inside forgotPassword auth.service");
+    console.log("email: " + user.email);
+    return this.request('post', 'forgotpwd', user);
+  }
+
+  public resetPassword(user: TokenPayload): Observable<any> {
+    console.log("inside resetPassword auth.service");
+    console.log("password: " + user.password);
+    console.log("token: " + user.resetToken);
+    return this.request('post', 'resetpwd', user);
   }
 
   public profile(): Observable<any> {

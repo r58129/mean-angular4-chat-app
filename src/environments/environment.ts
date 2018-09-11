@@ -16,6 +16,8 @@ export class Configs {
   tinkerboardAddr: string = '';
   tinkerport: string = '';
 
+  ngrok: boolean = false; //true = ngrok, false = 443 route server
+  multiChatNgrokAddr: string = '';
   multiChatAddr: string = '';
   multiChatPort: string = '';
   multiChatCode: string = '';

@@ -29,11 +29,15 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { HistoryComponent } from './history/history.component';
 import { MultichatComponent } from './multichat/multichat.component';
 import { MultichatReqComponent } from './multichat-req/multichat-req.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 const appRoutes: Routes = [
     // { path: '', component: HomeComponent },
   { path: '', component: LoginComponent, pathMatch: 'full' },
   { path: 'api/register', component: RegisterComponent },
+  { path: 'api/forgotpwd', component: ForgotPasswordComponent },
+  { path: 'api/resetpwd/:token', component: ResetPasswordComponent },
   { path: 'api/profile', component: ProfileComponent, canActivate: [AuthGuardService] },
   
   // { path: '', component: ApploginComponent, pathMatch: 'full'},

@@ -15,6 +15,9 @@ export class RegisterComponent {
     password: ''
   };
 
+  confirm: string;
+  // companyName: string;
+
   constructor(private authService: AuthService, private router: Router) {}
 
   register() {
@@ -22,7 +25,10 @@ export class RegisterComponent {
     console.log("this.credentials.name: " + this.credentials.name);
     console.log("this.credentials.email: " + this.credentials.email);
     console.log("this.credentials.password: " + this.credentials.password);
+    console.log("this.confirm.password: " + this.confirm);
+    // console.log("this.confirm.password: " + this.companyName);
 
+    if (this.confirm == this.credentials.password){
     this.authService.register(this.credentials).subscribe(() => {
       console.log("inside auth.register");
   
@@ -34,5 +40,9 @@ export class RegisterComponent {
       console.error(err);
       console.log("you get error in auth.register");
     });
+    } else {
+      console.log("Retype password");
+    }
+
   }
 }

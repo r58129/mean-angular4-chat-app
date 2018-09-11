@@ -6,16 +6,30 @@ export class Configs {
   
   //    constructor(public authService: AuthserviceService) {}
     
-  angularAddr: string = '';
-  expressAddr: string = '';
-  socketIoServerAddr: string = '';   
-  tinkerboardAddr: string = '';
-  tinkerport: string = '';
+  // angularAddr: string = 'https://cs.roboassistant.ai:3101';
+  // expressAddr: string = 'https://cs.roboassistant.ai:3004';
+  // socketIoServerAddr: string = 'https://cs.roboassistant.ai:3003';   
+  // tinkerboardAddr: string = 'https://cs.roboassistant.ai';
+  // tinkerport: string = '8013';
 
-  multiChatAddr: string = '';
-  multiChatPort: string = '';
-  multiChatCode: string = '';
+  // multiChatAddr: string = 'https://cs.roboassistant.ai';
+  // multiChatPort: string = '3992';
+  // multiChatCode: string = 'Aptc123456';
+
+  angularAddr: string = 'https://airpoint.com.hk:4080';
+  expressAddr: string = 'https://airpoint.com.hk:4060';
+  socketIoServerAddr: string = 'https://airpoint.com.hk:3637';   
+  tinkerboardAddr: string = 'https://airpoint.com.hk';
+  tinkerport: string = '8006';
+
+  ngrok: boolean = true;  //true = ngrok, false = 443 route server
+
+  multiChatNgrokAddr: string = 'https://843f0d4a.ngrok.io'; 
+  multiChatAddr: string = 'https://cs.roboassistant.ai'; 
+  multiChatPort: string = '3991';
+  multiChatCode: string = 'Aptc123456';
   
+
 
   // angularAddr: string = 'https://airpoint.com.hk:4080';
   // expressAddr: string = 'https://airpoint.com.hk';

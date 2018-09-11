@@ -34,6 +34,7 @@ var gracefulShutdown;
 //global.dbName = 'blade02bay1';
 
 global.expressIp = process.env.EXPRESSIP;
+global.angularPort = process.env.ANGULARPORT;  //use in sending email
 global.expressPort = process.env.EXPRESSPORT;
 global.socketIoPort = process.env.SOCKETIOPORT;
 
