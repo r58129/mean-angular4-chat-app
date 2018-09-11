@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "NODE_ENV=production nodemon ./bin/www",
+    "start": "NODE_ENV=production EXPRESSIP='https://cs.roboassistant.ai' ANGULARPORT='3199' EXPRESSPORT='3085' SOCKETIOPORT='3084' DBIP='mongodb://192.168.0.102/' DBNAME='chatServiceDemo2' nodemon ./bin/www",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
