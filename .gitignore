@@ -7,6 +7,7 @@
 
 # dependencies
 /node_modules
+/routes/encryption
 
 # IDEs and editors
 /.idea

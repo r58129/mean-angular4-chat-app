@@ -24,14 +24,22 @@ var gracefulShutdown;
 // mongoose.Promise = global.Promise;
 
 //update this port for nodejs express addr
-// global.expressIp = 'https://cs.roboassistant.ai';
-global.expressIp = 'https://airpoint.com.hk';
-global.angularPort = 4080;  //use in sending email
-global.expressPort = 4060;
-global.socketIoPort = 3637;
 
-global.dbIp = 'mongodb://192.168.0.102/';
-global.dbName = 'chatService';
+// 
+//global.expressIp = 'https://cs.roboassistant.ai';
+//global.expressPort = 3006;
+//global.socketIoPort = 3005;
+//
+//global.dbIp = 'mongodb://192.168.1.100/';
+//global.dbName = 'blade02bay1';
+
+global.expressIp = process.env.EXPRESSIP;
+global.angularPort = process.env.ANGULARPORT;  //use in sending email
+global.expressPort = process.env.EXPRESSPORT;
+global.socketIoPort = process.env.SOCKETIOPORT;
+
+global.dbIp = process.env.DBIP;
+global.dbName = process.env.DBNAME;
 
 // var dbURI = global.dbIp +global.dbName;
 

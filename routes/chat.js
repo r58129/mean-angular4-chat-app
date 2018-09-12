@@ -647,17 +647,17 @@ router.delete('/request/:id', auth, function(req, res, next) {
 
 
 /* GET ALL USERS in same room 192.168.0.102:4080/chat/user/all*/ 
-router.get('/user/all', auth, function(req, res, next) {
-  if (!req.payload._id) {
-    res.status(401).json({
-      "message" : "UnauthorizedError:"
-    });
-  } else {  
+router.get('/user/all', function(req, res, next) {
+//  if (!req.payload._id) {
+//    res.status(401).json({
+//      "message" : "UnauthorizedError:"
+//    });
+//  } else {  
     User.find( req.body, function (err, users) {
       if (err) return next(err);
       res.json(users);
     });
-  }
+//  }
 });
 
 /* GET SINGLE user BY ID */
@@ -698,7 +698,7 @@ router.get('/userphone/:phone_number', function(req, res, next) {
 });
 
 /* SAVE user */
-router.post('/user', auth, function(req, res, next) {
+router.post('/user', function(req, res, next) {
 //  if (!req.payload._id) {
 //    res.status(401).json({
 //      "message" : "UnauthorizedError:"
