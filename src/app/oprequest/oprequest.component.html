@@ -56,7 +56,7 @@
                       <th>Apps</th>
                       <th>Name</th>
                       <th>ID</th>
-                      <!-- <th>Status</th> -->
+                      <th>Action</th>
                     </tr>
                   </thead>
                 <tbody id="table-body">
@@ -64,12 +64,13 @@
                   <td>{{search.package}}</td>
                   <td>{{search.name }}</td>
                   <td>{{search.id}}</td>
-<!--                     <td>
-                      <div class="pull-right">    
-                             <a [routerLink]="['/operator', {outlets: { opchatOutlet: ['opchatbox', op.phone_number]}}]" routerLinkActive="active" class="btn btn-primary btn-xs" 
-                          >View</a>
-            </div>            
-                    </td> -->
+                  <td>
+                      <!-- <div class="pull-right"> -->
+                      <div >    
+                             <a [routerLink]="['/chat/operator', {outlets: { opchatOutlet: ['opchatbox', search.id, search.package ]}}]" routerLinkActive="active" class="btn btn-primary btn-xs">Copy</a>
+                      </div>            
+                      <!-- <button type="button" class="btn btn-primary btn-xs" id="copy-info" [(ngModel)]="search.id" (click)="clickedCopy()">Copy</button> -->
+                    </td>
                     </tr>
                   </tbody>
                 </table>

@@ -18,6 +18,7 @@ export class LoginComponent {
 
   details: UserDetails;
 
+
   constructor(private authService: AuthService, private router: Router, private configs: Configs) {}
 
   ngOnInit() {      
@@ -56,10 +57,13 @@ export class LoginComponent {
 
       // this.router.navigateByUrl('/api/profile');
       // this.router.navigateByUrl('/chat/request');
+
       this.router.navigate(['/chat/request']);
       console.log("redirect the link to request");
     }, (err) => {
-      console.error(err);
+      if (window.alert('Incorrect login name or password!')){
+        console.error(err);
+      }
     });
   }
 }

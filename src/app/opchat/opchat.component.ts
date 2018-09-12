@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild, Input, HostBinding } from '@angular/core';
 import { ChatService } from '../chat.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as io from 'socket.io-client';
@@ -17,6 +17,8 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   // @ViewChild('image') private myInputImage: any;
   // @ViewChild('scrollTable') private myScrollTableContainer: ElementRef;  //Ben
+  // @HostBinding('class.is-open') @Input()
+  // isOpen = false;
 
   url = '';
   ImageObject = {};
@@ -53,7 +55,12 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   // this.route.params.subscribe(params =>{
   //     // console.log(params);
   //     this.newUser.room = params['id'];
-  //     // console.log(this.newUser.room);     
+  //     console.log(this.newUser.room);     
+  // });
+  // this.route.params.subscribe(params =>{
+  //     // console.log(params);
+  //     this.newUser.type = params['id2'];
+  //     console.log(this.newUser.type);     
   // });
 
   var user = JSON.parse(localStorage.getItem("user"));
@@ -323,7 +330,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
   }
 
-    ngOnDestroy(){
+  ngOnDestroy(){
         
         //socket.emit('forceDisconnect');
     this.socket.disconnect();

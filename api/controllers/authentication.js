@@ -124,7 +124,7 @@ function sendResetPasswordEmail(email, name, url, e){
       gmail = google.gmail({version: 'v1', oAuth2Client});
 
       // var raw = makeBody('eng@airpoint.com.hk', 'support@airpoint.com.hk', 'Airpoint Webhook server up: ' + getDateTime()  ,  'Airpoint Webhook server up: ' + getDateTime());
-      var message = "Hello, +\n\n"
+      var message = "Hello, \n\n"
                 + "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n"
                 + "Please click on the following link, or paste this into your browser to complete the process:\n\n" 
                 + url +"\n\n" 
@@ -156,7 +156,7 @@ function sendPasswordUpdatedEmail(email, name, e){
       gmail = google.gmail({version: 'v1', oAuth2Client});
 
       // var raw = makeBody('eng@airpoint.com.hk', 'support@airpoint.com.hk', 'Airpoint Webhook server up: ' + getDateTime()  ,  'Airpoint Webhook server up: ' + getDateTime());
-      var message = "Hello, +\n\n"
+      var message = "Hello, \n\n"
                     + "This is a confirmation that the password for your account " + email + " has just been changed.\n\n"
                     + "Cheers";
       var raw = makeBody(email, 'support@airpoint.com.hk', getDateTime() + ' Your password has been changed ', message);

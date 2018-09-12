@@ -167,7 +167,8 @@ export class AppheaderComponent implements OnInit, OnDestroy{
       // console.log("print socket.id:" +socketID);
     }
 
-    if ((userid != "transport close") && (userid != "operatorSessionUserNonAndroid") && (userid !="operatorNonAndroid")){
+    if ((userid != "transport close") && (userid != "operatorSessionUserNonAndroid") 
+      && (userid !="operatorNonAndroid") && (userid !="operator") && (userid != "operatorSessionUser")){
       console.log("print userid: " +userid);
       console.log("print package: " +this.package);
       console.log("print socket.id:" +socketID);
