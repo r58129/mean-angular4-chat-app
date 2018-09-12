@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Output, EventEmitter } from '@angular/core';
 // import { Http, Headers, ResponseContentType } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -28,6 +28,10 @@ interface TokenResponse {
 export class ChatService {
 
   private token: string;
+  userInfo = {id:'', name:'', package:'' };
+
+
+  @Output() change: EventEmitter<object> = new EventEmitter();
 
   // constructor(private http : Http, private configs: Configs,private authService: AuthserviceService) { }
   constructor(private http : HttpClient, private configs: Configs,private authService: AuthService) { }
@@ -555,6 +559,12 @@ export class ChatService {
           reject(err);
         });
     });
+  }
+
+  copyInfo(searchUser){
+    console.log("id: " + searchUser.id);
+    console.log("package: " + searchUser.package);
+    this.change.emit(searchUser);
   }
 
   private handleError(error: any): Promise<any> {

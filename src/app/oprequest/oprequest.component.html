@@ -60,16 +60,16 @@
                     </tr>
                   </thead>
                 <tbody id="table-body">
-                  <tr *ngFor="let search of contacts">
-                  <td>{{search.package}}</td>
-                  <td>{{search.name }}</td>
-                  <td>{{search.id}}</td>
+                  <tr *ngFor="let searchUser of contacts">
+                  <td>{{searchUser.package}}</td>
+                  <td>{{searchUser.name }}</td>
+                  <td>{{searchUser.id}}</td>
                   <td>
                       <!-- <div class="pull-right"> -->
-                      <div >    
+<!--                       <div >    
                              <a [routerLink]="['/chat/operator', {outlets: { opchatOutlet: ['opchatbox', search.id, search.package ]}}]" routerLinkActive="active" class="btn btn-primary btn-xs">Copy</a>
-                      </div>            
-                      <!-- <button type="button" class="btn btn-primary btn-xs" id="copy-info" [(ngModel)]="search.id" (click)="clickedCopy()">Copy</button> -->
+                      </div>   -->          
+                      <button type="button" class="btn btn-primary btn-xs" id="copy-info" (click)="clickedCopy(searchUser)">Copy</button>
                     </td>
                     </tr>
                   </tbody>

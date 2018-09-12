@@ -35,6 +35,8 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
   appName:string;
   newUser = { nickname: '', room: '' };
   newRequest = {type:'', phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
+  userInfo = {id:'', name:'', package:'' };
+  searchUser:any;
   // newRequest = { room:'', phone_number: '', message: '', socket_id:'',updated_at:'' };
   // chatRequest = { room: '', admin_name:'', phone_number: '', message: '', updated_at:'' };
   // socket = io('http://localhost:4000');
@@ -46,13 +48,17 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
   
   constructor(private chatService: ChatService, private configs: Configs) {}
 
-  // @HostListener('click')
-  // clickedCopy() {
-  //   console.log('this.id' + this.id);
-  //   console.log('this.appName' + this.appName);
+  @HostListener('click')
+  clickedCopy(searchUser) {
 
-  //   this.chatService.copyInfo(this.id, this.appName);
-  // }
+    if (searchUser !=undefined){
+
+    console.log('this.searchUser.id: ' +searchUser.id);
+    console.log('this.searchUser.package: ' + searchUser.package);
+
+    this.chatService.copyInfo(searchUser);
+    }
+  }
 
   ngOnInit() {
 

@@ -17,8 +17,8 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   // @ViewChild('image') private myInputImage: any;
   // @ViewChild('scrollTable') private myScrollTableContainer: ElementRef;  //Ben
-  // @HostBinding('class.is-open') @Input()
-  // isOpen = false;
+  @HostBinding('class.search-user') 
+  searchUser: any;
 
   url = '';
   ImageObject = {};
@@ -51,6 +51,15 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
   ngOnInit() {
 //      history.pushState({},"Edit","");
+
+    this.chatService.change.subscribe(searchUser => {
+      console.log("this.searchUser.id: "+searchUser.id);
+      console.log("this.searchUser.package: "+searchUser.package);
+      this.newUser.room = searchUser.id;
+      this.newUser.type = searchUser.package;
+
+      // console.log("this.searchUser.name: "+this.searchUser.name);
+    });
 
   // this.route.params.subscribe(params =>{
   //     // console.log(params);
