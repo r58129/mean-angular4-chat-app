@@ -15,7 +15,6 @@ import { Configs } from '../../environments/environment';
 export class ChatComponent implements OnInit, AfterViewChecked {
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
-  // @ViewChild('image') private myInputImage: any;
   // @ViewChild('scrollTable') private myScrollTableContainer: ElementRef;  //Ben
 
   url = '';
@@ -442,6 +441,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   selectPhoto() {
     console.log('inside select Photo' );
     this.notSelected = false;
+    this.url ='';
     
   }
 
@@ -463,6 +463,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
       }
     }
+      // console.log(this.url);
+      // this.url = '';
+      // console.log(this.url);
+
   } 
  
   SendPhoto(){
@@ -577,9 +581,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
 
 
-      // console.log(this.selectedFile.value);
-      // this.selectedFile.value = '';
-      // console.log(this.selectedFile.value);
+      // console.log(this.selectedFile.name);
+      // this.selectedFile.name = '';
+      // console.log(this.selectedFile.name);
     
   }
 
@@ -618,6 +622,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   CancelPhoto(){
     console.log('clicked cancel Photo' );
     this.notSelected = true;
+    
+    // console.log(this.selectedFile.name);
+    // this.selectedFile.name = null;
+    // console.log(this.selectedFile.name);
   }
 
 

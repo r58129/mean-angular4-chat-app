@@ -157,7 +157,7 @@
 
                       <div class="form-group">
                         <img #image [src]="url" height="300px"><br/>
-                        <input style = "display: none" type="file" class="form-control" (change)="onOpFileSelected($event)" #fileInput [(ngModel)]="filename" name="filename" required="">
+                        <input style = "display: none" type="file" class="form-control" (change)="onOpFileSelected($event)" #fileInput name="filename" required="">
                         <button type="button" class="btn btn-success btn-sm" (click)="fileInput.click()">Select Photo</button>
                       </div>
 

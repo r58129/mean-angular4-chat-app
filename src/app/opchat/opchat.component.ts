@@ -467,6 +467,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   opSelectPhoto() {
     console.log('inside select Photo' );
     this.notSelected = false;
+    this.url ='';
   }
 
 
