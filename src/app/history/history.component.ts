@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild, Input, HostBinding } from '@angular/core';
 import { ChatService } from '../chat.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as io from 'socket.io-client';
@@ -15,6 +15,8 @@ import { Configs } from '../../environments/environment';
 export class HistoryComponent implements OnInit {
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  @HostBinding('class.search-user') 
+  searchUser: any;
  
   url = '';
   getUrl = '';
@@ -39,6 +41,14 @@ export class HistoryComponent implements OnInit {
   }
 
   ngOnInit() {
+      this.chatService.change.subscribe(searchUser => {
+      console.log("this.searchUser.id: "+searchUser.id);
+      console.log("this.searchUser.package: "+searchUser.package);
+      this.newUser.room = searchUser.id;
+      // this.newUser.type = searchUser.package;
+
+      // console.log("this.searchUser.name: "+this.searchUser.name);
+    });
 
   }
 
@@ -61,7 +71,14 @@ export class HistoryComponent implements OnInit {
     this.msgData = {phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
       room: this.newUser.room, nickname: this.newUser.nickname, message: '' };
     this.joinned = true;
+    this.scrollToBottom();
 
+  }
+
+    scrollToBottom(): void {
+    try {
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch(err) { }
   }
 
   logout() {

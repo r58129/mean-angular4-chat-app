@@ -1,0 +1,72 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- <div class="wrapper"> -->
+    <!-- <div class="container"> -->
+      <div class="row no-padding" id="history-search-page" >
+          <div class="col-xs-6 no-padding" >
+            <div class="box box-primary direct-chat direct-chat-primary">
+              <div class="box-header with-border">
+                <h3 class="box-title">Search User</h3>
+                <div class="box-tools ">
+                  <div class="btn-group pull-right no-padding">
+                  <form class="input-group" id="search-by-name" (ngSubmit)="search()" #searchForm="ngForm" >
+                    <div class="input-group input-group-sm" >
+                      <input type="search" [(ngModel)]="searchName" [ngModelOptions]="{standalone: true}" class="form-control pull-right" placeholder="Search by name">
+
+                      <div class="input-group-btn">
+                        <button class="btn btn-default"><i class="fa fa-search"></i></button>
+                      </div>
+                    <!-- </div> -->
+                    </div>
+                  </form>
+                  </div>
+                  <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-default btn-sm" id="return-to-table" (click)="returnToTable()"><i class="fa fa-arrow-left" ></i></button>
+                  </div>
+                </div> <!-- box-tools -->
+              </div>
+              <!-- /.box-header -->
+
+              <div #scrollTable class="box-body no-padding" *ngIf="notSearch; else searchPage">
+              </div>
+              <!-- /.box-body -->
+              <ng-template #searchPage>
+                <div class="box-body no-padding">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Apps</th>
+                      <th>Name</th>
+                      <th>ID</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                <tbody id="table-body">
+                  <tr *ngFor="let searchUser of contacts">
+                  <td>{{searchUser.package}}</td>
+                  <td>{{searchUser.name }}</td>
+                  <td>{{searchUser.id}}</td>
+                  <td>       
+                      <button type="button" class="btn btn-primary btn-xs" id="copy-info" (click)="clickedCopy(searchUser)">Copy</button>
+                    </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              </ng-template>
+
+            </div>
+            <!-- /.box -->
+		      </div>
+      	<!-- /.row -->          
+
+          <!-- Place chat box here -->
+          <div class="row no-padding" id="history-page">
+          	<app-history></app-history>
+          	<!-- <router-outlet name="opchatOutlet"></router-outlet> -->
+          </div>
+
+      <!-- </div> -->
+    </div>
+  <!-- </div> -->
+</div>
