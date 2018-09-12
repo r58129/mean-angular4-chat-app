@@ -141,7 +141,7 @@
                     <!-- <h3 class="box-title"> Select Photo </h3> -->
                      <button type="button" class="btn btn-box-tool pull-right" data-widget="remove" (click)="CancelPhoto()"><i class="fa fa-times"></i>
                     </button>
-                    <form (ngSubmit)="SendPhoto()" #joinForm="ngForm">
+                    <form (ngSubmit)="SendPhoto()" #sendImageForm="ngForm">
                       
                       <div class="form-group">
                         <input type="hidden" class="form-control" [(ngModel)]="newUser.nickname" placeholder="Input user name" name="nickname" required="" >
@@ -162,9 +162,9 @@
                       </div>
 
                       <div class="form-group">
-                        <input id="btn-input" type="text" [(ngModel)]="msgData.message" name="message" class="form-control input-sm" placeholder="Type your message here..." >
+                        <input id="btn-input" type="text" [(ngModel)]="msgData.message" name="ImageMessage" class="form-control input-sm" placeholder="Type your message here..." >
                          <span class="input-group-btn">
-                        <button type="submit" class="btn btn-success btn-sm" [disabled]="!joinForm.form.valid">Send</button>
+                        <button type="submit" class="btn btn-success btn-sm" [disabled]="!sendImageForm.form.valid">Send</button>
                       </span>
                       </div>
                     </form>
