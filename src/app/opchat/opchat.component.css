@@ -14,7 +14,7 @@
 {
     overflow-y: scroll;
     /*height: 250px;*/
-   height: 80vh;
+   height: 75vh;
 
 }
 
@@ -24,6 +24,11 @@
     /*height: 250px;*/
    /*height: 75vh;*/
 
+}
+
+#footer2{
+    height: 51px;
+    border: none;
 }
 
 #chat-page
