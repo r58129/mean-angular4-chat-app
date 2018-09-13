@@ -7,18 +7,11 @@
     border-collapse: collapse;
 }
 
-.panel-body
-{
-    overflow-y: scroll;
-    /*height: 250px;*/
-    height: 75vh;
-}
-
 .box-body
 {
     overflow-y: scroll;
     /*height: 250px;*/
-   height: 80vh;
+   height: 85vh;
 }
 
 .box.box-primary.direct-chat.direct-chat-primary

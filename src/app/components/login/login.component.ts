@@ -3,6 +3,8 @@ import { AuthService, TokenPayload, UserDetails } from '../../auth/auth.service'
 import { Router } from '@angular/router';
 //import { Configs } from '../../configurations';
 import { Configs } from '../../../environments/environment';
+// import * as $ from 'jquery';
+// declare var $:any;
 
 @Component({
   selector: 'app-login',
@@ -17,11 +19,22 @@ export class LoginComponent {
   };
 
   details: UserDetails;
-
+  
+  
 
   constructor(private authService: AuthService, private router: Router, private configs: Configs) {}
 
   ngOnInit() {      
+    // var $layout = $('body').data('lte.layout');
+    // $layout.activate() ;
+    // $layout.fixed();
+    // $('body').resize();
+
+    // $.fn.layout.Constuctor.prototype.fix();
+  // $layout = $('body').data('lte.layout');  
+   // $('body').layout('fixed');
+
+
     if (!sessionStorage.getItem('loginTinkerDone'))
       {
         sessionStorage.setItem('loginTinkerDone', "0");
