@@ -6,11 +6,8 @@
     border-collapse: collapse;
 }
 
-.panel-body
-{
-    overflow-y: scroll;
-    /*height: 250px;*/
-    height: 75vh;
+.box-header.with-border{
+    height: 41px;
 }
 
 .box-body
@@ -27,6 +24,11 @@
     /*height: 250px;*/
    /*height: 75vh;*/
 
+}
+
+#footer2{
+    height: 51px;
+    border: none;
 }
 
 #chat-page

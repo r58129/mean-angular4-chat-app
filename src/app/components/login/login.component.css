@@ -1,4 +1,7 @@
 body {
-    /*background-image: url("/assets/dist/img/photo1.png");*/
+    background: url("/assets/dist/img/mAI_photo1.jpg") no-repeat center center fixed;
+    background-size: cover;
     background-color: #d2d6de;
+    min-height: 100vh !important;
+    /*overflow-y: hidden;*/
 }

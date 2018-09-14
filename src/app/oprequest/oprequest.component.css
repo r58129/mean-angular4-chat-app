@@ -7,13 +7,6 @@
     border-collapse: collapse;
 }
 
-.panel-body
-{
-    overflow-y: scroll;
-    /*height: 250px;*/
-    height: 75vh;
-}
-
 .box-body
 {
     overflow-y: scroll;
