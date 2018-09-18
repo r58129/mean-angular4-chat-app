@@ -24,7 +24,7 @@ export class Configs {
 
   ngrok: boolean = true;  //true = ngrok, false = 443 route server
 
-  multiChatNgrokAddr: string = 'https://48680442.ngrok.io'; 
+  multiChatNgrokAddr: string = ' https://618c5586.ngrok.io'; 
   multiChatAddr: string = 'https://cs.roboassistant.ai'; 
   multiChatPort: string = '3991';
   multiChatCode: string = 'Aptc123456';

@@ -34,6 +34,7 @@ var StaffSchema = new mongoose.Schema({
   sokcetIoPort: String,
   mongodbName: String,
   phoneNumber: String,
+  role: String,
   online: String,
   valid: String,
   reserve1: String,

@@ -238,18 +238,18 @@ io.on('connection', function (socket) {
       userSocketID.push(socket.id);
       username.push(userid);
      
-      for(var i in adminSocketID){
+      // for(var i in adminSocketID){
         //io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername});
           // orginal
           // io.to(adminSocketID[i]).emit('users',{users:userSocketIDAndUsername},socket.id);
-          io.to(adminSocketID[i]).emit('users',userid,socket.id);
+          io.to(adminSocketID[0]).emit('users',userid,socket.id);
           // io.to(socket.id).emit('users',userid,socket.id);
           // io.to(adminSocketID[i]).emit('logRequest',userid,socket.id);
           console.log("emit customer socket.on(users)" +socket.id);
           // console.log("emit userSocketID " +socket.id);
           // console.log("emit username " +userid);
 
-      }
+      // }
     }
     socket.userid = userid;
     console.log(userid + ' (' +socket.id + ')' + ' is connected.' );

@@ -223,7 +223,7 @@ export class AppheaderComponent implements OnInit, OnDestroy{
 	    	this.chatService.getNewRequestCount().then((res) => {
 	    	if (res !== undefined){  //get new request number
 	      		this.chats = res;
-	      		console.log('new requests: ' + this.chats);
+	      		// console.log('new requests: ' + this.chats);
 	      		document.getElementById('newRequestCount').textContent = this.chats;
 	      		document.getElementById('newCount').textContent = this.chats;
 	      	}

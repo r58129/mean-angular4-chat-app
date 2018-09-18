@@ -27,8 +27,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   appName: string ='whatsapp';
   joinned: boolean = false;
   notSelected: boolean = true;
+  chatRoom: any;
 
-  newUser = { type:'', nickname: '', room: '' ,socket_id: '', db_id:'', request_status:''};
+  newUser = { type:'', nickname: '', room: '' ,socket_id: '', db_id:'', request_status:'', people_in_room:''};
   msgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: { data:Buffer, contentType:'' }};
   imgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
@@ -349,7 +350,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     //get db id
     var db_id = this.newUser.db_id;
     var currentStatus = this.newUser.request_status;
-    var updateStatus = { request_status:"Working"};
+    var updateStatus = { request_status:"Working", people_in_room:"2"};
+
     // console.log('request_id: ' +db_id);
     console.log('request status: ' +currentStatus)
 
@@ -363,10 +365,29 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       });
 
     } else {  //wont' udpate when status is Working, Done and Quit
-      console.log("status is NOT updated");  
-    }
-    
+      console.log("status is NOT updated");
+      this.chatService.showChat(db_id).then((res) => {  
+        this.chatRoom =res;  //show number of people in room
+        console.log("this.chatRoom.people_in_room: " +this.chatRoom.people_in_room);
+        if (this.chatRoom.people_in_room != undefined){
+          console.log("people in this room: " +this.chatRoom.people_in_room);
+          
+          var peopleNumber = parseInt(this.chatRoom.people_in_room);
+          peopleNumber =peopleNumber +1;
+          console.log(" new people in this room: " +peopleNumber);
 
+          var updatePeopleInRoom ={people_in_room: peopleNumber};
+          
+          this.chatService.updateChat(db_id, updatePeopleInRoom).then((res) => {  //from chatService
+            console.log("people number updated");
+          }, (err) => {
+            console.log(err);
+          });
+        }
+      }, (err) => {
+        console.log(err);
+      });
+    }   
   }
 
   sendMessage() {
@@ -392,23 +413,85 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     var db_id = this.newUser.db_id;
     var currentStatus = this.newUser.request_status;
     console.log('request_id: ' +db_id);
-    var updateStatus = { request_status:"Done"};
+    var updateStatus = { request_status:"Done", people_in_room:"0"};
 
    if ((currentStatus == "New") || (currentStatus == "Working"))
     {
-      this.chatService.updateChat(db_id, updateStatus).then((res) => {  //from chatService
-        console.log("status updated");
+      this.chatService.showChat(db_id).then((res) => {  
+        this.chatRoom =res;  //show number of people in room
+        var peopleNumber = parseInt(this.chatRoom.people_in_room)
+        console.log("this.chatRoom.people_in_room: " +peopleNumber);
+        
+        if (peopleNumber <=2){
+
+          this.chatService.updateChat(db_id, updateStatus).then((res) => {  //from chatService
+            console.log("status updated");
+          }, (err) => {
+            console.log(err);
+          });
+
+          //send goodbye message when there are only 2 people left
+            var goodbye = "Goodbye";
+            this.SendForm(goodbye);
+             console.log("goodbye");
+        } else {
+          
+          // var peopleNumber = parseInt(this.chatRoom.people_in_room);
+          peopleNumber =peopleNumber - 1;
+
+          // this.chatRoom.people_in_room = this.chatRoom.people_in_room -1;
+
+          var updatePeopleInRoom ={people_in_room: peopleNumber};
+          
+          this.chatService.updateChat(db_id, updatePeopleInRoom).then((res) => {  //from chatService
+            console.log("people number updated");
+          }, (err) => {
+            console.log(err);
+          });
+
+        }
+
+      }, (err) => {
+        console.log(err);
+      });
+    } else {  //Done and Quit case
+
+      this.chatService.showChat(db_id).then((res) => {  
+        
+        this.chatRoom =res;  //show number of people in room
+        var peopleNumber = parseInt(this.chatRoom.people_in_room)
+        console.log("this.chatRoom.people_in_room: " +peopleNumber);
+                  
+        if (peopleNumber > 0){
+          peopleNumber =peopleNumber - 1;
+
+          // this.chatRoom.people_in_room = this.chatRoom.people_in_room -1;
+
+          var updatePeopleInRoom ={people_in_room: peopleNumber};
+          
+          this.chatService.updateChat(db_id, updatePeopleInRoom).then((res) => {  //from chatService
+            console.log("people number updated");
+          }, (err) => {
+            console.log(err);
+          });
+        } else {
+        console.log("people numbe is not updated");
+        }
+
       }, (err) => {
         console.log(err);
       });
 
+
     }
+
+
     console.log("status is NOT updated");
 
     //send goodbye message when logout()
-    var goodbye = "Goodbye";
-    this.SendForm(goodbye);
-    console.log("goodbye");
+    // var goodbye = "Goodbye";
+    // this.SendForm(goodbye);
+    // console.log("goodbye");
 
   }
 

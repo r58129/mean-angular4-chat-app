@@ -68,7 +68,7 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
     
   this.timer = setInterval(() => {
     this.getOperatorRequest();
-    console.log("operator refresh requests");
+    // console.log("operator refresh requests");
   }, 3000);
 
   }  //ngOnInit
