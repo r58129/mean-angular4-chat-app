@@ -232,7 +232,7 @@ private onlineCount: any;
             // console.log('expressPort: ' +user.expressPort);
             // console.log('tinkerPort: ' +user.tinkerPort);
             // console.log('sokcetIoPort: ' +user.sokcetIoPort);
-            console.log('No need to register to tinker again');  
+            console.log('No need to register to tinker and mutlichat  again');  
         }, (err) => {
           console.log(err);
         });

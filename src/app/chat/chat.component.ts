@@ -326,7 +326,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   getChatByRoom(room) {
-     console.log("inside getChatbyRoom" +room);
+    console.log("inside getChatbyRoom" +room);
     this.chatService.getChatByRoom(room).then((res) => {  //from chatService
       this.chats = res;
     }, (err) => {
@@ -496,14 +496,14 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   SendForm(message){
-  if (this.appName == 'whatsapp'){ 
-    console.log("admin is sending a message: " +message);
-    // this.socket.emit('chat message',message);  //from admin to customer
-    var obj = { type:"text", path:"null", message: message };
-    this.socket.emit('chat message', obj, );  //send json object from admin to customer
-    console.log("admin is sending object: " +obj);
-    // return false;
-  } else if (this.appName == 'nonwhatsapp') {
+    if (this.appName == 'whatsapp'){ 
+      console.log("admin is sending a message: " +message);
+      // this.socket.emit('chat message',message);  //from admin to customer
+      var obj = { type:"text", path:"null", message: message };
+      this.socket.emit('chat message', obj, );  //send json object from admin to customer
+      console.log("admin is sending object: " +obj);
+      // return false;
+    } else if (this.appName == 'nonwhatsapp') {
       console.log("adminNonAndroid is sending a message: " +message);
       // this.socket.emit('chat message',message);  //from admin to customer
       var objNA = { type:"text", path:"null", message: message, sender:this.newUser.room, package: this.newUser.type };
