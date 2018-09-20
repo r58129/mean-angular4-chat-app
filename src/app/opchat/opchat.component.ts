@@ -6,6 +6,8 @@ import * as $ from 'jquery';
 import { Buffer } from 'buffer';
 //import { Configs } from '../configurations';
 import { Configs } from '../../environments/environment';
+import { AuthService, UserDetails } from '../auth/auth.service';
+
 
 @Component({
   selector: 'app-opchat',
@@ -31,10 +33,13 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   notSelected: boolean = true;
   appName: string;  // appName=whatsapp means from android, nonwhatsapp = from non android
   package: string;
-  // naSocketId: ;
+  requestId: any=[];
+  requestCount:any;
 
-  newUser = { type:'', nickname: '',socket_id: '', room: '' , db_id:'', operator_request:''};  //for operator
-  newOpRequest = { type:'', phone_number: '', socket_id: '', room:'', message: '', operator_request:'' };  //for customer
+  // details: UserDetails;
+
+  newUser = { type:'', nickname: '',socket_id: '', room: '' , db_id:'', operator_request:'', people_in_room:''};  //for operator
+  newOpRequest = { type:'', phone_number: '', socket_id: '', room:'', message: '', operator_request:'', people_in_room:'' };  //for customer
   msgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   imgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: '' };
   CusImgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '', file_path:'', image: '' };  
@@ -45,12 +50,50 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   // socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
   socket = io(this.configs.socketIoServerAddr,{secure: true});
   
-  constructor(private chatService: ChatService, private route: ActivatedRoute, private configs: Configs) {
+  constructor(private chatService: ChatService, private authService: AuthService, private router: Router, private route: ActivatedRoute, private configs: Configs) {
     
   }
 
   ngOnInit() {
-//      history.pushState({},"Edit","");
+    // check operator mode before doing anything
+    // this.authService.profile().subscribe(user => {
+    //   this.details = user;
+    //   // console.log('name: ' +user.name);
+    //   console.log('operatorMode: ' +this.details.operatorMode);
+
+    //   if (this.details.operatorMode != undefined){
+    //     if (this.details.operatorMode == 'false'){
+
+    //     } else {
+
+
+    //     }
+    //   }
+    // }, (err) => {
+    //   console.error(err);
+    // });
+
+    // // check if operator channel is occupied
+    // this.chatService.checkOperatorChannel().then((res) => {  //from chatService, 
+    //   this.requestCount = res;
+    //   console.log("operator_request: " + JSON.stringify(this.requestCount));
+    //   if (this.requestCount == 0){  // need to check
+    //     console.log('operator channel is available');
+    //     // emit operator user socket
+    //     this.socket.emit('user','operator');
+
+    //     //For non android chat apps
+    //     this.socket.emit('user','operatorNonAndroid');
+        
+    //   } else {
+    //     window.alert('Operator Channel is in use!')
+    //     console.log('operator channel is available');
+    //     this.router.navigate(['/chat/request']);
+    //   }
+    // }, (err) => {
+    //   console.log(err);
+    // });
+
 
     this.chatService.change.subscribe(searchUser => {
       console.log("this.searchUser.id: "+searchUser.id);
@@ -90,8 +133,8 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
   this.socket.on('users', (userid, socket_id) => {
 
-      var date = new Date();
-      // console.log("inside users socket.on");
+    var date = new Date();
+    // console.log("inside users socket.on");
     // if ((userid.sender != undefined) && (userid.package != undefined)){
     //   this.package = userid.package;
     //   userid = userid.sender;
@@ -106,23 +149,25 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     //   console.log("print socket.id:" +socket_id);
     // }
 
-      this.newUser.socket_id = socket_id;
+    this.newUser.socket_id = socket_id;
 
    //customer will join the room while operator won't do it again.
    // if (userid != 'operator'){ 
    if ((userid != 'operator') && (userid != 'operatorNonAndroid')){ 
    // use status field to classify the new and old request
-   this.newOpRequest = {type: this.newUser.type, phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer joined', operator_request:'true' };
+   this.newOpRequest = {type: this.newUser.type, phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer joined', operator_request:'Working', people_in_room:'2' };
      // console.log(this.newOpRequest.room);
      console.log(this.newOpRequest.phone_number);
      console.log(this.newOpRequest.socket_id);
      console.log(this.newOpRequest.message);
      console.log(this.newOpRequest.operator_request);
      console.log(this.newOpRequest.type);
-   // // console.log(this.newRequest.updated_at);
+     // // console.log(this.newRequest.updated_at);
 
-  // this.chatService.saveRequest(this.newRequest).then( function(result)  {
-  this.chatService.saveRequest(this.newOpRequest).then((result) => {
+    // this.chatService.saveRequest(this.newRequest).then( function(result)  {
+    this.chatService.saveRequest(this.newOpRequest).then((result) => {
+      // this.request = result;
+      // console.log("id: " + this.request._id);
       this.socket.emit('save-message', result);
       }, (err) => {
         console.log(err);
@@ -131,23 +176,24 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   });
 
   this.socket.on('chat', (msg) =>{
-  // this.socket.on('chat', (userid, msg) =>{
-    var date = new Date();
-    console.log("print customer message object: " +msg);
+    // this.socket.on('chat', (userid, msg) =>{
+    if (localStorage.getItem("user")!=null){      
+      var date = new Date();
+      console.log("print customer message object: " +msg);
 
-    // modify this to json object
-    var obj = JSON.parse(msg);
-    var phoneNum = obj.sessionID;
-    var message = obj.message;
-    var filePath = obj.photoPath;
+      // modify this to json object
+      var obj = JSON.parse(msg);
+      var phoneNum = obj.sessionID;
+      var message = obj.message;
+      var filePath = obj.photoPath;
 
-    console.log("print customer phoneNum:" +phoneNum);
-    console.log("print customer message:" +message);
-    console.log("print customer photoPath:" +filePath);
+      console.log("print customer phoneNum:" +phoneNum);
+      console.log("print customer message:" +message);
+      console.log("print customer photoPath:" +filePath);
 
-    if (msg !== 'undefine'){
+      if (msg !== 'undefine'){
 
-      if (!message.includes('\uD83D\uDCF7')){  //msg is text
+        if (!message.includes('\uD83D\uDCF7')){  //msg is text
         // if (filePath == 'nonwhatsapp'){
         
         //   this.appName = 'nonwhatsapp';
@@ -169,9 +215,9 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
         }, (err) => {
           console.log(err);
         });
-      } else { //else msg is image (message.includes('\uD83D\uDCF7'))
+        } else { //else msg is image (message.includes('\uD83D\uDCF7'))
 
-        if ((!filePath) || (filePath == "Timeout")){
+          if ((!filePath) || (filePath == "Timeout")){
           console.log("filePath is null or Timeout");
 
           this.CusMsgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: "Sent Photo Failed!" };
@@ -186,14 +232,14 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
             console.log(err);
           });
 
-        } else {  // else (filePath !== 'Timeout')
-          if (filePath == 'nonwhatsapp'){
-            // extract non whatsapp image from message
-            // var base64header = ((message).split(".")[1]);
-            var base64Image = ((message).split(".")[1]);
-            console.log('base64Image: ' +base64Image);
+          } else {  // else (filePath !== 'Timeout')
+            if (filePath == 'nonwhatsapp'){
+              // extract non whatsapp image from message
+              // var base64header = ((message).split(".")[1]);
+              var base64Image = ((message).split(".")[1]);
+              console.log('base64Image: ' +base64Image);
 
-            //save to DB 
+              //save to DB 
               this.CusImgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: '', file_path:filePath, image:base64Image };
               console.log('receive image from customer');
               console.log(this.CusImgData.room);
@@ -209,25 +255,23 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
               }, (err) => {
                 console.log(err);
               });
+            } else {  // whatsapp flow will provide valid file path
+            // get admin sessionID
+            var sID=localStorage.getItem('res.data.sessionID');
+            var fileType = ((filePath).split(".")[1]);
+            var path = 'sessionID='+sID +'&path='+filePath;
+            // var completePath = 'https://airpoint.com.hk:'+sessionStorage.getItem("tinkerport")+'/api/csp/getimage?'+path;  //save complete path to db
+            var completePath = 'https://airpoint.com.hk:'+this.configs.tinkerport+'/api/csp/getimage?'+path;  //save complete path to db
 
+            console.log("sID: " + sID);
+            console.log("tinkerPath: " + filePath);
+            console.log("complete path: " + completePath);
+            console.log("fileType: " + fileType);
 
-          } else {  // whatsapp flow will provide valid file path
-        // get admin sessionID
-        var sID=localStorage.getItem('res.data.sessionID');
-        var fileType = ((filePath).split(".")[1]);
-        var path = 'sessionID='+sID +'&path='+filePath;
-        // var completePath = 'https://airpoint.com.hk:'+sessionStorage.getItem("tinkerport")+'/api/csp/getimage?'+path;  //save complete path to db
-        var completePath = 'https://airpoint.com.hk:'+this.configs.tinkerport+'/api/csp/getimage?'+path;  //save complete path to db
-
-        console.log("sID: " + sID);
-        console.log("tinkerPath: " + filePath);
-        console.log("complete path: " + completePath);
-        console.log("fileType: " + fileType);
-
-          this.chatService.getImageFromNode(path).then((res) => {  //from chatService
-            console.log(" get image from tinker");
+            this.chatService.getImageFromNode(path).then((res) => {  //from chatService
+              console.log(" get image from tinker");
           
-            var blob = new Blob(
+              var blob = new Blob(
                 [res],
                 // Mime type is important for data url
                 // {type : 'text/html'}
@@ -235,10 +279,10 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
                 );
 
 
-            var reader = new FileReader();
-            reader.readAsDataURL(blob);
-            reader.onloadend =(evt:any) =>{
-                // Capture result here
+              var reader = new FileReader();
+              reader.readAsDataURL(blob);
+              reader.onloadend =(evt:any) =>{
+              // Capture result here
               var getImage = evt.target.result;
               console.log(evt.target.result);
 
@@ -261,35 +305,36 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
             };
          
 
-          }, (err) => {
-            console.log(err);
-          });
+            }, (err) => {
+              console.log(err);
+            });
       
-        //sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
-        }  // end else whatsapp flow will provide valid file path
-      }  // end else (filePath == 'nonwhatsapp')
-      }  //end else (message.includes('\uD83D\uDCF7'))
-    }  // end if (msg !== 'undefine')
+              //sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
+            }  // end else whatsapp flow will provide valid file path
+          }  // end else (filePath == 'nonwhatsapp')
+        }  //end else (message.includes('\uD83D\uDCF7'))
+      }  // end if (msg !== 'undefine')
+    }  // end if (localStorage.getItem("user")!=null)
   });
 
-// User disconnect chat in operation mode
-  // this.socket.on('disconnect', function(userid){
-  //   console.log('Disconnect: ' + userid);
-  //   var message = "User is disconnected!";
+    // User disconnect chat in operation mode
+    // this.socket.on('disconnect', function(userid){
+    //   console.log('Disconnect: ' + userid);
+    //   var message = "User is disconnected!";
  
-  //  this.CusMsgData = { phone_number: userid, socket_id: 'socket_id', room:userid , nickname:userid , message: message };
-  //     console.log(this.CusMsgData.room);
-  //     console.log(this.CusMsgData.phone_number);
-  //     console.log(this.CusMsgData.socket_id);
-  //     console.log(this.CusMsgData.message);
+    //  this.CusMsgData = { phone_number: userid, socket_id: 'socket_id', room:userid , nickname:userid , message: message };
+    //     console.log(this.CusMsgData.room);
+    //     console.log(this.CusMsgData.phone_number);
+    //     console.log(this.CusMsgData.socket_id);
+    //     console.log(this.CusMsgData.message);
       
-  //     this.chatService.saveChat(this.CusMsgData).then((result) => {
-  //     this.socket.emit('save-message', result);
-  //     }, (err) => {
-  //       console.log(err);
-  //     });
-  // }.bind(this));
-  // end of from johnson
+    //     this.chatService.saveChat(this.CusMsgData).then((result) => {
+    //     this.socket.emit('save-message', result);
+    //     }, (err) => {
+    //       console.log(err);
+    //     });
+    // }.bind(this));
+    // end of from johnson
 
 
     if(user!==null) {
@@ -304,10 +349,11 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
       // console.log("data.message.room: " + data.message.room);
       // console.log("JSON.parse(localStorage.getItem('user')).room: " + (JSON.parse(localStorage.getItem("user")).room));
       // console.log("phone#: " + data.message.room);
-      console.log("new-message: " + data.message.message);
-    if (localStorage.getItem("user")!=null){
-      if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
-          user=JSON.parse(localStorage.getItem("user"));
+      
+      if (localStorage.getItem("user")!=null){
+        console.log("new-message: " + data.message.message);
+        if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
+        user=JSON.parse(localStorage.getItem("user"));
         this.chats.push(data.message);
         this.msgData = { type: user.type, phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
         this.scrollToBottom();
@@ -317,19 +363,22 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
 
     this.socket.on('new-image', function (data) {
-      console.log("new-image: " + data.room);
       
-      if(data.room === JSON.parse(localStorage.getItem("user")).room) {
-      console.log("new-image inside if: " + data.room);
+      if (localStorage.getItem("user")!=null){
+        console.log("new-image: " + data.room);
 
-        if (data.filename !== 'undefined'){
-        // this.chats.push(data.message, data.filename);
-        console.log("new-image: " + data.filename);
-        this.chats.push(data);
-        this.imgData = { type: user.type, phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '', 
-        filename: user.filename, image: user.image}
-        // this.RetrievePhoto(data);
-        this.scrollToBottom();
+        if(data.room === JSON.parse(localStorage.getItem("user")).room) {
+          console.log("new-image inside if: " + data.room);
+
+          if (data.filename !== 'undefined'){
+          // this.chats.push(data.message, data.filename);
+          console.log("new-image: " + data.filename);
+          this.chats.push(data);
+          this.imgData = { type: user.type, phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '', 
+          filename: user.filename, image: user.image}
+          // this.RetrievePhoto(data);
+          this.scrollToBottom();
+          }
         }
       }
       
@@ -341,15 +390,16 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
   ngOnDestroy(){
         
-        //socket.emit('forceDisconnect');
+    //socket.emit('forceDisconnect');
     this.socket.disconnect();
     // if (this.timer){
     //   clearInterval(this.timer);
-    //   console.log('stop refreshing');
+    console.log('operator ngOnDestroy');
     // }
   }
 
-  ngAfterViewChecked() {
+  ngAfterViewChecked(){
+
     this.scrollToBottom();
   }
 
@@ -360,7 +410,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   }
 
   getChatByRoom(room) {
-     console.log("inside getChatbyRoom" +room);
+    console.log("inside getChatbyRoom" +room);
     this.chatService.getChatByRoom(room).then((res) => {  //from chatService
       this.chats = res;
     }, (err) => {
@@ -372,27 +422,51 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     // var socket_id =this.socket_id;
     // console.log('operator joinRoom using phone#: ' +this.newUser.room);
 
-    this.Connect(this.newUser.room);  //operator join this room
+    // this.Connect(this.newUser.room);  //operator join this room
     
-    var date = new Date();
+    // // check if operator channel is occupied
+    // this.chatService.checkOperatorChannel().then((res) => {  //from chatService, 
+    //   this.requestCount = res;
+    //   console.log("operator_request: " + JSON.stringify(this.requestCount));
+    //   if (this.requestCount == 0){  // need to check
+        
+        console.log('type:' +this.newUser.type );
+        // select which app you connected to
+        if (this.newUser.type == 'whatsapp'){
+          this.appName = 'whatsapp';
+          console.log('text message from in whatsapp: ' +this.newUser.type);
+          console.log("operator join the room: " +this.newUser.room);
+          this.socket.emit('connectuserOperatorSession', this.newUser.room);  
+        } else {
+          this.appName = 'nonwhatsapp';
+          this.package = this.newUser.type;
+          console.log('operatorNonAndroid connect to : ' +this.newUser.type);
+          console.log("operatorNonAndroid join the room: " +this.newUser.room);
+          this.socket.emit('connectuserOperatorSessionNonAndroid', this.newUser.room);  
+        }
+        
+      var date = new Date();
 
-    localStorage.setItem("user", JSON.stringify(this.newUser));
-    this.getChatByRoom(this.newUser.room);
+      localStorage.setItem("user", JSON.stringify(this.newUser));
+      this.getChatByRoom(this.newUser.room);
     
-    this.msgData = {type: this.newUser.type, phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
+      this.msgData = {type: this.newUser.type, phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
       room: this.newUser.room, nickname: this.newUser.nickname, message: '' };
     
-    this.joinned = true;
+      this.joinned = true;
     
-    this.socket.emit('save-message', { type: this.newUser.type, phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
+      this.socket.emit('save-message', { type: this.newUser.type, phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
       room: this.newUser.room, nickname: this.newUser.nickname, message: ' Operator joined', updated_at: date });
 
-    // this.socket.emit('user', this.newUser.room);
-    
-    // console.log('customer phone number: ' +this.newUser.room);
-    // console.log('socket_id: ' +this.newUser.socket_id);
+    //   } else {
 
+    //     this.joinned = false;
+    //     window.alert('Operator Channel is in use!')
 
+    //   }
+    // }, (err) => {
+    //   console.log(err);
+    // }); 
 
   }
 
@@ -412,17 +486,68 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     var date = new Date();
     var room =this.newUser.room;
     var user = JSON.parse(localStorage.getItem("user"));
+    var updateStatus = { operator_request:"Done", people_in_room:"0"};
+    var socketId = this.newOpRequest.socket_id;
     
-    this.socket.emit('save-message', { type:user.type, phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
-    localStorage.removeItem("user");
-    this.joinned = false;
+    // this.socket.emit('save-message', { type:user.type, phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
+    // localStorage.removeItem("user");
+    // this.joinned = false;
+
+    console.log("this.newOpRequest.socket_id: " +socketId);
+
+    this.chatService.getIdBySocket(socketId).then((result) => {
+        this.requestId = result;
+        console.log("request._id: " +this.requestId[0]._id);
+        // console.log("request.type: " +this.requestId[0].type);
+        // console.log("request.socket_id: " +this.requestId[0].socket_id);
+        // console.log("request.operator_request: " +this.requestId[0].operator_request);
+
+        if (this.requestId[0] != undefined){
+
+          this.chatService.updateChat(this.requestId[0]._id, updateStatus).then((res) => {  //from chatService
+            console.log("status updated");
+
+            this.socket.emit('save-message', { type:user.type, phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
+            localStorage.removeItem("user");
+            this.joinned = false;
+          
+          //send goodbye message before logout()
+            var goodbye = "goodbye";
+            this.SendForm(goodbye);
+            console.log(" send goodbye");
+
+            this.Disconnect(room);
+
+          }, (err) => {
+            console.log(err);
+          });
+        } else {
+
+          this.socket.emit('save-message', { type:user.type, phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
+          localStorage.removeItem("user");
+          this.joinned = false;
+          
+          //send goodbye message before logout()
+          var goodbye = "goodbye";
+          this.SendForm(goodbye);
+          console.log(" send else goodbye");
+
+          this.Disconnect(room);
+      }
+
+      }, (err) => {
+        console.log(err);
+    });
+
+
+    
 
     //send goodbye message before logout()
-    var goodbye = "goodbye";
-    this.SendForm(goodbye);
-    console.log("goodbye");
+    // var goodbye = "goodbye";
+    // this.SendForm(goodbye);
+    // console.log("goodbye");
 
-    this.Disconnect(room);
+    // this.Disconnect(room);
 
   }
 
@@ -443,24 +568,6 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
     }
 
-  }
-
-  Connect(phone_number){
-    console.log('type:' +this.newUser.type );
-    // select which app you connected to
-    if (this.newUser.type == 'whatsapp'){
-      this.appName = 'whatsapp';
-      console.log('text message from in whatsapp: ' +this.newUser.type);
-      console.log("operator join the room: " +phone_number);
-      this.socket.emit('connectuserOperatorSession', phone_number);  
-    } else {
-      this.appName = 'nonwhatsapp';
-      this.package = this.newUser.type;
-      console.log('operatorNonAndroid connect to : ' +this.newUser.type);
-      console.log("operatorNonAndroid join the room: " +phone_number);
-      this.socket.emit('connectuserOperatorSessionNonAndroid', phone_number);  
-    }
-    
   }
 
   Disconnect(phone_number){

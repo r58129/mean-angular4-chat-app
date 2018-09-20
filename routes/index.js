@@ -11,6 +11,7 @@ var ctrlAuth = require('../api/controllers/authentication');
 
 // profile
 router.get('/profile', auth, ctrlProfile.profileRead);
+router.put('/profile', auth, ctrlProfile.profileUpdate);
 
 // authentication
 router.post('/register', ctrlAuth.register);

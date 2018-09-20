@@ -155,6 +155,18 @@ export class ChatService {
     });
   }
 
+  getIdBySocket(sid) {
+    return new Promise((resolve, reject) => {
+        this.http.get(this.serverUrl+'/chat/show_id/'+sid, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+          // .map(res => res.json())
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }
+
   updateChatBySocket(sid, data) {
     return new Promise((resolve, reject) => {
         this.http.put(this.serverUrl+'/chat/socket/'+sid, data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
@@ -234,6 +246,76 @@ export class ChatService {
         });
     });
   }
+
+  // get staff session id count from staff model
+  // getStaffTinkerSessionId(){
+  //   return new Promise((resolve, reject) => {
+  //       // this.updateUrl();
+  //     this.http.get(this.serverUrl+'/chat/staff/session_id', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
+  //       // .map(res => res.json())
+  //       .subscribe(res => {
+  //         resolve(res);
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //   });
+  // }
+
+  // get staff session id count from staff model
+  // getOnlineStaffCount(){
+  //   return new Promise((resolve, reject) => {
+  //       // this.updateUrl();
+  //     this.http.get(this.serverUrl+'/chat/staff/online_count', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
+  //       // .map(res => res.json())
+  //       .subscribe(res => {
+  //         resolve(res);
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //   });
+  // }
+
+  // get staff session id count from staff model
+  // getOnlineStaffNickname(){
+  //   return new Promise((resolve, reject) => {
+  //       // this.updateUrl();
+  //     this.http.get(this.serverUrl+'/chat/staff/online_nickname', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
+  //       // .map(res => res.json())
+  //       .subscribe(res => {
+  //         resolve(res);
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //   });
+  // }
+
+  // get operator Request
+  // checkOperatorChannel(){
+  //   return new Promise((resolve, reject) => {
+  //       // this.updateUrl();
+  //     this.http.get(this.serverUrl+'/chat/request/operator_channel', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
+  //       // .map(res => res.json())
+  //       .subscribe(res => {
+  //         resolve(res);
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //   });
+  // }
+
+  //   // get operator Request
+  // updateOperatorChannel(id, data){
+  //   return new Promise((resolve, reject) => {
+  //       // this.updateUrl();
+  //     this.http.put(this.serverUrl+'/chat/request/operator_channel/'+id, data, { headers: { Authorization: `Bearer ${this.getToken()}` }} )
+  //       // .map(res => res.json())
+  //       .subscribe(res => {
+  //         resolve(res);
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //   });
+  // }
 
   // get all chats in room
   getAllChatHistory(phoneNum){

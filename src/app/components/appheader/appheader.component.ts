@@ -167,6 +167,7 @@ export class AppheaderComponent implements OnInit, OnDestroy{
       // console.log("print socket.id:" +socketID);
     }
 
+    // admin would not emit customerQuit socket as defined in node
     if ((userid != "transport close") && (userid != "operatorSessionUserNonAndroid") 
       && (userid !="operatorNonAndroid") && (userid !="operator") && (userid != "operatorSessionUser")){
       console.log("print userid: " +userid);

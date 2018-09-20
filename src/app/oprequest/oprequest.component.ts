@@ -99,7 +99,7 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
   }
 
   getOperatorRequest(){
-  	var operator_request = "true";
+  	// var operator_request = "true";
     this.chatService.getOperatorRequest().then((res) => {  //from chatService, 
       this.requests = res;
     }, (err) => {
