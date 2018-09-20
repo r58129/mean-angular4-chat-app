@@ -101,7 +101,7 @@ private onlineCount: any;
     let base;
 
     if (method === 'post') {
-      console.log("request post");
+      // console.log("request post");
       // base = this.http.post(`/api/${type}`, user);
       if (type === 'register') {
       base = this.http.post(this.configs.expressAddr +'/api/register', user);
@@ -122,12 +122,12 @@ private onlineCount: any;
       
     } else if (method === 'get'){
 
-      console.log("request method: GET" );
+      console.log("sent get user profile request" );
       // base = this.http.get(`/api/${type}`, { headers: { Authorization: `Bearer ${this.getToken()}` }});
       base = this.http.get(this.configs.expressAddr +'/api/profile', { headers: { Authorization: `Bearer ${this.getToken()}` }});
     } else if (method === 'put'){
 
-      console.log("request method: GET" );
+      console.log("send update user profile request" );
       // base = this.http.get(`/api/${type}`, { headers: { Authorization: `Bearer ${this.getToken()}` }});
       base = this.http.put(this.configs.expressAddr +'/api/profile', user, { headers: { Authorization: `Bearer ${this.getToken()}` }});
 
@@ -135,9 +135,9 @@ private onlineCount: any;
 
     const request = base.pipe(
       map((data: TokenResponse) => {
-        console.log("before data.token" );
+        // console.log("before data.token" );
         if (data.token) {
-          console.log("inside data.token" );
+          // console.log("inside data.token" );
           // if (type === 'login'){
             this.saveToken(data.token);
           // }
@@ -176,7 +176,7 @@ private onlineCount: any;
   }
 
   public profile(): Observable<any> {
-    console.log("inside profile auth.service");
+    // console.log("inside profile auth.service");
     return this.request('get', 'profile');
   }
 
@@ -206,8 +206,8 @@ private onlineCount: any;
   }
 
   // public loginTinker(port:string) :boolean{
-  public loginTinker() :boolean{
-    console.log('loginTinker before post');
+  public loginTinker() {
+    console.log('check if need to login tinker & mutlichat');
 
     this.getStaffTinkerSessionId().then((res) => {  //from chatService
       this.sessionId = res;
@@ -225,7 +225,8 @@ private onlineCount: any;
 
         this.profileUpdate(this.credentials).subscribe(user => {
           this.staff = user;
-            console.log('name: ' +this.staff.name);
+            console.log('update user profile online ');
+            // console.log('name: ' +this.staff.name);
             // console.log('online: ' +this.staff.online);
             // console.log('tinkerSessionId: ' +this.staff.tinkerSessionId);
             // console.log('expressPort: ' +user.expressPort);
@@ -236,7 +237,7 @@ private onlineCount: any;
           console.log(err);
         });
         
-      } else {  // login to tinker
+      } else {  // login to tinker and mutlichat server
         console.log(" No tinkerSessionId found, login to tinker and upload the session id!");
     
         this.http.post (this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/login', {
@@ -260,12 +261,13 @@ private onlineCount: any;
 
             this.profileUpdate(this.credentials).subscribe(user => {
               this.staff = user;
-              console.log('name: ' +this.staff.name);
+              console.log('update user profile online ');
+              // console.log('name: ' +this.staff.name);
               // console.log('online: ' +this.staff.online);
               // console.log('tinkerSessionId: ' +this.staff.tinkerSessionId);
-            // console.log('expressPort: ' +user.expressPort);
-            // console.log('tinkerPort: ' +user.tinkerPort);
-            // console.log('sokcetIoPort: ' +user.sokcetIoPort);
+              // console.log('expressPort: ' +user.expressPort);
+              // console.log('tinkerPort: ' +user.tinkerPort);
+              // console.log('sokcetIoPort: ' +user.sokcetIoPort);
             }, (err) => {
               console.log(err);
             });
@@ -281,18 +283,20 @@ private onlineCount: any;
               console.log('register to tinker');  
             });
 
-          return true;
+            this.loginMutliChat();
+
+          // return true;
         });
 
       }
     }, (err) => {
       console.log(err);
     });
-    return true;
+    // return true;
   }
 
   // public logoutTinker(port:string): boolean{
-  public logoutTinker(): boolean{
+  public logoutTinker(){
     var sID = '222';
     sID=localStorage.getItem('res.data.sessionID');
 
@@ -322,7 +326,7 @@ private onlineCount: any;
             .subscribe(
               res => {
                 console.log('unregister tinker');
-                return true;
+                // return true;
             });        
           // } //end if tPort !=null
             
@@ -336,8 +340,11 @@ private onlineCount: any;
               res => {
                 localStorage.removeItem('res.data.sessionID');
                 console.log('logout tinker');
-                return true;
+                // return true;
             });
+
+            this.logoutMutliChat();
+
         }, (err) => {
           console.log(err);
         });
@@ -362,7 +369,7 @@ private onlineCount: any;
 
         localStorage.removeItem('res.data.sessionID');
         sessionStorage.setItem('loginTinkerDone','0');
-        console.log("update profile and logout but do not unregister tinker!");
+        console.log("update profile and logout but do not unregister tinker and mutichat!");
 
         // remove token after all http requests are sent
         this.token = '';
@@ -373,10 +380,68 @@ private onlineCount: any;
       console.log(err);
     });
 
-    return true;      
+    // return true;      
   }
 
- // get staff session id count from staff model
+  //mutliChat login
+  public loginMutliChat(){
+    console.log('login mutlichat server');
+
+    // register to multichat server 
+    if (this.configs.ngrok){  // use ngrok
+          this.http.post (this.configs.multiChatNgrokAddr+'/api/csp/register?action=register&sessionID='+this.configs.multiChatCode, 
+          {}, httpOptions)
+          .pipe(
+          catchError(this.handleErrorObservable)
+          ).subscribe(
+            res => {      
+              console.log('register to mutlichat server with ngrok');  
+              return true;
+            });
+         } else {  //use 443 route server
+            this.http.post (this.configs.multiChatAddr+'/api/csp/register'+this.configs.multiChatPort+'?action=register&sessionID='+this.configs.multiChatCode, 
+            {}, httpOptions)
+            .pipe(
+            catchError(this.handleErrorObservable)
+            ).subscribe(
+              res => {      
+              console.log('register to mutlichat server with 443');  
+              return true;
+            });
+    }    
+  }
+
+  public logoutMutliChat(){
+    console.log('logout mutlichat server');
+    //unregister multichat server
+    
+    if (this.configs.ngrok){  //ngrok
+      this.http.post (this.configs.multiChatNgrokAddr+'/api/csp/unregister?action=unregister&sessionID='+this.configs.multiChatCode,   
+      {}, httpOptions)
+        .pipe(
+          catchError(this.handleErrorObservable)
+        )
+        .subscribe(
+          res => {
+            console.log('unregister multichat server');
+            return true;
+          });
+      } else { //443 server
+        this.http.post (this.configs.multiChatAddr+'/api/csp/unregister'+this.configs.multiChatPort+'?action=unregister&sessionID='+this.configs.multiChatCode, 
+        {}, httpOptions)
+        .pipe(
+          catchError(this.handleErrorObservable)
+        )
+        .subscribe(
+          res => {
+            console.log('unregister multichat server');
+            return true;
+          });
+      }
+  }
+
+
+  // get staff session id count from staff model
   public getStaffTinkerSessionId(){
     return new Promise((resolve, reject) => {
         // this.updateUrl();

@@ -40,8 +40,8 @@ module.exports.profileUpdate = function(req, res) {
       .findByIdAndUpdate(req.payload._id, req.body)
       .exec(function(err, post) {
         
-        console.log("tinkerSessionId: " +req.body.tinkerSessionId);
-        console.log("online: " +req.body.online);
+        // console.log("tinkerSessionId: " +req.body.tinkerSessionId);
+        // console.log("online: " +req.body.online);
         
         res.status(200).json(post);
       });
