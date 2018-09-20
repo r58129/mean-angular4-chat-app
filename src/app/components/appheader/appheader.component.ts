@@ -32,6 +32,8 @@ export class AppheaderComponent implements OnInit, OnDestroy{
   package: string;
   onlineCount: any;
   token: string;
+  online: any;
+  staffName: any;
 
   newUser = { nickname: '', room: '' };
   newRequest = { type:'', phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
@@ -239,7 +241,7 @@ export class AppheaderComponent implements OnInit, OnDestroy{
 		this.timer = setInterval(() => {
 	    	// this.updateRequestCount();
 	    	this.chatService.getNewRequestCount().then((res) => {
-	    	if (res !== undefined){  //get new request number
+	    	  if (res !== undefined){  //get new request number
 	      		this.chats = res;
 	      		// console.log('new requests: ' + this.chats);
 	      		document.getElementById('newRequestCount').textContent = this.chats;
@@ -253,6 +255,35 @@ export class AppheaderComponent implements OnInit, OnDestroy{
 	      	console.log(err);
 	    	});
 	    	// console.log("Refresh new requests count: " + this.updateRequestCount());
+
+        // this.updateRequestCount();
+        this.authService.getOnlineStaffCount().then((res) => {
+          if (res !== undefined){  //get online people count
+            this.online = res;
+            // console.log('new requests: ' + this.chats);
+            document.getElementById('newOnlineCount').textContent = this.online;
+            document.getElementById('onlinePeople').textContent = this.online;
+          }
+
+          else {
+            this.online = 0;
+          }
+        }, (err) => {
+          console.log(err);
+        });
+
+        this.authService.getOnlineStaffNickname().then((res) => {
+          if (res !== undefined){  //get nickname is found
+            this.staffName = res;
+            // console.log('new requests: ' + this.staffName[0].name);
+            // document.getElementById('newOnlineCount').textContent = this.online;
+            // document.getElementById('onlinePeople').textContent = this.online;
+          }
+
+        }, (err) => {
+          console.log(err);
+        });        
+
 	  	}, 3000);
 	// }	//if (this.authService.isLoggedIn()) 
 }
