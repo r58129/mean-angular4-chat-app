@@ -34,6 +34,8 @@ export class AppheaderComponent implements OnInit, OnDestroy{
   token: string;
   online: any;
   staffName: any;
+  operatorChannel: any;
+  // available: boolean = false;
 
   newUser = { nickname: '', room: '' };
   newRequest = { type:'', phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
@@ -54,6 +56,8 @@ export class AppheaderComponent implements OnInit, OnDestroy{
 
   // if (this.authService.isLoggedIn()) {
     this.socket.emit('user','admin');
+
+    this.socket.emit('operatorChannel','checkAvailability');
     // console.log("emit admin socket");
 
     // // this.authService.getOnlineStaffCount().then((res) => {
@@ -220,9 +224,25 @@ export class AppheaderComponent implements OnInit, OnDestroy{
         console.log(err);
       });
 
-    }  // if ((userid != "transport close") || (userid != "operatorSessionUserNonAndroid"))
+      }  // if ((userid != "transport close") || (userid != "operatorSessionUserNonAndroid"))
     }.bind(this));
   
+    this.socket.on('operatorChannelStatus', (status) =>{
+     // console.log('operatorChannelStatus' +status);
+     if (status == 'Available'){
+      console.log(' operator channel is available');
+      document.getElementById('operatorChannel').textContent = "OK";
+      document.getElementById('channelStatusMessage').textContent = "Operator Channel is available";
+      
+      
+     } else {
+      console.log(' operator channel is occupied');
+      document.getElementById('operatorChannel').textContent = "NA";
+      document.getElementById('channelStatusMessage').textContent = "Operator Channel is occupied";
+
+      }
+
+    });
     
     
   // console.log('before register to tinker, session id: ' + localStorage.getItem('res.data.sessionID'))
@@ -282,7 +302,9 @@ export class AppheaderComponent implements OnInit, OnDestroy{
 
         }, (err) => {
           console.log(err);
-        });        
+        });    
+
+        this.socket.emit('operatorChannel','checkAvailability');    
 
 	  	}, 3000);
 	// }	//if (this.authService.isLoggedIn()) 

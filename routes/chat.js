@@ -182,6 +182,38 @@ io.on('connection', function (socket) {
     }
     
   });
+
+  socket.on('operatorChannel', function(status){
+
+    // console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
+    // console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel.length);       
+    
+    if (status == 'checkAvailability') {
+      // console.log('status: '+ status);
+
+      if ((operatorSocketIDOperatorChannel.length != undefined ) && (operatorSocketIDOperatorChannel.length != 0)){
+        // console.log('operatorChannelStatus is Occupied');
+        io.to(socket.id).emit('operatorChannelStatus', 'Occupied', socket.id );
+      } else {
+        // console.log('operatorChannelStatus is Available');
+        io.to(socket.id).emit('operatorChannelStatus', 'Available', socket.id ); 
+      }
+    } else if (status == 'releaseOperatorChannel'){
+      // console.log('Release opeartor channel');
+      // console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
+      // console.log('operatorSocketIDOperatorChannel: ' +socket.id);
+
+      // if ( operatorSocketIDOperatorChannel == socket.id ){
+
+        operatorSocketIDOperatorChannel = '';
+        console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
+        console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel.length);   
+      // } else {
+      //   console.log('Do not clear existing operatorChannel socket');   
+
+      // }
+    }
+  });
   
   socket.on('user', function(userid){
     // console.log("userid: " +userid);

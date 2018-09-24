@@ -23,9 +23,10 @@ export class ForgotPasswordComponent {
 	  this.authService.forgotPassword(this.credentials).subscribe(() => {
     console.log('post forgot password link');
       // this.authService.logout();
-    if (window.alert('Please check your email and follow the instructions to reset password!')){
-      this.router.navigateByUrl('/');
-    }
+    
+    window.alert('Please check your email and follow the instructions to reset password!');
+    this.router.navigateByUrl('/');
+    
       console.log("redirect the link to login");
     }, (err) => {
       window.alert('User is not found!');

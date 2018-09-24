@@ -44,9 +44,9 @@ export class ResetPasswordComponent {
       console.log('post reset password ');
       console.log("redirect the link to login");
       
-      if (window.alert('Password has been reset! Please login to start your session.')){
-      this.authService.logout();
-      }
+    window.alert('Password has been reset! Please login to start your session.');
+    this.authService.logout();
+
 
     }, (err) => {
       console.error(err);

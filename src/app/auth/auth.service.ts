@@ -349,6 +349,7 @@ private onlineCount: any;
           console.log(err);
         });
         
+        localStorage.removeItem('emittedOpeartorSocket');
         sessionStorage.setItem('loginTinkerDone','0');
         // sessionStorage.removeItem('loginTinkerDone');
 
@@ -368,6 +369,7 @@ private onlineCount: any;
         });
 
         localStorage.removeItem('res.data.sessionID');
+        localStorage.removeItem('emittedOpeartorSocket');
         sessionStorage.setItem('loginTinkerDone','0');
         console.log("update profile and logout but do not unregister tinker and mutichat!");
 

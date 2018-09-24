@@ -117,11 +117,69 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
   var user = JSON.parse(localStorage.getItem("user"));
 
-  
-  this.socket.emit('user','operator');
+  // Do not emit again while page refresh
 
-  //For non android chat apps
-  this.socket.emit('user','operatorNonAndroid');
+  this.socket.emit('operatorChannel','checkAvailability');  
+
+
+  this.socket.on('operatorChannelStatus', (status, socketID) =>{
+     console.log('operatorChannelStatus: ' +status +socketID);
+     // localStorage.setItem("mySocket", socketID);
+
+    if (status == 'Available'){
+      console.log('Emit operator user sockets');
+
+      //Emit opeartor user socket
+
+      localStorage.setItem("emittedOpeartorSocket", socketID);
+
+      this.socket.emit('user','operator');
+      this.socket.emit('user','operatorNonAndroid');
+
+    } 
+    
+    if (status == 'Occupied') {  //occupied
+
+      if ((localStorage.getItem("emittedOpeartorSocket") == undefined) || (localStorage.getItem("emittedOpeartorSocket") == '0')){
+
+        localStorage.setItem("emittedOpeartorSocket", "0");
+        window.alert('Operator Channel is occupied. Redirect to Administrator page!');
+        this.router.navigate(['/chat/request']); 
+
+      } else {  //there is sID in local storage
+        console.log('socketID: ' +socketID)
+        // if (localStorage.getItem("mySocket") == socketID){
+
+          // window.alert('Operator socket is refreshed. Redirect to Administrator page!');
+          // this.router.navigate(['/chat/request']);
+          // console.log('do not update local storage');
+          console.log(' emit operator user socket and update local storage sID after page is refreshed');  
+          this.socket.emit('user','operator');
+          this.socket.emit('user','operatorNonAndroid');
+          localStorage.setItem("emittedOpeartorSocket", socketID);
+        
+          // need to update new socket to local storage
+
+        // } else {  // in case node reset the opeartor channel because of idle and other one is using the channel
+        //   localStorage.setItem("emittedOpeartorSocket", "0");
+        //   window.alert('Operator Channel is occupied. Redirect to Administrator page!');
+        //   this.router.navigate(['/chat/request']);
+
+        // }
+      }
+    } 
+
+    if (status == 'Timeout'){
+      console.log('Socket Timeout: ' +socketID);
+      localStorage.setItem("emittedOpeartorSocket", "0");
+
+    }
+  });
+
+  // this.socket.emit('user','operator');
+
+  // //For non android chat apps
+  // this.socket.emit('user','operatorNonAndroid');
 
   
   this.chatService.getNASocketIo().then((res) => {  //from chatService
@@ -389,8 +447,58 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnDestroy(){
-        
+     
+    // this.socket.emit('operatorChannel','checkAvailability');  
+
+    // this.socket.on('operatorChannelStatus', (status, socketID) =>{
+    //   console.log('operatorChannelStatus: ' +status +socketID);
+    //   if (status == 'Available'){
+    //   console.log('Channel is available');
+
+    //   //Emit opeartor user socket
+
+    //   // localStorage.setItem("emittedOpeartorSocket", socketID);
+
+    //   // this.socket.emit('user','operator');
+    //   // this.socket.emit('user','operatorNonAndroid');
+
+    //  } else {
+
+      if ((localStorage.getItem("emittedOpeartorSocket") == undefined) || (localStorage.getItem("emittedOpeartorSocket") == '0')){
+
+        console.log('Do not releaseOperatorChannel and set emittedOpeartorSocket to 0');
+        localStorage.setItem("emittedOpeartorSocket", "0");
+        // window.alert('Operator Channel is occupied. Redirect to Administrator page!');
+        // this.router.navigate(['/chat/request']); 
+
+      } else { // localStorage.getItem("emittedOpeartorSocket") !='0'
+        // if (localStorage.getItem("emittedOpeartorSocket") == socketID){
+
+          console.log('releaseOperatorChannel and set emittedOpeartorSocket to 0');
+          this.socket.emit('operatorChannel','releaseOperatorChannel');
+          localStorage.setItem("emittedOpeartorSocket", "0");
+
+        // } else {  // in case node reset the opeartor channel because of idle and other one is using the channel
+        //   // localStorage.setItem("emittedOpeartorSocket", "0");
+        //   // window.alert('Operator Channel is occupied. Redirect to Administrator page!');
+        //   // this.router.navigate(['/chat/request']);
+        //   console.log('Do not emit releaseOperatorChannel ');
+
+        // }
+      }
+    // } 
+    // }); 
     //socket.emit('forceDisconnect');
+    // if (localStorage.getItem("emittedOpeartorSocket") !=  '0') {
+      
+      // this.socket.emit('operatorChannel','releaseOperatorChannel');
+      // console.log('releaseOperatorChannel and set emittedOpeartorSocket to 0');
+
+      // localStorage.setItem("emittedOpeartorSocket", "0");
+
+    // }
+
+    // this.socket.emit('operatorChannel','releaseOperatorChannel');
     this.socket.disconnect();
     // if (this.timer){
     //   clearInterval(this.timer);
