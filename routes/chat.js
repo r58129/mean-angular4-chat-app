@@ -24,6 +24,7 @@ var auth = jwt({
 var server = require('https').createServer(options,app);
 
 var io = require('socket.io')(server,{secure: true});
+// var io = require('socket.io')(server,{secure: true, pingInterval: 25000, pingTimeout: 60000});
 var Chat = require('../models/Chat.js');
 var User = require('../models/User.js');
 var Contact = require('../models/Contact.js');
@@ -71,7 +72,7 @@ io.on('connection', function (socket) {
   // ack from client to server
   socket.on('KeepAliveMessage', (name, fn) => {
     if (operatorSessionUserConnected){
-//      console.log('Send Ack');
+    //      console.log('Send Ack');
       fn('ACK');
     }
   });
@@ -194,24 +195,35 @@ io.on('connection', function (socket) {
       if ((operatorSocketIDOperatorChannel.length != undefined ) && (operatorSocketIDOperatorChannel.length != 0)){
         // console.log('operatorChannelStatus is Occupied');
         io.to(socket.id).emit('operatorChannelStatus', 'Occupied', socket.id );
-      } else {
+      } else { // operatorSocketIDOperatorChannel is not empty
         // console.log('operatorChannelStatus is Available');
         io.to(socket.id).emit('operatorChannelStatus', 'Available', socket.id ); 
       }
-    } else if (status == 'releaseOperatorChannel'){
-      // console.log('Release opeartor channel');
-      // console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
-      // console.log('operatorSocketIDOperatorChannel: ' +socket.id);
+    } 
 
-      // if ( operatorSocketIDOperatorChannel == socket.id ){
+    if (status == 'releaseOperatorChannel'){
 
         operatorSocketIDOperatorChannel = '';
         console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
-        console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel.length);   
-      // } else {
-      //   console.log('Do not clear existing operatorChannel socket');   
+        console.log('operatorSocketIDOperatorChannel.length: ' +operatorSocketIDOperatorChannel.length);   
+    }
 
-      // }
+    if (status == 'channelIdle'){
+
+      operatorSocketIDOperatorChannel = '';
+      console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
+      console.log('operatorSocketIDOperatorChannel.length: ' +operatorSocketIDOperatorChannel.length);   
+
+      io.to(socket.id).emit('operatorChannelStatus', 'channelTimeout', socket.id ); 
+    }
+
+    if (status == 'keepalive'){
+      console.log('operator channel keepalive');
+
+      setTimeout(() => {
+
+      }, 10000);
+
     }
   });
   
@@ -434,7 +446,7 @@ function isJSON(userid) {
 
 /* GET ALL NON ROBOT CHATS, THIS IS THE REAL ROOM */
 router.get('/:room', function(req, res, next) {
-// router.get('/:room', auth, function(req, res, next) {
+  // router.get('/:room', auth, function(req, res, next) {
   // if (!req.payload._id) {
   //     res.status(401).json({
   //       "message" : "UnauthorizedError:"
