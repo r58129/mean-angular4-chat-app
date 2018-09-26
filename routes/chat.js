@@ -27,7 +27,7 @@ var io = require('socket.io')(server,{secure: true});
 var Chat = require('../models/Chat.js');
 var User = require('../models/User.js');
 var Contact = require('../models/Contact.js');
-// var Staff = require('../models/Staff.js');
+var Staff = require('../models/Staff.js');
 
 
 
@@ -181,6 +181,38 @@ io.on('connection', function (socket) {
       io.to(operatorSocketIDOperatorChannelNonAndroid).emit('chat',msg);
     }
     
+  });
+
+  socket.on('operatorChannel', function(status){
+
+    // console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
+    // console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel.length);       
+    
+    if (status == 'checkAvailability') {
+      // console.log('status: '+ status);
+
+      if ((operatorSocketIDOperatorChannel.length != undefined ) && (operatorSocketIDOperatorChannel.length != 0)){
+        // console.log('operatorChannelStatus is Occupied');
+        io.to(socket.id).emit('operatorChannelStatus', 'Occupied', socket.id );
+      } else {
+        // console.log('operatorChannelStatus is Available');
+        io.to(socket.id).emit('operatorChannelStatus', 'Available', socket.id ); 
+      }
+    } else if (status == 'releaseOperatorChannel'){
+      // console.log('Release opeartor channel');
+      // console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
+      // console.log('operatorSocketIDOperatorChannel: ' +socket.id);
+
+      // if ( operatorSocketIDOperatorChannel == socket.id ){
+
+        operatorSocketIDOperatorChannel = '';
+        console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
+        console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel.length);   
+      // } else {
+      //   console.log('Do not clear existing operatorChannel socket');   
+
+      // }
+    }
   });
   
   socket.on('user', function(userid){
@@ -413,7 +445,8 @@ router.get('/:room', function(req, res, next) {
       [
         { room: req.params.room },
         { socket_id: { $exists: true } }, 
-        { nickname: {$exists:true, $ne:"robot" } }  //filter robot reply
+        { nickname: { $ne:"robot" } }  //filter robot reply
+        // { nickname: {$exists:true, $ne:"robot" } }  //filter robot reply
       ]
       }, function (err, chats) {
       if (err) return next(err);
@@ -466,19 +499,42 @@ router.put('/:id', auth, function(req, res, next) {
 
 
 /* GET chat request by socket id */
-router.get('/socket/:socket_id',  function(req, res, next) {
-// router.get('/socket/:socket_id', auth, function(req, res, next) {
-//   if (!req.payload._id) {
-//     res.status(401).json({
-//       "message" : "UnauthorizedError:"
-//     });
-//   } else {
+// router.get('/socket/:socket_id',  function(req, res, next) {
+router.get('/socket/:socket_id', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {
     Chat.find({socket_id:req.params.socket_id}, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });
-  // }
+  }
 });
+
+/* GET chat request by socket id */
+// router.get('/show_id/:socket_id',  function(req, res, next) {
+router.get('/show_id/:socket_id', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {
+    Chat.find({ $and:
+      [
+        { socket_id: req.params.socket_id },
+        { operator_request: "Working" }, 
+        { nickname: { $exists: false  } }  //filter robot reply
+        // { nickname: {$exists:true, $ne:"robot" } }  //filter robot reply
+      ]
+      }, function (err, chats) {
+      if (err) return next(err);
+      res.json(chats);
+    });
+  }
+});
+
 
 /* UPDATE chat request by socket id*/
 // router.put('/socket/:socket_id', function(req, res, next) {
@@ -574,7 +630,7 @@ router.get('/request/operator', auth, function(req, res, next) {
   } else {
     Chat.find({ $and: 
       [ 
-        { phone_number: {  $exists: true } }, 
+        { phone_number: { $exists: true } }, 
         { operator_request: { $exists: true } }
         // { status: "New" } 
       ]
@@ -584,6 +640,76 @@ router.get('/request/operator', auth, function(req, res, next) {
     })
   }
 });
+
+/* get staff session id count from staff model*/ 
+// router.get('/staff/session_id', function(req, res, next) { 
+router.get('/staff/session_id', auth, function(req, res, next) { 
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {
+    Staff.find({ $and: 
+      [ 
+        { tinkerSessionId: { $exists: true } },
+        { tinkerSessionId: { $ne:"" } }
+      ]
+    }, function (err, staffs) {
+      if (err) return next(err);
+      res.json(staffs);
+    })
+  }
+});
+
+/* get staff online count from staff model*/ 
+router.get('/staff/online_count', auth, function(req, res, next) { 
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {
+    Staff.count(      
+    
+      { online: "true"        
+    
+    }, function (err, staffs) {
+      if (err) return next(err);
+      res.json(staffs);
+    })
+  }
+});
+
+/* get staff online count from staff model*/ 
+router.get('/staff/online_nickname', auth, function(req, res, next) { 
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {
+    Staff.find(      
+    
+      { online: "true"        
+    
+    }, function (err, staffs) {
+      if (err) return next(err);
+      res.json(staffs);
+    })
+  }
+});
+
+/* UPDATE operator channel */
+// router.put('/request/operator_channel/:id', auth, function(req, res, next) {
+//   if (!req.payload._id) {
+//     res.status(401).json({
+//       "message" : "UnauthorizedError:"
+//     });
+//   } else {  
+//     Staff.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
+//       if (err) return next(err);
+//       res.json(post);
+//     });
+//   }
+// });
 
 // db.inventory.find( { $and: [ { price: { $ne: 1.99 } }, { price: { $exists: true } } ] } )
 
@@ -604,7 +730,7 @@ router.get('/roomhistory/:room', auth, function(req, res, next) {
 
 /* SAVE REQUEST */
 router.post('/request', function(req, res, next) {
-// router.post('/request', auth, function(req, res, next) {
+  // router.post('/request', auth, function(req, res, next) {
   // if (!req.payload._id) {
   //   res.status(401).json({
   //     "message" : "UnauthorizedError:"

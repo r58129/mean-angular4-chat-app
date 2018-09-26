@@ -15,7 +15,9 @@ export class LoginComponent {
 
   credentials: TokenPayload = {
     email: '',
-    password: ''
+    password: '',
+    tinkerSessionId:'',
+    online:''
   };
 
   details: UserDetails;
@@ -53,26 +55,25 @@ export class LoginComponent {
         // sessionStorage.setItem('loginTinkerDone', "1");
       }
       
-    //   this.authService.profile().subscribe(user => {
-    //   this.details = user;
-    //   // console.log('name: ' +user.name);
-    //   console.log('email: ' +user.email);
-    //   // console.log('baseAddress: ' +user.baseAddress);
-    //   // // console.log('expressPort: ' +user.expressPort);
-    //   // console.log('tinkerPort: ' +user.tinkerPort);
-    //   // console.log('sokcetIoPort: ' +user.sokcetIoPort);
-    //   // localStorage.setItem('baseAddress', user.baseAddress);
-    //   // localStorage.setItem('tinkerPort', user.tinkerPort);
-    //   // localStorage.setItem('sokcetIoPort', user.sokcetIoPort);
-    // }, (err) => {
-    //   console.error(err);
-    // });
+      // this.authService.profile().subscribe(user => {
+      // this.details = user;
+      // console.log('get user profile');
+      // console.log('name: ' +user.name);
+      // console.log('online: ' +user.online);
+      // console.log('tinkerSessionId: ' +user.tinkerSessionId);
+      // // console.log('expressPort: ' +user.expressPort);
+      // // console.log('tinkerPort: ' +user.tinkerPort);
+      // // console.log('sokcetIoPort: ' +user.sokcetIoPort);
+
+      // }, (err) => {
+      //   console.error(err);
+      // });
 
       // this.router.navigateByUrl('/api/profile');
       // this.router.navigateByUrl('/chat/request');
 
       this.router.navigate(['/chat/request']);
-      console.log("redirect the link to request");
+      console.log("redirect the link to request page");
     }, (err) => {
       if (window.alert('Incorrect login name or password!')){
         console.error(err);
