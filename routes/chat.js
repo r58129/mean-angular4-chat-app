@@ -30,7 +30,10 @@ var User = require('../models/User.js');
 var Contact = require('../models/Contact.js');
 var Staff = require('../models/Staff.js');
 
-
+var watchdog = require("watchdog")
+const timeout = 36000;  //30s
+const dog = new watchdog.Watchdog(timeout);
+const food = { data: 'delicious' };
 
 var userSocketID = new Array();
 var userSocketIDAndUsername = new Array();
@@ -53,11 +56,21 @@ server.listen(port);
 console.log('Socket.io is listening on port:' + port);
 
 
- const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 
 
- app.use(bodyParser.json());
+app.use(bodyParser.json());
 
+dog.on('reset', () => {
+
+  console.log('Timeout!');
+  operatorSocketIDOperatorChannel = '';
+  console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
+  console.log('operatorSocketIDOperatorChannel.length: ' +operatorSocketIDOperatorChannel.length);   
+
+
+});
+dog.on('feed',  () => console.log('feed'));
 
 // socket io
 io.on('connection', function (socket) {
@@ -67,7 +80,7 @@ io.on('connection', function (socket) {
   //   console.log('User disconnected');
   // });
 
-// start of "from johnson"
+  // start of "from johnson"
 
   // ack from client to server
   socket.on('KeepAliveMessage', (name, fn) => {
@@ -217,13 +230,20 @@ io.on('connection', function (socket) {
       io.to(socket.id).emit('operatorChannelStatus', 'channelTimeout', socket.id ); 
     }
 
+    if (status == 'stopWatchdog'){
+      // console.log('stopWatchdog');
+
+      // setTimeout(() => {
+        dog.sleep();
+        console.log('dog sleep');
+      // }, 30000);  //30s
+
+    }
+
     if (status == 'keepalive'){
       console.log('operator channel keepalive');
-
-      setTimeout(() => {
-
-      }, 10000);
-
+      dog.feed(food); //feed the dog every 10s
+      // dog.reset();
     }
   });
   
@@ -432,17 +452,17 @@ io.on('connection', function (socket) {
 }); //io.on
 
 
-function isJSON(userid) {
-   var ret = true;
-   try {
-      JSON.parse(userid);
-      console.log("userid isJSON " );
-   }catch(e) {
-      ret = false;
-      console.log("userid is not JSON " );
-   }
-   return ret;
-}
+// function isJSON(userid) {
+//    var ret = true;
+//    try {
+//       JSON.parse(userid);
+//       console.log("userid isJSON " );
+//    }catch(e) {
+//       ret = false;
+//       console.log("userid is not JSON " );
+//    }
+//    return ret;
+// }
 
 /* GET ALL NON ROBOT CHATS, THIS IS THE REAL ROOM */
 router.get('/:room', function(req, res, next) {

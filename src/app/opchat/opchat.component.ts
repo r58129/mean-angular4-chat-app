@@ -58,9 +58,9 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     private route: ActivatedRoute, private configs: Configs, private idle: Idle) {
     
     // sets an idle timeout of 50 seconds, for testing purposes.
-    idle.setIdle(50);
+    idle.setIdle(50); //50
     // sets a timeout period of 10 seconds. after 60 seconds of inactivity, the user will be considered timed out.
-    idle.setTimeout(10);
+    idle.setTimeout(10);  //10
     // sets the default interrupts, in this case, things like clicks, scrolls, touches to the document
     idle.setInterrupts(DEFAULT_INTERRUPTSOURCES);
 
@@ -459,7 +459,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
       console.log("operator channel keepalive");
       }
    
-    }, 10000); //emit keepalive socket everytime 10s
+    }, 10000); //emit keepalive socket everytime 10s =10000
 
   }
 
@@ -467,7 +467,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
     if ((localStorage.getItem("emittedOpeartorSocket") == undefined) || (localStorage.getItem("emittedOpeartorSocket") == '0')){
 
-        console.log('Do not releaseOperatorChannel and set emittedOpeartorSocket to 0');
+        console.log('Do not releaseOperatorChannel, do not stop dog and set emittedOpeartorSocket to 0');
         localStorage.setItem("emittedOpeartorSocket", "0");
         // window.alert('Operator Channel is occupied. Redirect to Administrator page!');
         // this.router.navigate(['/chat/request']); 
@@ -477,17 +477,20 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
           console.log('releaseOperatorChannel and set emittedOpeartorSocket to 0');
           this.socket.emit('operatorChannel','releaseOperatorChannel');
+          this.socket.emit('operatorChannel','stopWatchdog');
           localStorage.setItem("emittedOpeartorSocket", "0");
 
     }
 
 
-    // this.socket.emit('operatorChannel','releaseOperatorChannel');
+      
     this.socket.disconnect();
     if (this.timer){
       clearInterval(this.timer);
     
     }
+
+
     console.log('operator ngOnDestroy');
     
     // reset timeOut and idle count
