@@ -87,7 +87,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       // console.log(this.newUser.request_status);     
     });
 
-    var user = JSON.parse(localStorage.getItem("user"));
+    var user = JSON.parse(sessionStorage.getItem("user"));
     // var request = JSON.parse(localStorage.getItem("request"));
 
   this.socket.on('chat', (msg) =>{
@@ -270,9 +270,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       // console.log("data.message.room: " + data.message.room);
       // console.log("JSON.parse(localStorage.getItem('user')).room: " + (JSON.parse(localStorage.getItem("user")).room));
       console.log("new-message: " + data.message.room);
-    if (localStorage.getItem("user")!=null){
-      if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
-          user=JSON.parse(localStorage.getItem("user"));
+    if (sessionStorage.getItem("user")!=null){
+      if(data.message.room === JSON.parse(sessionStorage.getItem("user")).room) {
+          user=JSON.parse(sessionStorage.getItem("user"));
         this.chats.push(data.message);
         this.msgData = { type: user.type, phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
         this.scrollToBottom();
@@ -284,7 +284,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.socket.on('new-image', function (data) {
       console.log("new-image: " + data.room);
       
-      if(data.room === JSON.parse(localStorage.getItem("user")).room) {
+      if(data.room === JSON.parse(sessionStorage.getItem("user")).room) {
       console.log("new-image inside if: " + data.room);
 
         if (data.filename !== 'undefined'){
@@ -339,7 +339,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     console.log('joinRoom using socket_id: ' +socket_id);
     this.Connect(socket_id);  //connect to customer socket
     var date = new Date();
-    localStorage.setItem("user", JSON.stringify(this.newUser));
+    sessionStorage.setItem("user", JSON.stringify(this.newUser));
     this.getChatByRoom(this.newUser.room);
     this.msgData = {type: this.newUser.type, phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
       room: this.newUser.room, nickname: this.newUser.nickname, message: '' };
@@ -404,9 +404,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   logout() {
     console.log("disconnect customer and logout the room");
     var date = new Date();
-    var user = JSON.parse(localStorage.getItem("user"));
+    var user = JSON.parse(sessionStorage.getItem("user"));
     this.socket.emit('save-message', { type:user.type, phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     this.joinned = false;
 
     //update request_status to Done after logout
