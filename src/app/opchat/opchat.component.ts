@@ -8,6 +8,9 @@ import { Buffer } from 'buffer';
 import { Configs } from '../../environments/environment';
 import { AuthService, UserDetails } from '../auth/auth.service';
 
+import {Idle, DEFAULT_INTERRUPTSOURCES} from '@ng-idle/core';
+// import {Keepalive} from '@ng-idle/keepalive';
+
 
 @Component({
   selector: 'app-opchat',
@@ -35,6 +38,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   package: string;
   requestId: any=[];
   requestCount:any;
+  timer: any;
 
   // details: UserDetails;
 
@@ -50,50 +54,49 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   // socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
   socket = io(this.configs.socketIoServerAddr,{secure: true});
   
-  constructor(private chatService: ChatService, private authService: AuthService, private router: Router, private route: ActivatedRoute, private configs: Configs) {
+  constructor(private chatService: ChatService, private authService: AuthService, private router: Router, 
+    private route: ActivatedRoute, private configs: Configs, private idle: Idle) {
     
+    // sets an idle timeout of 50 seconds, for testing purposes.
+    idle.setIdle(50); //50
+    // sets a timeout period of 10 seconds. after 60 seconds of inactivity, the user will be considered timed out.
+    idle.setTimeout(10);  //10
+    // sets the default interrupts, in this case, things like clicks, scrolls, touches to the document
+    idle.setInterrupts(DEFAULT_INTERRUPTSOURCES);
+
+    idle.onIdleEnd.subscribe(() => {
+      // this.idleState = 'No longer idle.';
+      console.log('No longer idle.');
+    });
+    
+    idle.onTimeout.subscribe(() => {
+      console.log(' Operator channel timed out!');
+      this.socket.emit('operatorChannel','channelIdle');  
+      // this.idleState = 'Timed out!';
+      // this.timedOut = true;
+    });
+    
+    idle.onIdleStart.subscribe(() => {
+      console.log('You\'ve gone idle!');
+      // this.idleState = 'You\'ve gone idle!';
+    });
+    
+    idle.onTimeoutWarning.subscribe((countdown) => {
+      console.log('You will time out in ' + countdown + ' seconds!');
+      // this.idleState = 'You will time out in ' + countdown + ' seconds!';
+    });
+
+    // sets the ping interval to 15 seconds
+    // keepalive.interval(15);
+
+    // keepalive.onPing.subscribe(() => {
+    //   // this.lastPing = new Date()
+    // });
+
+    this.reset();
   }
 
   ngOnInit() {
-    // check operator mode before doing anything
-    // this.authService.profile().subscribe(user => {
-    //   this.details = user;
-    //   // console.log('name: ' +user.name);
-    //   console.log('operatorMode: ' +this.details.operatorMode);
-
-    //   if (this.details.operatorMode != undefined){
-    //     if (this.details.operatorMode == 'false'){
-
-    //     } else {
-
-
-    //     }
-    //   }
-    // }, (err) => {
-    //   console.error(err);
-    // });
-
-    // // check if operator channel is occupied
-    // this.chatService.checkOperatorChannel().then((res) => {  //from chatService, 
-    //   this.requestCount = res;
-    //   console.log("operator_request: " + JSON.stringify(this.requestCount));
-    //   if (this.requestCount == 0){  // need to check
-    //     console.log('operator channel is available');
-    //     // emit operator user socket
-    //     this.socket.emit('user','operator');
-
-    //     //For non android chat apps
-    //     this.socket.emit('user','operatorNonAndroid');
-        
-    //   } else {
-    //     window.alert('Operator Channel is in use!')
-    //     console.log('operator channel is available');
-    //     this.router.navigate(['/chat/request']);
-    //   }
-    // }, (err) => {
-    //   console.log(err);
-    // });
-
 
     this.chatService.change.subscribe(searchUser => {
       console.log("this.searchUser.id: "+searchUser.id);
@@ -104,276 +107,280 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
       // console.log("this.searchUser.name: "+this.searchUser.name);
     });
 
-  // this.route.params.subscribe(params =>{
-  //     // console.log(params);
-  //     this.newUser.room = params['id'];
-  //     console.log(this.newUser.room);     
-  // });
-  // this.route.params.subscribe(params =>{
-  //     // console.log(params);
-  //     this.newUser.type = params['id2'];
-  //     console.log(this.newUser.type);     
-  // });
+    // this.route.params.subscribe(params =>{
+    //     // console.log(params);
+    //     this.newUser.room = params['id'];
+    //     console.log(this.newUser.room);     
+    // });
+    // this.route.params.subscribe(params =>{
+    //     // console.log(params);
+    //     this.newUser.type = params['id2'];
+    //     console.log(this.newUser.type);     
+    // });
 
-  var user = JSON.parse(localStorage.getItem("user"));
+    var user = JSON.parse(localStorage.getItem("user"));
 
-  // Do not emit again while page refresh
+    // Do not emit again while page refresh
 
-  this.socket.emit('operatorChannel','checkAvailability');  
+    this.socket.emit('operatorChannel','checkAvailability');  
 
 
-  this.socket.on('operatorChannelStatus', (status, socketID) =>{
-     console.log('operatorChannelStatus: ' +status +socketID);
-     // localStorage.setItem("mySocket", socketID);
+    this.socket.on('operatorChannelStatus', (status, socketID) =>{
+      console.log('operatorChannelStatus: ' +status +socketID);
+      // localStorage.setItem("mySocket", socketID);
 
-    if (status == 'Available'){
-      console.log('Emit operator user sockets');
+      if (status == 'Available'){
+        console.log('Emit operator user sockets');
 
-      //Emit opeartor user socket
+        //Emit opeartor user socket
 
-      localStorage.setItem("emittedOpeartorSocket", socketID);
+        sessionStorage.setItem("emittedOpeartorSocket", socketID);
 
-      this.socket.emit('user','operator');
-      this.socket.emit('user','operatorNonAndroid');
+        this.socket.emit('user','operator');
+        this.socket.emit('user','operatorNonAndroid');
 
-    } 
-    
-    if (status == 'Occupied') {  //occupied
+        this.socket.emit('operatorChannel','keepalive');  
 
-      if ((localStorage.getItem("emittedOpeartorSocket") == undefined) || (localStorage.getItem("emittedOpeartorSocket") == '0')){
+      } 
+      
+      if (status == 'Occupied') {  //occupied
 
-        localStorage.setItem("emittedOpeartorSocket", "0");
-        window.alert('Operator Channel is occupied. Redirect to Administrator page!');
+        if ((sessionStorage.getItem("emittedOpeartorSocket") == undefined) || (sessionStorage.getItem("emittedOpeartorSocket") == '0')){
+
+          sessionStorage.setItem("emittedOpeartorSocket", "0");
+          window.alert('Operator Channel is occupied. Redirect to Administrator page!');
+          this.router.navigate(['/chat/request']); 
+
+        } else {  //there is sID in local storage
+          console.log('socketID: ' +socketID)
+          // if (localStorage.getItem("mySocket") == socketID){
+
+            // window.alert('Operator socket is refreshed. Redirect to Administrator page!');
+            // this.router.navigate(['/chat/request']);
+            // console.log('do not update local storage');
+            console.log(' emit operator user socket and update local storage sID after page is refreshed');  
+            this.socket.emit('user','operator');
+            this.socket.emit('user','operatorNonAndroid');
+            sessionStorage.setItem("emittedOpeartorSocket", socketID);
+          
+            // need to update new socket to local storage
+
+          // } else {  // in case node reset the opeartor channel because of idle and other one is using the channel
+          //   localStorage.setItem("emittedOpeartorSocket", "0");
+          //   window.alert('Operator Channel is occupied. Redirect to Administrator page!');
+          //   this.router.navigate(['/chat/request']);
+
+          // }
+        }
+      } 
+
+      if (status == 'channelTimeout'){
+        console.log('Channel Timeout: ' +socketID);
+        sessionStorage.setItem("emittedOpeartorSocket", "0");
+        window.alert('Operator Channel Timeout!');
         this.router.navigate(['/chat/request']); 
 
-      } else {  //there is sID in local storage
-        console.log('socketID: ' +socketID)
-        // if (localStorage.getItem("mySocket") == socketID){
-
-          // window.alert('Operator socket is refreshed. Redirect to Administrator page!');
-          // this.router.navigate(['/chat/request']);
-          // console.log('do not update local storage');
-          console.log(' emit operator user socket and update local storage sID after page is refreshed');  
-          this.socket.emit('user','operator');
-          this.socket.emit('user','operatorNonAndroid');
-          localStorage.setItem("emittedOpeartorSocket", socketID);
-        
-          // need to update new socket to local storage
-
-        // } else {  // in case node reset the opeartor channel because of idle and other one is using the channel
-        //   localStorage.setItem("emittedOpeartorSocket", "0");
-        //   window.alert('Operator Channel is occupied. Redirect to Administrator page!');
-        //   this.router.navigate(['/chat/request']);
-
-        // }
       }
-    } 
+    });
 
-    if (status == 'Timeout'){
-      console.log('Socket Timeout: ' +socketID);
-      localStorage.setItem("emittedOpeartorSocket", "0");
+    // this.socket.emit('user','operator');
 
-    }
-  });
-
-  // this.socket.emit('user','operator');
-
-  // //For non android chat apps
-  // this.socket.emit('user','operatorNonAndroid');
+    // //For non android chat apps
+    // this.socket.emit('user','operatorNonAndroid');
 
   
-  this.chatService.getNASocketIo().then((res) => {  //from chatService
+    this.chatService.getNASocketIo().then((res) => {  //from chatService
     // this.naSocketId = res;
       console.log('get socketid from mutlichat service' +res);
     }, (err) => {
       console.log(err);
     });
 
-  this.socket.on('users', (userid, socket_id) => {
+    this.socket.on('users', (userid, socket_id) => {
 
-    var date = new Date();
-    // console.log("inside users socket.on");
-    // if ((userid.sender != undefined) && (userid.package != undefined)){
-    //   this.package = userid.package;
-    //   userid = userid.sender;
-    //   console.log("print userid.sender: " +userid);
-    //   console.log("print userid.package: " +this.package);
-    //   console.log("print socket.id:" +socket_id);
-    // } else {
-    //   userid = userid;
-    //   this.package = 'whatsapp';
-    //   console.log("print userid: " +userid);
-    //   console.log("print package: " +this.package);
-    //   console.log("print socket.id:" +socket_id);
-    // }
-
-    this.newUser.socket_id = socket_id;
-
-   //customer will join the room while operator won't do it again.
-   // if (userid != 'operator'){ 
-   if ((userid != 'operator') && (userid != 'operatorNonAndroid')){ 
-   // use status field to classify the new and old request
-   this.newOpRequest = {type: this.newUser.type, phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer joined', operator_request:'Working', people_in_room:'2' };
-     // console.log(this.newOpRequest.room);
-     console.log(this.newOpRequest.phone_number);
-     console.log(this.newOpRequest.socket_id);
-     console.log(this.newOpRequest.message);
-     console.log(this.newOpRequest.operator_request);
-     console.log(this.newOpRequest.type);
-     // // console.log(this.newRequest.updated_at);
-
-    // this.chatService.saveRequest(this.newRequest).then( function(result)  {
-    this.chatService.saveRequest(this.newOpRequest).then((result) => {
-      // this.request = result;
-      // console.log("id: " + this.request._id);
-      this.socket.emit('save-message', result);
-      }, (err) => {
-        console.log(err);
-      });
-    }    //if 
-  });
-
-  this.socket.on('chat', (msg) =>{
-    // this.socket.on('chat', (userid, msg) =>{
-    if (localStorage.getItem("user")!=null){      
       var date = new Date();
-      console.log("print customer message object: " +msg);
+      // console.log("inside users socket.on");
+      // if ((userid.sender != undefined) && (userid.package != undefined)){
+      //   this.package = userid.package;
+      //   userid = userid.sender;
+      //   console.log("print userid.sender: " +userid);
+      //   console.log("print userid.package: " +this.package);
+      //   console.log("print socket.id:" +socket_id);
+      // } else {
+      //   userid = userid;
+      //   this.package = 'whatsapp';
+      //   console.log("print userid: " +userid);
+      //   console.log("print package: " +this.package);
+      //   console.log("print socket.id:" +socket_id);
+      // }
 
-      // modify this to json object
-      var obj = JSON.parse(msg);
-      var phoneNum = obj.sessionID;
-      var message = obj.message;
-      var filePath = obj.photoPath;
+      this.newUser.socket_id = socket_id;
 
-      console.log("print customer phoneNum:" +phoneNum);
-      console.log("print customer message:" +message);
-      console.log("print customer photoPath:" +filePath);
+     //customer will join the room while operator won't do it again.
+     // if (userid != 'operator'){ 
+     if ((userid != 'operator') && (userid != 'operatorNonAndroid')){ 
+     // use status field to classify the new and old request
+     this.newOpRequest = {type: this.newUser.type, phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer joined', operator_request:'Working', people_in_room:'2' };
+       // console.log(this.newOpRequest.room);
+       console.log(this.newOpRequest.phone_number);
+       console.log(this.newOpRequest.socket_id);
+       console.log(this.newOpRequest.message);
+       console.log(this.newOpRequest.operator_request);
+       console.log(this.newOpRequest.type);
+       // // console.log(this.newRequest.updated_at);
 
-      if (msg !== 'undefine'){
-
-        if (!message.includes('\uD83D\uDCF7')){  //msg is text
-        // if (filePath == 'nonwhatsapp'){
-        
-        //   this.appName = 'nonwhatsapp';
-        //   console.log('filePath in nonwhatsapp : ' +filePath);
-        //   console.log('text message in nonwhatsapp : ' +this.appName);
-        // } else {
-        //   this.appName = 'whatsapp';
-        //   console.log('text message from in whatsapp: ' +this.appName);
-        // }
-    
-        this.CusMsgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
-        // console.log(this.CusMsgData.room);
-        // console.log(this.CusMsgData.phone_number);
-        // console.log(this.CusMsgData.socket_id);
-        // console.log(this.CusMsgData.message);
-        
-        this.chatService.saveChat(this.CusMsgData).then((result) => {
-          this.socket.emit('save-message', result);
+      // this.chatService.saveRequest(this.newRequest).then( function(result)  {
+      this.chatService.saveRequest(this.newOpRequest).then((result) => {
+        // this.request = result;
+        // console.log("id: " + this.request._id);
+        this.socket.emit('save-message', result);
         }, (err) => {
           console.log(err);
         });
-        } else { //else msg is image (message.includes('\uD83D\uDCF7'))
+      }    //if 
+    });
 
-          if ((!filePath) || (filePath == "Timeout")){
-          console.log("filePath is null or Timeout");
+    this.socket.on('chat', (msg) =>{
+      // this.socket.on('chat', (userid, msg) =>{
+      if (localStorage.getItem("user")!=null){      
+        var date = new Date();
+        console.log("print customer message object: " +msg);
 
-          this.CusMsgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: "Sent Photo Failed!" };
+        // modify this to json object
+        var obj = JSON.parse(msg);
+        var phoneNum = obj.sessionID;
+        var message = obj.message;
+        var filePath = obj.photoPath;
+
+        console.log("print customer phoneNum:" +phoneNum);
+        console.log("print customer message:" +message);
+        console.log("print customer photoPath:" +filePath);
+
+        if (msg !== 'undefine'){
+
+          if (!message.includes('\uD83D\uDCF7')){  //msg is text
+          // if (filePath == 'nonwhatsapp'){
+          
+          //   this.appName = 'nonwhatsapp';
+          //   console.log('filePath in nonwhatsapp : ' +filePath);
+          //   console.log('text message in nonwhatsapp : ' +this.appName);
+          // } else {
+          //   this.appName = 'whatsapp';
+          //   console.log('text message from in whatsapp: ' +this.appName);
+          // }
+      
+          this.CusMsgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
           // console.log(this.CusMsgData.room);
           // console.log(this.CusMsgData.phone_number);
           // console.log(this.CusMsgData.socket_id);
           // console.log(this.CusMsgData.message);
-        
+          
           this.chatService.saveChat(this.CusMsgData).then((result) => {
             this.socket.emit('save-message', result);
           }, (err) => {
             console.log(err);
           });
+          } else { //else msg is image (message.includes('\uD83D\uDCF7'))
 
-          } else {  // else (filePath !== 'Timeout')
-            if (filePath == 'nonwhatsapp'){
-              // extract non whatsapp image from message
-              // var base64header = ((message).split(".")[1]);
-              var base64Image = ((message).split(".")[1]);
-              console.log('base64Image: ' +base64Image);
+            if ((!filePath) || (filePath == "Timeout")){
+            console.log("filePath is null or Timeout");
 
-              //save to DB 
-              this.CusImgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: '', file_path:filePath, image:base64Image };
-              console.log('receive image from customer');
-              console.log(this.CusImgData.room);
-              console.log(this.CusImgData.phone_number);
-              console.log(this.CusImgData.socket_id);
-              console.log(this.CusImgData.message);
-              console.log(this.CusImgData.image);
-              console.log(this.CusImgData.file_path);
-
-              this.chatService.saveImage(this.CusImgData).then((result) => {
-                console.log('save data to DB');
-                this.socket.emit('save-image', result);
-              }, (err) => {
-                console.log(err);
-              });
-            } else {  // whatsapp flow will provide valid file path
-            // get admin sessionID
-            var sID=localStorage.getItem('res.data.sessionID');
-            var fileType = ((filePath).split(".")[1]);
-            var path = 'sessionID='+sID +'&path='+filePath;
-            // var completePath = 'https://airpoint.com.hk:'+sessionStorage.getItem("tinkerport")+'/api/csp/getimage?'+path;  //save complete path to db
-            var completePath = 'https://airpoint.com.hk:'+this.configs.tinkerport+'/api/csp/getimage?'+path;  //save complete path to db
-
-            console.log("sID: " + sID);
-            console.log("tinkerPath: " + filePath);
-            console.log("complete path: " + completePath);
-            console.log("fileType: " + fileType);
-
-            this.chatService.getImageFromNode(path).then((res) => {  //from chatService
-              console.log(" get image from tinker");
+            this.CusMsgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: "Sent Photo Failed!" };
+            // console.log(this.CusMsgData.room);
+            // console.log(this.CusMsgData.phone_number);
+            // console.log(this.CusMsgData.socket_id);
+            // console.log(this.CusMsgData.message);
           
-              var blob = new Blob(
-                [res],
-                // Mime type is important for data url
-                // {type : 'text/html'}
-                {type : 'image/' +fileType}
-                );
-
-
-              var reader = new FileReader();
-              reader.readAsDataURL(blob);
-              reader.onloadend =(evt:any) =>{
-              // Capture result here
-              var getImage = evt.target.result;
-              console.log(evt.target.result);
-
-              this.CusImgData = {type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message, file_path:completePath, image:getImage };
-              console.log('receive image from customer');
-              console.log(this.CusImgData.room);
-              console.log(this.CusImgData.phone_number);
-              console.log(this.CusImgData.socket_id);
-              console.log(this.CusImgData.message);
-              console.log(this.CusImgData.image);
-              console.log(this.CusImgData.file_path);
-
-              this.chatService.saveImage(this.CusImgData).then((result) => {
-                console.log('save Image from tinker');
-                this.socket.emit('save-image', result);
-              }, (err) => {
-                console.log(err);
-              });
-
-            };
-         
-
+            this.chatService.saveChat(this.CusMsgData).then((result) => {
+              this.socket.emit('save-message', result);
             }, (err) => {
               console.log(err);
             });
-      
-              //sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
-            }  // end else whatsapp flow will provide valid file path
-          }  // end else (filePath == 'nonwhatsapp')
-        }  //end else (message.includes('\uD83D\uDCF7'))
-      }  // end if (msg !== 'undefine')
-    }  // end if (localStorage.getItem("user")!=null)
-  });
+
+            } else {  // else (filePath !== 'Timeout')
+              if (filePath == 'nonwhatsapp'){
+                // extract non whatsapp image from message
+                // var base64header = ((message).split(".")[1]);
+                var base64Image = ((message).split(".")[1]);
+                console.log('base64Image: ' +base64Image);
+
+                //save to DB 
+                this.CusImgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: '', file_path:filePath, image:base64Image };
+                console.log('receive image from customer');
+                console.log(this.CusImgData.room);
+                console.log(this.CusImgData.phone_number);
+                console.log(this.CusImgData.socket_id);
+                console.log(this.CusImgData.message);
+                console.log(this.CusImgData.image);
+                console.log(this.CusImgData.file_path);
+
+                this.chatService.saveImage(this.CusImgData).then((result) => {
+                  console.log('save data to DB');
+                  this.socket.emit('save-image', result);
+                }, (err) => {
+                  console.log(err);
+                });
+              } else {  // whatsapp flow will provide valid file path
+              // get admin sessionID
+              var sID=localStorage.getItem('res.data.sessionID');
+              var fileType = ((filePath).split(".")[1]);
+              var path = 'sessionID='+sID +'&path='+filePath;
+              // var completePath = 'https://airpoint.com.hk:'+sessionStorage.getItem("tinkerport")+'/api/csp/getimage?'+path;  //save complete path to db
+              var completePath = 'https://airpoint.com.hk:'+this.configs.tinkerport+'/api/csp/getimage?'+path;  //save complete path to db
+
+              console.log("sID: " + sID);
+              console.log("tinkerPath: " + filePath);
+              console.log("complete path: " + completePath);
+              console.log("fileType: " + fileType);
+
+              this.chatService.getImageFromNode(path).then((res) => {  //from chatService
+                console.log(" get image from tinker");
+            
+                var blob = new Blob(
+                  [res],
+                  // Mime type is important for data url
+                  // {type : 'text/html'}
+                  {type : 'image/' +fileType}
+                  );
+
+
+                var reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend =(evt:any) =>{
+                // Capture result here
+                var getImage = evt.target.result;
+                console.log(evt.target.result);
+
+                this.CusImgData = {type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message, file_path:completePath, image:getImage };
+                console.log('receive image from customer');
+                console.log(this.CusImgData.room);
+                console.log(this.CusImgData.phone_number);
+                console.log(this.CusImgData.socket_id);
+                console.log(this.CusImgData.message);
+                console.log(this.CusImgData.image);
+                console.log(this.CusImgData.file_path);
+
+                this.chatService.saveImage(this.CusImgData).then((result) => {
+                  console.log('save Image from tinker');
+                  this.socket.emit('save-image', result);
+                }, (err) => {
+                  console.log(err);
+                });
+
+              };
+           
+
+              }, (err) => {
+                console.log(err);
+              });
+        
+                //sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
+              }  // end else whatsapp flow will provide valid file path
+            }  // end else (filePath == 'nonwhatsapp')
+          }  //end else (message.includes('\uD83D\uDCF7'))
+        }  // end if (msg !== 'undefine')
+      }  // end if (localStorage.getItem("user")!=null)
+    });
 
     // User disconnect chat in operation mode
     // this.socket.on('disconnect', function(userid){
@@ -444,66 +451,50 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
     // console.log(this.ImageObject);
 
+    this.timer = setInterval(() => {
+
+      if ((sessionStorage.getItem("emittedOpeartorSocket") != undefined) && (sessionStorage.getItem("emittedOpeartorSocket") != '0')){
+    
+      this.socket.emit('operatorChannel','keepalive');  
+      console.log("operator channel keepalive");
+      }
+   
+    }, 10000); //emit keepalive socket everytime 10s =10000
+
   }
 
   ngOnDestroy(){
-     
-    // this.socket.emit('operatorChannel','checkAvailability');  
 
-    // this.socket.on('operatorChannelStatus', (status, socketID) =>{
-    //   console.log('operatorChannelStatus: ' +status +socketID);
-    //   if (status == 'Available'){
-    //   console.log('Channel is available');
+    if ((sessionStorage.getItem("emittedOpeartorSocket") == undefined) || (sessionStorage.getItem("emittedOpeartorSocket") == '0')){
 
-    //   //Emit opeartor user socket
-
-    //   // localStorage.setItem("emittedOpeartorSocket", socketID);
-
-    //   // this.socket.emit('user','operator');
-    //   // this.socket.emit('user','operatorNonAndroid');
-
-    //  } else {
-
-      if ((localStorage.getItem("emittedOpeartorSocket") == undefined) || (localStorage.getItem("emittedOpeartorSocket") == '0')){
-
-        console.log('Do not releaseOperatorChannel and set emittedOpeartorSocket to 0');
-        localStorage.setItem("emittedOpeartorSocket", "0");
+        console.log('Do not releaseOperatorChannel, do not stop dog and set emittedOpeartorSocket to 0');
+        sessionStorage.setItem("emittedOpeartorSocket", "0");
         // window.alert('Operator Channel is occupied. Redirect to Administrator page!');
         // this.router.navigate(['/chat/request']); 
 
-      } else { // localStorage.getItem("emittedOpeartorSocket") !='0'
+    } else { // localStorage.getItem("emittedOpeartorSocket") !='0'
         // if (localStorage.getItem("emittedOpeartorSocket") == socketID){
 
           console.log('releaseOperatorChannel and set emittedOpeartorSocket to 0');
           this.socket.emit('operatorChannel','releaseOperatorChannel');
-          localStorage.setItem("emittedOpeartorSocket", "0");
+          this.socket.emit('operatorChannel','stopWatchdog');
+          sessionStorage.setItem("emittedOpeartorSocket", "0");
 
-        // } else {  // in case node reset the opeartor channel because of idle and other one is using the channel
-        //   // localStorage.setItem("emittedOpeartorSocket", "0");
-        //   // window.alert('Operator Channel is occupied. Redirect to Administrator page!');
-        //   // this.router.navigate(['/chat/request']);
-        //   console.log('Do not emit releaseOperatorChannel ');
+    }
 
-        // }
-      }
-    // } 
-    // }); 
-    //socket.emit('forceDisconnect');
-    // if (localStorage.getItem("emittedOpeartorSocket") !=  '0') {
+
       
-      // this.socket.emit('operatorChannel','releaseOperatorChannel');
-      // console.log('releaseOperatorChannel and set emittedOpeartorSocket to 0');
-
-      // localStorage.setItem("emittedOpeartorSocket", "0");
-
-    // }
-
-    // this.socket.emit('operatorChannel','releaseOperatorChannel');
     this.socket.disconnect();
-    // if (this.timer){
-    //   clearInterval(this.timer);
+    if (this.timer){
+      clearInterval(this.timer);
+    
+    }
+
+
     console.log('operator ngOnDestroy');
-    // }
+    
+    // reset timeOut and idle count
+    // this.reset();
   }
 
   ngAfterViewChecked(){
@@ -807,6 +798,12 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     this.notSelected = true;
   }
 
+  reset() {
+    this.idle.watch();
+    console.log('idleState = Started');
+    // this.idleState = 'Started.';
+    // this.timedOut = false;
+  }
 
 }
 

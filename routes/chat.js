@@ -24,12 +24,16 @@ var auth = jwt({
 var server = require('https').createServer(options,app);
 
 var io = require('socket.io')(server,{secure: true});
+// var io = require('socket.io')(server,{secure: true, pingInterval: 25000, pingTimeout: 60000});
 var Chat = require('../models/Chat.js');
 var User = require('../models/User.js');
 var Contact = require('../models/Contact.js');
 var Staff = require('../models/Staff.js');
 
-
+var watchdog = require("watchdog")
+const timeout = 36000;  //36s
+const dog = new watchdog.Watchdog(timeout);
+const food = { data: 'delicious' };
 
 var userSocketID = new Array();
 var userSocketIDAndUsername = new Array();
@@ -52,11 +56,21 @@ server.listen(port);
 console.log('Socket.io is listening on port:' + port);
 
 
- const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 
 
- app.use(bodyParser.json());
+app.use(bodyParser.json());
 
+dog.on('reset', () => {
+
+  console.log('Timeout!');
+  operatorSocketIDOperatorChannel = '';
+  console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
+  console.log('operatorSocketIDOperatorChannel.length: ' +operatorSocketIDOperatorChannel.length);   
+
+
+});
+dog.on('feed',  () => console.log('feed'));
 
 // socket io
 io.on('connection', function (socket) {
@@ -66,12 +80,12 @@ io.on('connection', function (socket) {
   //   console.log('User disconnected');
   // });
 
-// start of "from johnson"
+  // start of "from johnson"
 
   // ack from client to server
   socket.on('KeepAliveMessage', (name, fn) => {
     if (operatorSessionUserConnected){
-//      console.log('Send Ack');
+    //      console.log('Send Ack');
       fn('ACK');
     }
   });
@@ -194,24 +208,42 @@ io.on('connection', function (socket) {
       if ((operatorSocketIDOperatorChannel.length != undefined ) && (operatorSocketIDOperatorChannel.length != 0)){
         // console.log('operatorChannelStatus is Occupied');
         io.to(socket.id).emit('operatorChannelStatus', 'Occupied', socket.id );
-      } else {
+      } else { // operatorSocketIDOperatorChannel is not empty
         // console.log('operatorChannelStatus is Available');
         io.to(socket.id).emit('operatorChannelStatus', 'Available', socket.id ); 
       }
-    } else if (status == 'releaseOperatorChannel'){
-      // console.log('Release opeartor channel');
-      // console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
-      // console.log('operatorSocketIDOperatorChannel: ' +socket.id);
+    } 
 
-      // if ( operatorSocketIDOperatorChannel == socket.id ){
+    if (status == 'releaseOperatorChannel'){
 
         operatorSocketIDOperatorChannel = '';
         console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
-        console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel.length);   
-      // } else {
-      //   console.log('Do not clear existing operatorChannel socket');   
+        console.log('operatorSocketIDOperatorChannel.length: ' +operatorSocketIDOperatorChannel.length);   
+    }
 
-      // }
+    if (status == 'channelIdle'){
+
+      operatorSocketIDOperatorChannel = '';
+      console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
+      console.log('operatorSocketIDOperatorChannel.length: ' +operatorSocketIDOperatorChannel.length);   
+
+      io.to(socket.id).emit('operatorChannelStatus', 'channelTimeout', socket.id ); 
+    }
+
+    if (status == 'stopWatchdog'){
+      // console.log('stopWatchdog');
+
+      // setTimeout(() => {
+        dog.sleep();
+        console.log('dog sleep');
+      // }, 30000);  //30s
+
+    }
+
+    if (status == 'keepalive'){
+      console.log('operator channel keepalive');
+      dog.feed(food); //feed the dog every 10s
+      // dog.reset();
     }
   });
   
@@ -420,21 +452,21 @@ io.on('connection', function (socket) {
 }); //io.on
 
 
-function isJSON(userid) {
-   var ret = true;
-   try {
-      JSON.parse(userid);
-      console.log("userid isJSON " );
-   }catch(e) {
-      ret = false;
-      console.log("userid is not JSON " );
-   }
-   return ret;
-}
+// function isJSON(userid) {
+//    var ret = true;
+//    try {
+//       JSON.parse(userid);
+//       console.log("userid isJSON " );
+//    }catch(e) {
+//       ret = false;
+//       console.log("userid is not JSON " );
+//    }
+//    return ret;
+// }
 
 /* GET ALL NON ROBOT CHATS, THIS IS THE REAL ROOM */
 router.get('/:room', function(req, res, next) {
-// router.get('/:room', auth, function(req, res, next) {
+  // router.get('/:room', auth, function(req, res, next) {
   // if (!req.payload._id) {
   //     res.status(401).json({
   //       "message" : "UnauthorizedError:"

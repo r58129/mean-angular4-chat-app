@@ -21,6 +21,8 @@
     "@angular/platform-browser": "^5.2.10",
     "@angular/platform-browser-dynamic": "^5.2.10",
     "@angular/router": "^5.2.10",
+    "@ng-idle/core": "^2.0.0-beta.15",
+    "@ng-idle/keepalive": "^2.0.0-beta.15",
     "angular-emoji": "^0.1.45",
     "auth0-js": "^9.5.1",
     "axios": "^0.18.0",
@@ -47,6 +49,7 @@
     "serve-favicon": "^2.4.2",
     "socket.io": "^2.1.0",
     "socket.io-client": "^2.1.1",
+    "watchdog": "^0.8.15",
     "zone.js": "^0.8.4"
   },
   "devDependencies": {

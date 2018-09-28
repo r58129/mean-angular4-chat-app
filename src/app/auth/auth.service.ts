@@ -62,14 +62,14 @@ private onlineCount: any;
   private serverUrl = this.configs.expressAddr;
 
   private saveToken(token: string): void {
-    localStorage.setItem('mean-token', token);
+    sessionStorage.setItem('mean-token', token);
     this.token = token;
   }
 
   private getToken(): string {
 
     if (!this.token) {
-      this.token = localStorage.getItem('mean-token');
+      this.token = sessionStorage.getItem('mean-token');
       // console.log("getToken: " +this.token);
     }
     return this.token;
@@ -350,12 +350,14 @@ private onlineCount: any;
         });
         
         localStorage.removeItem('emittedOpeartorSocket');
+        localStorage.removeItem('ng2Idle.main.idling');
+        localStorage.removeItem('ng2Idle.main.expiry');
         sessionStorage.setItem('loginTinkerDone','0');
         // sessionStorage.removeItem('loginTinkerDone');
 
         // remove token after all http requests are sent
         this.token = '';
-        window.localStorage.removeItem('mean-token');        
+        window.sessionStorage.removeItem('mean-token');        
 
       } else {  //more than 1 admin online
     
@@ -369,13 +371,15 @@ private onlineCount: any;
         });
 
         localStorage.removeItem('res.data.sessionID');
-        localStorage.removeItem('emittedOpeartorSocket');
+        sessionStorage.removeItem('emittedOpeartorSocket');
+        localStorage.removeItem('ng2Idle.main.idling');
+        localStorage.removeItem('ng2Idle.main.expiry');
         sessionStorage.setItem('loginTinkerDone','0');
         console.log("update profile and logout but do not unregister tinker and mutichat!");
 
         // remove token after all http requests are sent
         this.token = '';
-        window.localStorage.removeItem('mean-token');
+        window.sessionStorage.removeItem('mean-token');
       }
 
     }, (err) => {

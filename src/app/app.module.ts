@@ -7,6 +7,9 @@ import { HttpClientModule } from '@angular/common/http';
 //import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { PathLocationStrategy, LocationStrategy } from '@angular/common';
 
+// this includes the core NgIdleModule but includes keepalive providers for easy wireup
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive'; 
+
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module'
 
@@ -85,7 +88,9 @@ import { HistorySearchComponent } from './history-search/history-search.componen
     FormsModule,
     // HttpModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,    
+    NgIdleKeepaliveModule.forRoot()
+    // UserIdleModule.forRoot({idle: 60, timeout: 30, ping: 10}) // unit: s
     // EmojiModule
     // RouterModule.forRoot(ROUTES)
   ],
