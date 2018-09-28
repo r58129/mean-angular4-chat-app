@@ -118,7 +118,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     //     console.log(this.newUser.type);     
     // });
 
-    var user = JSON.parse(localStorage.getItem("user"));
+    var user = JSON.parse(sessionStorage.getItem("user"));
 
     // Do not emit again while page refresh
 
@@ -177,8 +177,48 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
       if (status == 'channelTimeout'){
         console.log('Channel Timeout: ' +socketID);
         sessionStorage.setItem("emittedOpeartorSocket", "0");
-        window.alert('Operator Channel Timeout!');
-        this.router.navigate(['/chat/request']); 
+        
+        //force exit of the chat window
+        this.joinned = false;  
+        
+        var updateStatus = { operator_request:"Timeout", people_in_room:"0"};
+  
+
+        if ((this.newUser.room !='') && (this.newUser.type!='')){
+            
+          this.chatService.getIdBySocket(socketID).then((result) => {
+            this.requestId = result;
+            console.log("request._id: " +this.requestId[0]._id);
+
+            if (this.requestId[0] != undefined){
+
+              this.chatService.updateChat(this.requestId[0]._id, updateStatus).then((res) => {  //from chatService
+                console.log("Timeout status updated");
+                sessionStorage.removeItem('user');
+                window.alert('Operator Channel Timeout!');
+                this.router.navigate(['/chat/request']); 
+
+              }, (err) => {
+                console.log(err);
+                
+              });
+            } else {
+
+              console.log('Timeout without update DB!');
+            }
+
+          }, (err) => {
+            console.log(err);
+          });         
+        } else {
+
+          sessionStorage.removeItem('user');
+          window.alert('Operator Channel Timeout!');
+          this.router.navigate(['/chat/request']); 
+
+        }
+
+
 
       }
     });
@@ -242,7 +282,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
     this.socket.on('chat', (msg) =>{
       // this.socket.on('chat', (userid, msg) =>{
-      if (localStorage.getItem("user")!=null){      
+      if (sessionStorage.getItem("user")!=null){      
         var date = new Date();
         console.log("print customer message object: " +msg);
 
@@ -415,10 +455,10 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
       // console.log("JSON.parse(localStorage.getItem('user')).room: " + (JSON.parse(localStorage.getItem("user")).room));
       // console.log("phone#: " + data.message.room);
       
-      if (localStorage.getItem("user")!=null){
+      if (sessionStorage.getItem("user")!=null){
         console.log("new-message: " + data.message.message);
-        if(data.message.room === JSON.parse(localStorage.getItem("user")).room) {
-        user=JSON.parse(localStorage.getItem("user"));
+        if(data.message.room === JSON.parse(sessionStorage.getItem("user")).room) {
+        user=JSON.parse(sessionStorage.getItem("user"));
         this.chats.push(data.message);
         this.msgData = { type: user.type, phone_number: user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: '' }
         this.scrollToBottom();
@@ -429,10 +469,10 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
     this.socket.on('new-image', function (data) {
       
-      if (localStorage.getItem("user")!=null){
+      if (sessionStorage.getItem("user")!=null){
         console.log("new-image: " + data.room);
 
-        if(data.room === JSON.parse(localStorage.getItem("user")).room) {
+        if(data.room === JSON.parse(sessionStorage.getItem("user")).room) {
           console.log("new-image inside if: " + data.room);
 
           if (data.filename !== 'undefined'){
@@ -546,7 +586,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
         
       var date = new Date();
 
-      localStorage.setItem("user", JSON.stringify(this.newUser));
+      sessionStorage.setItem("user", JSON.stringify(this.newUser));
       this.getChatByRoom(this.newUser.room);
     
       this.msgData = {type: this.newUser.type, phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
@@ -584,7 +624,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     console.log("disconnect customer and operator, then logout");
     var date = new Date();
     var room =this.newUser.room;
-    var user = JSON.parse(localStorage.getItem("user"));
+    var user = JSON.parse(sessionStorage.getItem("user"));
     var updateStatus = { operator_request:"Done", people_in_room:"0"};
     var socketId = this.newOpRequest.socket_id;
     
@@ -607,7 +647,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
             console.log("status updated");
 
             this.socket.emit('save-message', { type:user.type, phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
-            localStorage.removeItem("user");
+            sessionStorage.removeItem("user");
             this.joinned = false;
           
           //send goodbye message before logout()
@@ -623,7 +663,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
         } else {
 
           this.socket.emit('save-message', { type:user.type, phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
-          localStorage.removeItem("user");
+          sessionStorage.removeItem("user");
           this.joinned = false;
           
           //send goodbye message before logout()

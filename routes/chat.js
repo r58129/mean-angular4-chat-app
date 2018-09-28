@@ -70,7 +70,10 @@ dog.on('reset', () => {
 
 
 });
-dog.on('feed',  () => console.log('feed'));
+
+dog.on('feed',  () => {
+  console.log('operator channel keepalive')
+});
 
 // socket io
 io.on('connection', function (socket) {
@@ -241,7 +244,7 @@ io.on('connection', function (socket) {
     }
 
     if (status == 'keepalive'){
-      console.log('operator channel keepalive');
+      // console.log('operator channel keepalive');
       dog.feed(food); //feed the dog every 10s
       // dog.reset();
     }

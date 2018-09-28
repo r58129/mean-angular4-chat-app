@@ -349,7 +349,7 @@ private onlineCount: any;
           console.log(err);
         });
         
-        localStorage.removeItem('emittedOpeartorSocket');
+        sessionStorage.removeItem('emittedOpeartorSocket');
         localStorage.removeItem('ng2Idle.main.idling');
         localStorage.removeItem('ng2Idle.main.expiry');
         sessionStorage.setItem('loginTinkerDone','0');
