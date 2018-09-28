@@ -134,7 +134,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
         //Emit opeartor user socket
 
-        localStorage.setItem("emittedOpeartorSocket", socketID);
+        sessionStorage.setItem("emittedOpeartorSocket", socketID);
 
         this.socket.emit('user','operator');
         this.socket.emit('user','operatorNonAndroid');
@@ -145,9 +145,9 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
       
       if (status == 'Occupied') {  //occupied
 
-        if ((localStorage.getItem("emittedOpeartorSocket") == undefined) || (localStorage.getItem("emittedOpeartorSocket") == '0')){
+        if ((sessionStorage.getItem("emittedOpeartorSocket") == undefined) || (sessionStorage.getItem("emittedOpeartorSocket") == '0')){
 
-          localStorage.setItem("emittedOpeartorSocket", "0");
+          sessionStorage.setItem("emittedOpeartorSocket", "0");
           window.alert('Operator Channel is occupied. Redirect to Administrator page!');
           this.router.navigate(['/chat/request']); 
 
@@ -161,7 +161,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
             console.log(' emit operator user socket and update local storage sID after page is refreshed');  
             this.socket.emit('user','operator');
             this.socket.emit('user','operatorNonAndroid');
-            localStorage.setItem("emittedOpeartorSocket", socketID);
+            sessionStorage.setItem("emittedOpeartorSocket", socketID);
           
             // need to update new socket to local storage
 
@@ -176,7 +176,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
       if (status == 'channelTimeout'){
         console.log('Channel Timeout: ' +socketID);
-        localStorage.setItem("emittedOpeartorSocket", "0");
+        sessionStorage.setItem("emittedOpeartorSocket", "0");
         window.alert('Operator Channel Timeout!');
         this.router.navigate(['/chat/request']); 
 
@@ -453,7 +453,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
     this.timer = setInterval(() => {
 
-      if ((localStorage.getItem("emittedOpeartorSocket") != undefined) && (localStorage.getItem("emittedOpeartorSocket") != '0')){
+      if ((sessionStorage.getItem("emittedOpeartorSocket") != undefined) && (sessionStorage.getItem("emittedOpeartorSocket") != '0')){
     
       this.socket.emit('operatorChannel','keepalive');  
       console.log("operator channel keepalive");
@@ -465,10 +465,10 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
   ngOnDestroy(){
 
-    if ((localStorage.getItem("emittedOpeartorSocket") == undefined) || (localStorage.getItem("emittedOpeartorSocket") == '0')){
+    if ((sessionStorage.getItem("emittedOpeartorSocket") == undefined) || (sessionStorage.getItem("emittedOpeartorSocket") == '0')){
 
         console.log('Do not releaseOperatorChannel, do not stop dog and set emittedOpeartorSocket to 0');
-        localStorage.setItem("emittedOpeartorSocket", "0");
+        sessionStorage.setItem("emittedOpeartorSocket", "0");
         // window.alert('Operator Channel is occupied. Redirect to Administrator page!');
         // this.router.navigate(['/chat/request']); 
 
@@ -478,7 +478,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
           console.log('releaseOperatorChannel and set emittedOpeartorSocket to 0');
           this.socket.emit('operatorChannel','releaseOperatorChannel');
           this.socket.emit('operatorChannel','stopWatchdog');
-          localStorage.setItem("emittedOpeartorSocket", "0");
+          sessionStorage.setItem("emittedOpeartorSocket", "0");
 
     }
 

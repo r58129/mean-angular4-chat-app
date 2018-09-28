@@ -44,7 +44,7 @@ export class ChatService {
   private getToken(): string {
 
     if (!this.token) {
-      this.token = localStorage.getItem('mean-token');
+      this.token = sessionStorage.getItem('mean-token');
       // console.log("getToken: " +this.token);
     }
     return this.token;

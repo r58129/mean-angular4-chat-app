@@ -31,7 +31,7 @@ var Contact = require('../models/Contact.js');
 var Staff = require('../models/Staff.js');
 
 var watchdog = require("watchdog")
-const timeout = 36000;  //30s
+const timeout = 36000;  //36s
 const dog = new watchdog.Watchdog(timeout);
 const food = { data: 'delicious' };
 
