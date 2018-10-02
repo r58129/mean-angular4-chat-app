@@ -64,9 +64,15 @@ app.use(bodyParser.json());
 dog.on('reset', () => {
 
   console.log('Timeout!');
-  operatorSocketIDOperatorChannel = '';
   console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
-  console.log('operatorSocketIDOperatorChannel.length: ' +operatorSocketIDOperatorChannel.length);   
+  console.log('operatorSocketIDOperatorChannelNonAndroid: ' +operatorSocketIDOperatorChannelNonAndroid);   
+  console.log('userSocketIDOperatorChannelNonAndroid: ' +userSocketIDOperatorChannelNonAndroid);
+  console.log('userSocketIDOperatorChannel: ' +userSocketIDOperatorChannel);
+
+  operatorSocketIDOperatorChannel = '';
+  operatorSocketIDOperatorChannelNonAndroid = '';
+  console.log('operatorSocketIDOperatorChannel.length: ' +operatorSocketIDOperatorChannel.length);
+  console.log('operatorSocketIDOperatorChannelNonAndroid.length: ' +operatorSocketIDOperatorChannelNonAndroid.length);   
 
 
 });
@@ -126,6 +132,8 @@ io.on('connection', function (socket) {
   });
 
   socket.on('disconnectuserOperatorSession', function(phoneNumber){
+    console.log('disconnect userSocketIDOperatorChannel: '+userSocketIDOperatorChannel);
+
     io.to(userSocketIDOperatorChannel).emit('operatorConnect','disconnect');  // '' means disconnect on android app
     console.log('disconnected: '+ phoneNumber);
     // io.to(socket.id).emit('users', {users: 'Disconnecting: ' + phoneNumber + '.....'});  //this is for original plain UI only
@@ -171,6 +179,8 @@ io.on('connection', function (socket) {
 
 
   socket.on('disconnectuserOperatorSessionNonAndroid', function(phoneNumber){
+    console.log('disconnect userSocketIDOperatorChannelNonAndroid: ' +userSocketIDOperatorChannelNonAndroid);
+    console.log(' disconnect socket.id: '+ socket.id);
     io.to(userSocketIDOperatorChannelNonAndroid).emit('operatorConnectNonAndroid','disconnect');  // '' means disconnect on mutlichat server
     console.log('disconnected: '+ phoneNumber);
     // ioHttp.to(socket.id).emit('users', {users: 'Disconnecting: ' + phoneNumber + '.....'});
@@ -219,16 +229,21 @@ io.on('connection', function (socket) {
 
     if (status == 'releaseOperatorChannel'){
 
-        operatorSocketIDOperatorChannel = '';
-        console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
-        console.log('operatorSocketIDOperatorChannel.length: ' +operatorSocketIDOperatorChannel.length);   
+      console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
+      console.log('operatorSocketIDOperatorChannelNonAndroid: ' +operatorSocketIDOperatorChannelNonAndroid);   
+
+      operatorSocketIDOperatorChannel = '';
+      operatorSocketIDOperatorChannelNonAndroid = '';
+      console.log('operatorSocketIDOperatorChannel.length: ' +operatorSocketIDOperatorChannel.length);
+      console.log('operatorSocketIDOperatorChannelNonAndroid.length: ' +operatorSocketIDOperatorChannelNonAndroid.length);   
+  
     }
 
     if (status == 'channelIdle'){
 
-      operatorSocketIDOperatorChannel = '';
-      console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
-      console.log('operatorSocketIDOperatorChannel.length: ' +operatorSocketIDOperatorChannel.length);   
+      // operatorSocketIDOperatorChannel = '';
+      // console.log('operatorSocketIDOperatorChannel: ' +operatorSocketIDOperatorChannel);
+      // console.log('operatorSocketIDOperatorChannel.length: ' +operatorSocketIDOperatorChannel.length);   
 
       io.to(socket.id).emit('operatorChannelStatus', 'channelTimeout', socket.id ); 
     }
