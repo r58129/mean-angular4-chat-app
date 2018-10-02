@@ -70,8 +70,15 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     });
     
     idle.onTimeout.subscribe(() => {
-      console.log(' Operator channel timed out!');
-      this.socket.emit('operatorChannel','channelIdle');  
+      
+      if ((sessionStorage.getItem("emittedOpeartorSocket") == undefined) || (sessionStorage.getItem("emittedOpeartorSocket") == '0')){
+        console.log(' Do not emit operator channel idle!');
+      } else {
+        console.log(' Operator channel idle!');
+        this.socket.emit('operatorChannel','channelIdle');    
+      }
+
+      
       // this.idleState = 'Timed out!';
       // this.timedOut = true;
     });
@@ -148,8 +155,9 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
         if ((sessionStorage.getItem("emittedOpeartorSocket") == undefined) || (sessionStorage.getItem("emittedOpeartorSocket") == '0')){
 
           sessionStorage.setItem("emittedOpeartorSocket", "0");
-          window.alert('Operator Channel is occupied. Redirect to Administrator page!');
           this.router.navigate(['/chat/request']); 
+          window.alert('Operator Channel is occupied. Redirect to Administrator page!');
+
 
         } else {  //there is sID in local storage
           console.log('socketID: ' +socketID)
@@ -178,25 +186,50 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
         console.log('Channel Timeout: ' +socketID);
         sessionStorage.setItem("emittedOpeartorSocket", "0");
         
-        //force exit of the chat window
-        this.joinned = false;  
-        
+        // //force exit of the chat window
+        // this.joinned = false;  
+
         var updateStatus = { operator_request:"Timeout", people_in_room:"0"};
   
 
         if ((this.newUser.room !='') && (this.newUser.type!='')){
-            
+          
+          console.log(this.newUser.room );
+
           this.chatService.getIdBySocket(socketID).then((result) => {
             this.requestId = result;
-            console.log("request._id: " +this.requestId[0]._id);
+            
 
             if (this.requestId[0] != undefined){
 
+              console.log("request._id: " +this.requestId[0]._id);
+
               this.chatService.updateChat(this.requestId[0]._id, updateStatus).then((res) => {  //from chatService
                 console.log("Timeout status updated");
+
+
+                var timeout = "Operator Timeout!";
+                this.SendForm(timeout);
+                console.log("Operator Timeout");                
+
+                // this.Disconnect(this.newUser.room);
+
+                if (this.appName == 'whatsapp'){ 
+                  console.log("disconnectuserOperatorSession: " +this.newUser.room);
+                  this.socket.emit('disconnectuserOperatorSession', this.newUser.room);
+                } else if (this.appName == 'nonwhatsapp') {
+                  console.log("disconnectuserOperatorSessionNonAndroid: " +this.newUser.room);
+                  this.socket.emit('disconnectuserOperatorSessionNonAndroid', this.newUser.room);
+                }                 
+
+                // this.socket.emit('operatorChannel','releaseOperatorChannel');
                 sessionStorage.removeItem('user');
-                window.alert('Operator Channel Timeout!');
+
+                //force exit of the chat window
+                this.joinned = false;  
+               
                 this.router.navigate(['/chat/request']); 
+                // window.alert('Operator Channel Timeout!');
 
               }, (err) => {
                 console.log(err);
@@ -211,10 +244,10 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
             console.log(err);
           });         
         } else {
-
-          sessionStorage.removeItem('user');
-          window.alert('Operator Channel Timeout!');
+          console.log(' No user is found');
+          sessionStorage.removeItem('user');          
           this.router.navigate(['/chat/request']); 
+          // window.alert('Operator Channel Timeout!');
 
         }
 
@@ -519,12 +552,13 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
           this.socket.emit('operatorChannel','releaseOperatorChannel');
           this.socket.emit('operatorChannel','stopWatchdog');
           sessionStorage.setItem("emittedOpeartorSocket", "0");
+          
 
     }
 
 
-      
     this.socket.disconnect();
+    
     if (this.timer){
       clearInterval(this.timer);
     
@@ -636,13 +670,13 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
     this.chatService.getIdBySocket(socketId).then((result) => {
         this.requestId = result;
-        console.log("request._id: " +this.requestId[0]._id);
+
         // console.log("request.type: " +this.requestId[0].type);
         // console.log("request.socket_id: " +this.requestId[0].socket_id);
         // console.log("request.operator_request: " +this.requestId[0].operator_request);
 
         if (this.requestId[0] != undefined){
-
+          console.log("request._id: " +this.requestId[0]._id);
           this.chatService.updateChat(this.requestId[0]._id, updateStatus).then((res) => {  //from chatService
             console.log("status updated");
 

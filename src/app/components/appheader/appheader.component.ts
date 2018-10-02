@@ -202,7 +202,7 @@ export class AppheaderComponent implements OnInit, OnDestroy{
 
       this.chatService.getChatStatusBySocket(socketID).then((res) => {  //from chatService
         this.requests = res;
-        if (this.requests[0].request_status != undefined){
+        if (this.requests[0] != undefined){
           var curStatus = this.requests[0].request_status;
           console.log("get request status: " + JSON.stringify(this.requests[0]));
           console.log("get request status: " + this.requests[0].request_status);
@@ -227,7 +227,7 @@ export class AppheaderComponent implements OnInit, OnDestroy{
       }  // if ((userid != "transport close") || (userid != "operatorSessionUserNonAndroid"))
     }.bind(this));
   
-    this.socket.on('operatorChannelStatus', (status) =>{
+    this.socket.on('operatorChannelStatus', (status, socketID) =>{
      // console.log('operatorChannelStatus' +status);
      if (status == 'Available'){
       console.log(' operator channel is available');

@@ -136,6 +136,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/home/bchong/Webapps/googleCredentials.js
 node index.js
 
 ./ngrok http 3991
+
 https://developers.line.me/console/channel/1607207846/basic/
 
 
