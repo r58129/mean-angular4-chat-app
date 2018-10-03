@@ -40,7 +40,7 @@
 							            <a [routerLink]="['/chat/request', {outlets: { chatOutlet: ['chatbox', r.phone_number, r.socket_id, r._id, r.request_status, r.type]}}]" routerLinkActive="active" class="btn btn-xs" 
                           [ngClass]="{
                           ' btn-danger ':r.request_status === 'New',
-                          ' btn-warning ':r.request_status === 'Working',
+                          ' btn-warning disabled':r.request_status === 'Working',
                           ' btn-success ':r.request_status === 'Done',
                           ' btn-primary ':r.request_status === 'Quit'
                           }">
