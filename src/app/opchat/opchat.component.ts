@@ -192,7 +192,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
         var updateStatus = { operator_request:"Timeout", people_in_room:"0"};
   
 
-        if ((this.newUser.room !='') && (this.newUser.type!='')){
+        if ((this.newUser.room !='') && (this.newUser.type!='') && (this.joinned == true)){
           
           console.log(this.newUser.room );
 
@@ -315,7 +315,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
     this.socket.on('chat', (msg) =>{
       // this.socket.on('chat', (userid, msg) =>{
-      if (sessionStorage.getItem("user")!=null){      
+      // if (sessionStorage.getItem("user")!=null){      
         var date = new Date();
         console.log("print customer message object: " +msg);
 
@@ -452,7 +452,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
             }  // end else (filePath == 'nonwhatsapp')
           }  //end else (message.includes('\uD83D\uDCF7'))
         }  // end if (msg !== 'undefine')
-      }  // end if (localStorage.getItem("user")!=null)
+      // }  // end if (localStorage.getItem("user")!=null)
     });
 
     // User disconnect chat in operation mode
