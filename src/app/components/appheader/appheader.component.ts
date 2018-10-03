@@ -215,7 +215,7 @@ export class AppheaderComponent implements OnInit, OnDestroy{
             console.log(err);
           });
         } else {
-            console.log("status is not updated");
+            console.log("status is not updated again");
         }
       }  else {// if (this.requests[0].request_status != undefined){
             console.log("request_status is undefined");
