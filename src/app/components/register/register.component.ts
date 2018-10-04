@@ -29,19 +29,21 @@ export class RegisterComponent {
     // console.log("this.confirm.password: " + this.companyName);
 
     if (this.confirm == this.credentials.password){
-    this.authService.register(this.credentials).subscribe(() => {
-      console.log("inside auth.register");
+      this.authService.register(this.credentials).subscribe(() => {
+        console.log("inside auth.register");
   
-      // this.router.navigateByUrl('/api/profile');
-      // this.router.navigateByUrl('/');
-      if (window.alert('Successfully registered! Please login to start your session.')){
-        this.authService.logout();
-      }
-      // this.router.navigate('/api/profile');
-    }, (err) => {
-      console.error(err);
-      console.log("you get error in auth.register");
-    });
+        this.authService.logoutAfterRegistered();
+        // this.router.navigateByUrl('/api/profile');
+        // this.router.navigateByUrl('/');
+        if (window.alert('Successfully registered! Please login to start your session.')){
+          // this.authService.logoutAfterRegistered();
+        }
+        // this.router.navigate('/api/profile');
+      }, (err) => {
+        console.error(err);
+        window.alert('This email has been registered!');
+        console.log("you get error in auth.register");
+      });
     } else {
       window.alert('Passwords do not match!');
       console.log("Retype password");

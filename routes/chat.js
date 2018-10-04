@@ -484,6 +484,8 @@ io.on('connection', function (socket) {
 
 /* GET ALL NON ROBOT CHATS, THIS IS THE REAL ROOM */
 router.get('/:room', function(req, res, next) {
+  // var date = new Date();
+  var lastMonth = Date.now() - (30*24*3600*1000);  //1 month = 30*24*3600*1000
   // router.get('/:room', auth, function(req, res, next) {
   // if (!req.payload._id) {
   //     res.status(401).json({
@@ -495,8 +497,8 @@ router.get('/:room', function(req, res, next) {
       [
         { room: req.params.room },
         { socket_id: { $exists: true } }, 
-        { nickname: { $ne:"robot" } }  //filter robot reply
-        // { nickname: {$exists:true, $ne:"robot" } }  //filter robot reply
+        { nickname: { $ne:"robot" } },  //filter robot reply
+        { updated_at: {$gte: lastMonth } }  //filter robot reply
       ]
       }, function (err, chats) {
       if (err) return next(err);
@@ -649,7 +651,7 @@ router.get('/request/human', auth, function(req, res, next) {
     }, function (err, chats) {
       if (err) return next(err);
       res.json(chats);
-    })
+    });
   }  //end else
 });
 

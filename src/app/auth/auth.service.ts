@@ -200,6 +200,21 @@ private onlineCount: any;
     console.log("logout user");
   }
 
+  public logoutAfterRegistered(): void {
+    this.token = '';
+    window.sessionStorage.removeItem('mean-token');
+    // this.logoutTinker();
+    // console.log("logout tinker");
+    
+    // sessionStorage.removeItem('expressport');
+    // sessionStorage.removeItem('socketioport');
+    // sessionStorage.removeItem('tinkerport');
+    // sessionStorage.clear();
+
+    this.router.navigateByUrl('/');
+    console.log("logout registered user");
+  }
+
   private handleErrorObservable (error: Response | any) {
     console.error(error.message || error);
     return Observable.throw(error.message || error);
