@@ -8,6 +8,7 @@
 # dependencies
 /node_modules
 /routes/encryption
+/routes/image
 
 # IDEs and editors
 /.idea
