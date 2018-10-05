@@ -107,6 +107,7 @@ require('./api/config/passport'); //require strategary after nodel definition
 // Bring in the routes for the API
 var chat = require('./routes/chat');
 var routesApi = require('./routes/index');    
+var multiChat = require('./routes/multiChatServer');
 
 var app = express();
 
@@ -190,6 +191,7 @@ app.use(passport.initialize());
 
 app.use('/api', routesApi);
 app.use('/chat', chat);
+// app.use ('/multiChat', multiChat);
 
 // [Auth] Catch unauthorised errors
 app.use(function (err, req, res, next) {

@@ -1,0 +1,56 @@
+{
+  "server":{
+    "serverPort": "3991",
+    "socketIoURL":"https://192.168.0.102",
+    "socketIoPort":"3637",
+    "botName": "m.AI",
+    "operatorName": "Operator",
+    "youAreTheNumber": "You are the #",
+    "inTheQueue": " in the queue.",
+    "operatorExitMagicword1": "goodbye",
+    "operatorExitMagicword2": "good bye",
+    "userExitMagicword": "exit operator request",
+    "userExitQueueMagicword": "quit",
+    "userExitQueueReply": "Quit queuing, thank you!",
+    "pleaseSendImageWhenOperatorIsConnected": "Please send image when the operator is connected.",
+    "notSupport": "Sorry not support!",
+    "subscribeMesg": "Thank you for subscribing!",
+    "serviceTempNotAvailable": "Image service not available now, please try later",
+    "cspToken": "Aptc123456",
+    "OperatorUnavailableMesg":"Operator is currently unavailable. Please check back again. Sorry for the inconvenience caused.",
+    "mongooseUrl": "airpoint.com.hk",
+    "mongoosePort": "4060",
+    "userDataFilename": "../userData.json"
+  },
+  "dialogflow":{
+    "accessToken": "4b0ee509f5fb4c0e82f7039726be838f"
+  },
+  "googleTranslate":{
+    "projectId": "confident-baton-202003"
+  },
+  "line":{
+    "channelID": "1607207846",
+    "channelSecret": "bb2e72fbe829d877407893597f154ea2",
+    "channelAccessToken": "VY3bGDBgd9AjF+uVeERYOz+sFIiQ+kSy+1XuHeuAzqnZqdDRRTQImGkT2FMbh+jxJXU789DK9dww6zwP6F4ZtYKG8XZAXQdyxfqm7AZha4ozIQYWx6b2yP7HP/bNyNWrYJd6kUglU8PNlTQM4JbdjAdB04t89/1O/w1cDnyilFU=",
+    "TypeNotSupportedReply": " is not supported by this system.",
+    "serverUrl": "https://fa42050b.ngrok.io/image"
+  },
+  "wechat":{
+    "appID" : "wxab208a6eca2011d0",
+    "appSecret": "2f6d6efc311b1387f1c862e02f71e6ee",
+    "token": "airpoint1234"
+  },
+  "messenger":{
+    "pageAccessToken": "EAAXhi2uL37MBANV5GkNPBbz6KpS2WooJ6N39iElCMWYVHYJRkvWfUO8darwkh0xM27iFrcovIvtMslWTvod5FLVSwgbPZBiA58VBSxMcgZBtv2geNxmbWBxaYpoXTgRHQsyujmfdQjLrTnZBi5YHvJq5UQ25TEF8jOgjx63URtRdGHduXXC",
+    "verifyToken": "airpoint123456"
+  },
+  "twilio":{
+    "accountSid": "ACf0e99ddf31f8a91f8ae12b66faf1edb6",
+    "authToken": "475475d57f222df8641938caab555398",
+    "smsNumber": "+85264507805"
+  },
+  "ngrok":{
+    "ngrokToken": "",
+    "ngrokUrl": "https://fa42050b.ngrok.io"
+  }
+}
