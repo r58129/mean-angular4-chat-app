@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "NODE_ENV=production EXPRESSIP='https://airpoint.com.hk' ANGULARPORT='4080' EXPRESSPORT='4060' SOCKETIOPORT='3637' DBIP='mongodb://192.168.0.102/' DBNAME='chatService' nodemon ./bin/www",
+    "start": " NODE_ENV=production EXPRESSIP='https://airpoint.com.hk' ANGULARPORT='4080' EXPRESSPORT='4060' SOCKETIOPORT='3637' DBIP='mongodb://192.168.0.102/' DBNAME='chatService' nodemon ./bin/www",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

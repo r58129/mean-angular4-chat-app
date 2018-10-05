@@ -207,7 +207,7 @@ function setupOperatorChannel(){
           }
 
       } else if (data.type === "image"){
-          var filename = "image/"+data.path;
+          var filename = "routes/image/"+data.path;
           console.log('filename: ' + filename);
           require("fs").writeFile(filename, data.message, 'base64', function(err) {
             if (err){
@@ -820,7 +820,7 @@ function connectToCsServer(package, sender, text){
           //console.log(socket.id + ", type: " + data.type);
           //console.log(socket.id + ", path: " + data.path);
           //console.log(socket.id + ", message: " + data.message);
-          var filename = "image/"+data.path;
+          var filename = "routes/image/"+data.path;
           require("fs").writeFile(filename, data.message, 'base64', function(err) {
             if (err){
                   for(var j = 0 , len = incomingChatUser.length ; j < len ; j++){
@@ -1034,6 +1034,8 @@ app.get('/', function (req, res) {
 
 // Image routes
 app.use('/image', express.static(__dirname + '/image'));
+var path = require("path");
+console.log("__dirname = %s", path.resolve(__dirname));
 
 // Line Routes
 app.post('/linewebhook', lineBot.parser());
