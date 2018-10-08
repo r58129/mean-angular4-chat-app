@@ -13,7 +13,11 @@ const ngrok = require('ngrok');
 const https = require('https');
 
 // Load from config.json
-const config = require('../config');
+
+const configPath = global.mulChatConfigPath;
+//const configPath = "../config";
+const config = require(configPath);
+//const config = require('../config');
 const serverConfig = config.server;
 const lineConfig = config.line;
 const wechatConfig = config.wechat;
@@ -98,6 +102,10 @@ const Translate = require('@google-cloud/translate');
 const translate = new Translate({
   projectId: googleTranslateConfig.projectId,
 });
+
+
+
+
 
 function detectLanguage(text, callback) {
 

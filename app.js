@@ -41,6 +41,8 @@ global.socketIoPort = process.env.SOCKETIOPORT;
 global.dbIp = process.env.DBIP;
 global.dbName = process.env.DBNAME;
 
+global.mulChatConfigPath=process.env.MULTICHATCONFIGPATH;
+
 // var dbURI = global.dbIp +global.dbName;
 
 // if (process.env.NODE_ENV === 'production') {
