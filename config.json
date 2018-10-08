@@ -29,9 +29,9 @@
     "projectId": "confident-baton-202003"
   },
   "line":{
-    "channelID": "1607207846",
-    "channelSecret": "bb2e72fbe829d877407893597f154ea2",
-    "channelAccessToken": "VY3bGDBgd9AjF+uVeERYOz+sFIiQ+kSy+1XuHeuAzqnZqdDRRTQImGkT2FMbh+jxJXU789DK9dww6zwP6F4ZtYKG8XZAXQdyxfqm7AZha4ozIQYWx6b2yP7HP/bNyNWrYJd6kUglU8PNlTQM4JbdjAdB04t89/1O/w1cDnyilFU=",
+    "channelID": "1594950287",
+    "channelSecret": "e4689d4cbb77d19c3330a2ec42a39c36",
+    "channelAccessToken": "L69aerWoyed4EiZsb/+lhFk6rY85MgQ4+3xH/wL31E3JLL2OSfvg5D5e2pKhAqh/mOvV2RoNoC4+5BX/Oj2ccn5Yo4MCoBzfeDnqQi4bjAmJoolA8N5Fargcvtr5/Uyji/Cz5lGAzRqCUnkNBIYBxgdB04t89/1O/w1cDnyilFU=",
     "TypeNotSupportedReply": " is not supported by this system.",
     "serverUrl": "https://fa42050b.ngrok.io/image"
   },

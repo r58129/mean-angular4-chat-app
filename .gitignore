@@ -7,7 +7,12 @@
 
 # dependencies
 /node_modules
+
+#key 
 /routes/encryption
+
+#image
+/routes/image
 
 # IDEs and editors
 /.idea
@@ -41,3 +46,10 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+userData.json
+package-lock.json
+
+# credentials
+credentials.json
+googleCredentials.json
+
