@@ -33,7 +33,7 @@
     "channelSecret": "e4689d4cbb77d19c3330a2ec42a39c36",
     "channelAccessToken": "L69aerWoyed4EiZsb/+lhFk6rY85MgQ4+3xH/wL31E3JLL2OSfvg5D5e2pKhAqh/mOvV2RoNoC4+5BX/Oj2ccn5Yo4MCoBzfeDnqQi4bjAmJoolA8N5Fargcvtr5/Uyji/Cz5lGAzRqCUnkNBIYBxgdB04t89/1O/w1cDnyilFU=",
     "TypeNotSupportedReply": " is not supported by this system.",
-    "serverUrl": "https://fa42050b.ngrok.io/image"
+    "serverUrl": "https://c3c11418.ngrok.io/image"
   },
   "wechat":{
     "appID" : "wxab208a6eca2011d0",
@@ -51,6 +51,6 @@
   },
   "ngrok":{
     "ngrokToken": "",
-    "ngrokUrl": "https://fa42050b.ngrok.io"
+    "ngrokUrl": "https://c3c11418.ngrok.io"
   }
 }
