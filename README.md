@@ -137,6 +137,10 @@ node index.js
 
 ./ngrok http 3991
 
+#Line
 https://developers.line.me/console/channel/1594950287/basic/
+
+#Wechat
+https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login
 
 

@@ -58,9 +58,9 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     private route: ActivatedRoute, private configs: Configs, private idle: Idle) {
     
     // sets an idle timeout of 50 seconds, for testing purposes.
-    idle.setIdle(50); //50
+    idle.setIdle(290); //290s
     // sets a timeout period of 10 seconds. after 60 seconds of inactivity, the user will be considered timed out.
-    idle.setTimeout(10);  //10
+    idle.setTimeout(10);  //10s
     // sets the default interrupts, in this case, things like clicks, scrolls, touches to the document
     idle.setInterrupts(DEFAULT_INTERRUPTSOURCES);
 
@@ -542,6 +542,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
         console.log('Do not releaseOperatorChannel, do not stop dog and set emittedOpeartorSocket to 0');
         sessionStorage.setItem("emittedOpeartorSocket", "0");
+
         // window.alert('Operator Channel is occupied. Redirect to Administrator page!');
         // this.router.navigate(['/chat/request']); 
 
