@@ -109,7 +109,11 @@ require('./api/config/passport'); //require strategary after nodel definition
 // Bring in the routes for the API
 var chat = require('./routes/chat');
 var routesApi = require('./routes/index');    
+
+if (global.mulChatConfigPath!="")
+{
 var multiChat = require('./routes/multiChatServer');
+}
 
 var app = express();
 
