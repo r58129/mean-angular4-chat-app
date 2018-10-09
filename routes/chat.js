@@ -246,6 +246,18 @@ io.on('connection', function (socket) {
       // console.log('operatorSocketIDOperatorChannel.length: ' +operatorSocketIDOperatorChannel.length);   
 
       io.to(socket.id).emit('operatorChannelStatus', 'channelTimeout', socket.id ); 
+      // release channel user is idled
+
+      console.log('clear operator channel after user idle');
+      // console.log('operatorSocketIDOperatorChannelNonAndroid: ' +operatorSocketIDOperatorChannelNonAndroid);   
+
+      operatorSocketIDOperatorChannel = '';
+      operatorSocketIDOperatorChannelNonAndroid = '';
+      // console.log('operatorSocketIDOperatorChannel.length: ' +operatorSocketIDOperatorChannel.length);
+      // console.log('operatorSocketIDOperatorChannelNonAndroid.length: ' +operatorSocketIDOperatorChannelNonAndroid.length);       
+
+
+      dog.sleep();
     }
 
     if (status == 'stopWatchdog'){
