@@ -543,7 +543,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
     this.selectedFile = event.target.files[0];
     console.log("event.target.files[0]: " +this.selectedFile);
-    console.log("onFileSelected: " +this.selectedFile.name);
+    console.log("onFileSelected name: " +this.selectedFile.name);
     // console.log("event.target.files: " +event.target.files);  //file list
 
     if (event.target.files && event.target.files[0]) {
@@ -551,14 +551,40 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       reader.readAsDataURL(this.selectedFile); // read file as data url
       // reader.readAsArrayBuffer(event.target.files[0]);  //read as Array buffer
       reader.onload = (event:any) => { // called once readAsDataURL is completed
-        this.url = event.target.result;
-        console.log("url: " +this.url);    //base64
+        
+        // this.url = event.target.result;
+        // console.log("url: " +this.url);    //base64
 
-      }
+        var img = new Image();
+        img.src = event.target.result;
+        this.url = img.src;
+        
+        img.onload = () => {
+            
+            const width = 300;
+            const scaleFactor = width / img.width;
+
+            const elem = document.createElement('canvas');
+            elem.width = width;
+            elem.height = img.height * scaleFactor;
+            const ctx = elem.getContext('2d');
+            
+            // img.width and img.height will give the original dimensions
+            ctx.drawImage(img, 0, 0, width, img.height * scaleFactor);
+            
+            ctx.canvas.toBlob((blob) => {
+
+              const file = new File([blob], this.selectedFile.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+              });
+
+            }, 'image/jpeg', 0.7);
+          },
+            reader.onerror = error => console.log(error);
+        };
+    
     }
-      // console.log(this.url);
-      // this.url = '';
-      // console.log(this.url);
 
   } 
  

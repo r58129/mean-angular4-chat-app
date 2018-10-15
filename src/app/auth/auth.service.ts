@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators/map';
 import { Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { Configs } from './../../environments/environment';
 import { of } from 'rxjs/observable/of';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
-import { HttpHeaders } from '@angular/common/http';
+// import { HttpHeaders } from '@angular/common/http';
 
 
 export interface UserDetails {
@@ -35,7 +35,7 @@ export interface TokenPayload {
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type':  'application/json'
-    //  'Content-Type':'application/x-www-form-urlencoded'
+     // 'Content-Type':'application/x-www-form-urlencoded'
     //'Authorization': 'my-auth-token'
   })
 };
@@ -51,6 +51,7 @@ private resetToken: string;
 private staff: any=[];
 private sessionId: any=[];
 private onlineCount: any;
+private tinkerloginStatus: any=[];
 
   credentials: TokenPayload = {
     online:'',
@@ -253,25 +254,51 @@ private onlineCount: any;
         });
         
       } else {  // login to tinker and mutlichat server
-        console.log(" No tinkerSessionId found, login to tinker and upload the session id!");
+        console.log("No tinkerSessionId found, login to tinker and upload the session id!");
     
-        this.http.post (this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/login', {
-          userID: 'admin',
-          Password: 'admin'
-        }, httpOptions)
-        .pipe(
-          catchError(this.handleErrorObservable)
-        )
-        .subscribe(
-          res => {
-            localStorage.setItem('res.data.sessionID', res.data.sessionID);  //Lu test storage
+        // construct form data
+        // var userID:string = 'admin';
+        // var password:string = 'Aptc123456';
+        var tinkerloginFormData = new FormData();
+        tinkerloginFormData.append('userID', 'admin');
+        tinkerloginFormData.append('password', 'Aptc123456');
+
+        console.log('tinkerloginFormData ID: ' + tinkerloginFormData.get('userID'));
+        console.log('tinkerloginFormData PWD: ' + tinkerloginFormData.get('password'));       
+
+        // Display the key/value pairs
+          // for (var pair of tinkerloginFormData.entries()) {
+          //   console.log(pair[0]+ ', ' + pair[1]); 
+          // };
+
+        // this.loginMutliChat();
+        // construct object
+        // var tinkerloginFormData = {userID:'admin', password:'Aptc123456'};
+        // tinkerloginData.userID = 'admin';
+        // tinkerloginData.password = 'Aptc123456';
+
+        
+        // console.log("TinkerloginData: " +tinkerloginData.userID instanceof FormData);
+        // console.log("TinkerloginData.userID: " +tinkerloginFormData.userID);
+        // console.log("TinkerloginData.password: " +tinkerloginFormData.password);
+
+        // this.loginTinkerBoard(tinkerloginData).then((result) =>{
+        this.http.post(this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/login', tinkerloginFormData)   
+            // .pipe(
+            //   catchError(this.handleErrorObservable)
+            // )
+          .subscribe(
+            res => {
+            this.tinkerloginStatus = res;
+            console.log('loginTinker in progress:' +this.tinkerloginStatus.data.sessionID);
+            localStorage.setItem('res.data.sessionID', this.tinkerloginStatus.data.sessionID);  //Lu test storage
             sessionStorage.setItem('loginTinkerDone', "1");
             console.log('loginTinker is done');
             // this.router.navigate(['/chat/request']);
             // console.log('redirect the link to request');
 
             // update session id and online to staff profile
-            this.credentials.tinkerSessionId = res.data.sessionID;
+            this.credentials.tinkerSessionId = this.tinkerloginStatus.data.sessionID;
             this.credentials.online = "true";
 
             this.profileUpdate(this.credentials).subscribe(user => {
@@ -288,23 +315,28 @@ private onlineCount: any;
             });
 
             // console.log('before register to tinker, session id: ' + localStorage.getItem('res.data.sessionID'))
+            
             this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
-            // this.http.post (localStorage.getItem('baseAddress')+":"+localStorage.getItem('tinkerPort')+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
-            {}, httpOptions)
-            .pipe(
-              catchError(this.handleErrorObservable)
-            ).subscribe(
-              res => {
-              console.log('register to tinker');  
-            });
+              // this.http.post (localStorage.getItem('baseAddress')+":"+localStorage.getItem('tinkerPort')+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
+              {})
+              // .pipe(
+              //   catchError(this.handleErrorObservable)
+              // )
+              .subscribe(
+                res => {
+                console.log('register to tinker');  
+              });
 
             this.loginMutliChat();
 
           // return true;
+        }, (err) => {
+          console.log('loginTinker failed');
+          console.log(err);
         });
-
       }
     }, (err) => {
+
       console.log(err);
     });
     // return true;
@@ -334,10 +366,10 @@ private onlineCount: any;
           // if (sID!=null){
           // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
           this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/unregister?action=unregister&sessionID='+localStorage.getItem('res.data.sessionID'), 
-            {}, httpOptions)
-            .pipe(
-              catchError(this.handleErrorObservable)
-            )
+            {})
+            // .pipe(
+            //   catchError(this.handleErrorObservable)
+            // )
             .subscribe(
               res => {
                 console.log('unregister tinker');
@@ -346,11 +378,11 @@ private onlineCount: any;
           // } //end if tPort !=null
             
           // this.http.post (this.configs.tinkerboardAddr+":"+sessionStorage.getItem("tinkerport")+'/api/user/logout'+'?sessionID='+sID2, {
-          this.http.post (this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/logout'+'?sessionID='+sID, {
-            }, httpOptions)
-            .pipe(
-              catchError(this.handleErrorObservable)
-            )
+          this.http.post (this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/logout'+'?sessionID='+sID,
+            {})
+            // .pipe(
+            //   catchError(this.handleErrorObservable)
+            // )
             .subscribe(
               res => {
                 localStorage.removeItem('res.data.sessionID');
@@ -411,20 +443,22 @@ private onlineCount: any;
     // register to multichat server 
     if (this.configs.ngrok){  // use ngrok
           this.http.post (this.configs.multiChatNgrokAddr+'/api/csp/register?action=register&sessionID='+this.configs.multiChatCode, 
-          {}, httpOptions)
-          .pipe(
-          catchError(this.handleErrorObservable)
-          ).subscribe(
+          {})
+          // .pipe(
+          // catchError(this.handleErrorObservable)
+          // )
+          .subscribe(
             res => {      
               console.log('register to mutlichat server with ngrok');  
               return true;
             });
          } else {  //use 443 route server
             this.http.post (this.configs.multiChatAddr+'/api/csp/register'+this.configs.multiChatPort+'?action=register&sessionID='+this.configs.multiChatCode, 
-            {}, httpOptions)
-            .pipe(
-            catchError(this.handleErrorObservable)
-            ).subscribe(
+            {})
+            // .pipe(
+            // catchError(this.handleErrorObservable)
+            // )
+            .subscribe(
               res => {      
               console.log('register to mutlichat server with 443');  
               return true;
@@ -438,10 +472,10 @@ private onlineCount: any;
     
     if (this.configs.ngrok){  //ngrok
       this.http.post (this.configs.multiChatNgrokAddr+'/api/csp/unregister?action=unregister&sessionID='+this.configs.multiChatCode,   
-      {}, httpOptions)
-        .pipe(
-          catchError(this.handleErrorObservable)
-        )
+      {})
+        // .pipe(
+        //   catchError(this.handleErrorObservable)
+        // )
         .subscribe(
           res => {
             console.log('unregister multichat server');
@@ -449,10 +483,10 @@ private onlineCount: any;
           });
       } else { //443 server
         this.http.post (this.configs.multiChatAddr+'/api/csp/unregister'+this.configs.multiChatPort+'?action=unregister&sessionID='+this.configs.multiChatCode, 
-        {}, httpOptions)
-        .pipe(
-          catchError(this.handleErrorObservable)
-        )
+        {})
+        // .pipe(
+        //   catchError(this.handleErrorObservable)
+        // )
         .subscribe(
           res => {
             console.log('unregister multichat server');
@@ -503,5 +537,37 @@ private onlineCount: any;
         });
     });
   }
+
+  public loginTinkerBoard(formdata){
+    return new Promise((resolve, reject) => {
+      
+      console.log("formdata: " +formdata);
+      console.log("formdata.userID: " +formdata.userID);
+      console.log("formdata.password: " +formdata.password);
+
+        //construct form data
+        // var userID:string = 'admin';
+        // var password:string = 'Aptc123456';
+        // var tinkerloginData = new FormData();
+        // tinkerloginData.append('userID', 'admin');
+        // tinkerloginData.append('password', 'Aptc123456');
+    
+
+        this.http.post(this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/login', formdata) 
+
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+          console.log("TinkerloginData: " +res);
+          // console.log("TinkerloginData.userID: " +res.success);
+          // console.log("TinkerloginData.password: " +res.data);
+          
+        }, (err) => {
+          console.log("TinkerloginData failed: ");
+          reject(err);
+        });
+    });
+  }
+
 }
 
