@@ -261,7 +261,7 @@ private tinkerloginStatus: any=[];
         // var password:string = 'Aptc123456';
         var tinkerloginFormData = new FormData();
         tinkerloginFormData.append('userID', 'admin');
-        tinkerloginFormData.append('password', 'Aptc123456');
+        tinkerloginFormData.append('password', this.configs.tinkerpassword);
 
         console.log('tinkerloginFormData ID: ' + tinkerloginFormData.get('userID'));
         console.log('tinkerloginFormData PWD: ' + tinkerloginFormData.get('password'));       
