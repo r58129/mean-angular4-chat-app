@@ -538,36 +538,36 @@ private tinkerloginStatus: any=[];
     });
   }
 
-  public loginTinkerBoard(formdata){
-    return new Promise((resolve, reject) => {
+  // public loginTinkerBoard(formdata){
+  //   return new Promise((resolve, reject) => {
       
-      console.log("formdata: " +formdata);
-      console.log("formdata.userID: " +formdata.userID);
-      console.log("formdata.password: " +formdata.password);
+  //     console.log("formdata: " +formdata);
+  //     console.log("formdata.userID: " +formdata.userID);
+  //     console.log("formdata.password: " +formdata.password);
 
-        //construct form data
-        // var userID:string = 'admin';
-        // var password:string = 'Aptc123456';
-        // var tinkerloginData = new FormData();
-        // tinkerloginData.append('userID', 'admin');
-        // tinkerloginData.append('password', 'Aptc123456');
+  //       //construct form data
+  //       // var userID:string = 'admin';
+  //       // var password:string = 'Aptc123456';
+  //       // var tinkerloginData = new FormData();
+  //       // tinkerloginData.append('userID', 'admin');
+  //       // tinkerloginData.append('password', 'Aptc123456');
     
 
-        this.http.post(this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/login', formdata) 
+  //       this.http.post(this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/login', formdata) 
 
-        // .map(res => res.json())
-        .subscribe(res => {
-          resolve(res);
-          console.log("TinkerloginData: " +res);
-          // console.log("TinkerloginData.userID: " +res.success);
-          // console.log("TinkerloginData.password: " +res.data);
+  //       // .map(res => res.json())
+  //       .subscribe(res => {
+  //         resolve(res);
+  //         console.log("TinkerloginData: " +res);
+  //         // console.log("TinkerloginData.userID: " +res.success);
+  //         // console.log("TinkerloginData.password: " +res.data);
           
-        }, (err) => {
-          console.log("TinkerloginData failed: ");
-          reject(err);
-        });
-    });
-  }
+  //       }, (err) => {
+  //         console.log("TinkerloginData failed: ");
+  //         reject(err);
+  //       });
+  //   });
+  // }
 
 }
 

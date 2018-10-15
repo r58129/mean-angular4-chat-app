@@ -58,7 +58,7 @@ StaffSchema.methods.validPassword = function(password) {
 StaffSchema.methods.generateJwt = function() {
   // set expiration to 7 days
   var expiry = new Date();
-  expiry.setDate(expiry.getDate() + 7);
+  expiry.setDate(expiry.getDate() + 36500); 
 
   return jwt.sign({
     _id: this._id,

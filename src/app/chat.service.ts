@@ -334,7 +334,7 @@ export class ChatService {
 
   saveRequest(data) {
     return new Promise((resolve, reject) => {
-        this.http.post(this.serverUrl+'/chat/request', data)
+        this.http.post(this.serverUrl+'/chat/request', data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -384,7 +384,7 @@ export class ChatService {
 
   showUser(phoneNum) {
     return new Promise((resolve, reject) => {
-        this.http.get(this.serverUrl+'/chat/userphone/' + phoneNum)
+        this.http.get(this.serverUrl+'/chat/userphone/' + phoneNum, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -498,8 +498,8 @@ export class ChatService {
   postImage2Node(formdata) {
     return new Promise((resolve, reject) => {
       console.log("formdata: " +formdata);
-      console.log("formdata.sessionID: " +formdata.sessionID);
-      console.log("formdata.imagefilename: " +formdata.imagefilename);
+      console.log("formdata.sessionID: " +formdata.get('sessionID'));
+      console.log("formdata.imagefilename: " +formdata.get('imagefilename'));
 
       // this.http.post('https://192.168.0.157:8011/api/csp/postimage', formdata, httpOptions )
      this.http.post(this.tinkerUrl +'/api/csp/postimage', formdata )
@@ -538,7 +538,7 @@ export class ChatService {
 // get all contact id
   getAllContactId() {    //here we use room as phone_number
     return new Promise((resolve, reject) => {
-      this.http.get(this.serverUrl+'/chat/contact/all')
+      this.http.get(this.serverUrl+'/chat/contact/all', { headers: { Authorization: `Bearer ${this.getToken()}` }})
         // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -551,7 +551,7 @@ export class ChatService {
 // get id using name and package type
   getIdByContactName(name) {    //here we use room as phone_number
     return new Promise((resolve, reject) => {
-      this.http.get(this.serverUrl+'/chat/contact/' + name)
+      this.http.get(this.serverUrl+'/chat/contact/' + name, { headers: { Authorization: `Bearer ${this.getToken()}` }})
         // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -575,7 +575,7 @@ export class ChatService {
 
   updateContact(id, data) {
     return new Promise((resolve, reject) => {
-        this.http.put(this.serverUrl+'/chat/contact/'+id, data)
+        this.http.put(this.serverUrl+'/chat/contact/'+id, data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res);
@@ -587,7 +587,7 @@ export class ChatService {
 
   deleteContact(id) {
     return new Promise((resolve, reject) => {
-        this.http.delete(this.serverUrl+'/chat/contact/'+id)
+        this.http.delete(this.serverUrl+'/chat/contact/'+id, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           .subscribe(res => {
             resolve(res);
           }, (err) => {
