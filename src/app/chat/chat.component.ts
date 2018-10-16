@@ -555,7 +555,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         // this.url = event.target.result;
         // console.log("url: " +this.url);    //base64
 
-        var img = new Image();
+        const img = new Image();
         img.src = event.target.result;
         this.url = img.src;
         
@@ -571,6 +571,13 @@ export class ChatComponent implements OnInit, AfterViewChecked {
             
             // img.width and img.height will give the original dimensions
             ctx.drawImage(img, 0, 0, width, img.height * scaleFactor);
+            console.log('drawing image');
+
+            var mime = 'image/jpeg';
+            var quality = 0.7;
+
+            // this.url = ctx.canvas.toDataURL(img, mime, quality) ;
+
             
             ctx.canvas.toBlob((blob) => {
 

@@ -495,15 +495,16 @@ io.on('connection', function (socket) {
 // }
 
 /* GET ALL NON ROBOT CHATS, THIS IS THE REAL ROOM */
-router.get('/:room', function(req, res, next) {
-  // var date = new Date();
+  // router.get('/:room', function(req, res, next) {
+router.get('/:room', auth, function(req, res, next) {
+  
   var lastMonth = Date.now() - (30*24*3600*1000);  //1 month = 30*24*3600*1000
-  // router.get('/:room', auth, function(req, res, next) {
-  // if (!req.payload._id) {
-  //     res.status(401).json({
-  //       "message" : "UnauthorizedError:"
-  //     });
-  // } else {
+
+  if (!req.payload._id) {
+      res.status(401).json({
+        "message" : "UnauthorizedError:"
+      });
+  } else {
   // Chat.find({ room: req.params.room }, function (err, chats) {
     Chat.find({ $and:
       [
@@ -516,7 +517,7 @@ router.get('/:room', function(req, res, next) {
       if (err) return next(err);
       res.json(chats);
     });
-  // }
+  }
 });
 
 /* GET SINGLE CHAT BY ID */
@@ -793,18 +794,18 @@ router.get('/roomhistory/:room', auth, function(req, res, next) {
 
 
 /* SAVE REQUEST */
-router.post('/request', function(req, res, next) {
-  // router.post('/request', auth, function(req, res, next) {
-  // if (!req.payload._id) {
-  //   res.status(401).json({
-  //     "message" : "UnauthorizedError:"
-  //   });
-  // } else {  
+// router.post('/request', function(req, res, next) {
+  router.post('/request', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
     Chat.create(req.body, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });
-  // }
+  }
 });
 
 /* UPDATE REQUEST */
@@ -837,17 +838,18 @@ router.delete('/request/:id', auth, function(req, res, next) {
 
 
 /* GET ALL USERS in same room 192.168.0.102:4080/chat/user/all*/ 
-router.get('/user/all', function(req, res, next) {
-//  if (!req.payload._id) {
-//    res.status(401).json({
-//      "message" : "UnauthorizedError:"
-//    });
-//  } else {  
+// router.get('/user/all', function(req, res, next) {
+router.get('/user/all', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
     User.find( req.body, function (err, users) {
       if (err) return next(err);
       res.json(users);
     });
-//  }
+ }
 });
 
 /* GET SINGLE user BY ID */
@@ -873,47 +875,48 @@ router.get('/user/all', function(req, res, next) {
 // });
 
 /* GET SINGLE user BY phone_number */
-router.get('/userphone/:phone_number', function(req, res, next) {
-// router.get('/userphone/:phone_number', auth, function(req, res, next) {
-  // if (!req.payload._id) {
-  //   res.status(401).json({
-  //     "message" : "UnauthorizedError:"
-  //   });
-  // } else {  
+// router.get('/userphone/:phone_number', function(req, res, next) {
+router.get('/userphone/:phone_number', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
     User.find({phone_number:req.params.phone_number}, function (err, users) {
       if (err) return next(err);
       res.json(users);
     });
-  // }
+  }
 });
 
 /* SAVE user */
-router.post('/user', function(req, res, next) {
-//  if (!req.payload._id) {
-//    res.status(401).json({
-//      "message" : "UnauthorizedError:"
-//    });
-//  } else {  
+// router.post('/user', function(req, res, next) {
+router.post('/user', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
     User.create(req.body, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });
-//  }
+ }
 });
 
 /* UPDATE user by user phone number*/
-router.put('/userupdate/:phone_number', function(req, res, next) {
-// router.put('/userupdate/:phone_number', auth, function(req, res, next) {
-  // if (!req.payload._id) {
-  //   res.status(401).json({
-  //     "message" : "UnauthorizedError:"
-  //   });
-  // } else {  
+// router.put('/userupdate/:phone_number', function(req, res, next) {
+router.put('/userupdate/:phone_number', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
     User.findOneAndUpdate({phone_number:req.params.phone_number}, req.body, function (err, users) {
       if (err) return next(err);
       res.json(users);
     });
-  // }
+  }
 });
 
 /* DELETE user */
@@ -954,13 +957,13 @@ router.get('/image/all', auth, function(req, res, next) {
 });
 
 /* GET IMAGE BY ROOM, THIS IS THE REAL ROOM */
-router.get('/image/:room', function(req, res, next) {
-// router.get('/image/:room', auth, function(req, res, next) {
-  // if (!req.payload._id) {
-  //   res.status(401).json({
-  //     "message" : "UnauthorizedError:"
-  //   });
-  // } else {  
+// router.get('/image/:room', function(req, res, next) {
+router.get('/image/:room', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
     // Chat.find({ room: req.params.room }, function (err, chats) {
       Chat.find({ $and:
       [
@@ -972,7 +975,7 @@ router.get('/image/:room', function(req, res, next) {
       if (err) return next(err);
       res.json(chats);
     });
-  // }
+  }
 });
 
 /* GET SINGLE image BY ID */
@@ -1067,33 +1070,33 @@ router.post('/contact', function(req, res, next) {
 });
 
 /* UPDATE contact */
-router.put('/contact/:id', function(req, res, next) {
-// router.put('/contact/:id', auth, function(req, res, next) {
-//   if (!req.payload._id) {
-//     res.status(401).json({
-//       "message" : "UnauthorizedError:"
-//     });
-//   } else {  
+// router.put('/contact/:id', function(req, res, next) {
+router.put('/contact/:id', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
     Contact.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });
-  // }
+  }
 });
 
 /* DELETE conact */
-router.delete('/contact/:id', function(req, res, next) {
-// router.delete('/contact/:id', auth, function(req, res, next) {
-  // if (!req.payload._id) {
-  //   res.status(401).json({
-  //     "message" : "UnauthorizedError:"
-  //   });
-  // } else {  
+// router.delete('/contact/:id', function(req, res, next) {
+router.delete('/contact/:id', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
     Contact.findByIdAndRemove(req.params.id, req.body, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });
-  // }
+  }
 });
 
 module.exports = router;
