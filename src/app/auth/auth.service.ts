@@ -327,6 +327,7 @@ private tinkerloginStatus: any=[];
                 console.log('register to tinker');  
               });
 
+            if (this.configs.multiChatPort!='')
             this.loginMutliChat();
 
           // return true;
