@@ -390,7 +390,8 @@ private tinkerloginStatus: any=[];
                 console.log('logout tinker');
                 // return true;
             });
-
+            
+            if (this.configs.multiChatPort!='')
             this.logoutMutliChat();
 
         }, (err) => {
