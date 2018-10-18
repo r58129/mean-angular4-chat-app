@@ -30,6 +30,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   displayImage = '';
   display_socket_id: any;
   selectedFile: File;
+  compressedFile: File;
   chats: any =[];
   joinned: boolean = false;
   connected: boolean = false;
@@ -773,9 +774,109 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
       reader.readAsDataURL(this.selectedFile); // read file as data url
       // reader.readAsArrayBuffer(event.target.files[0]);  //read as Array buffer
       reader.onload = (event:any) => { // called once readAsDataURL is completed
-        this.url = event.target.result;
-        console.log("url: " +this.url);    //base64
+        // this.url = event.target.result;
+        // console.log("url: " +this.url);    //base64
+        var img = new Image();
+        var imageSize:any;
+        var roundedImageSize:any;
 
+        img.src = event.target.result;        
+
+        //jpeg -> base64, size increase 33%. scale factor = 0.75 to get the actual file size
+        imageSize = (encodeURI(img.src).split(/%..|./).length - 1)*0.75/1024;
+        roundedImageSize = Math.round(imageSize);  
+
+        console.log('image size : ' + roundedImageSize +'kB');        
+
+        // console.log('image: ' + img.src );
+
+        img.onload = () => {
+           
+            var canvas: HTMLCanvasElement = document.createElement("canvas");
+            var ctx: CanvasRenderingContext2D = canvas.getContext("2d");
+
+            console.log('img.width: ' +img.width);
+            console.log('img.height: ' +img.height);           
+
+            canvas.width = img.width;
+            canvas.height = img.height;
+            
+            // img.width and img.height will give the original dimensions
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            console.log('drawing image: ' + canvas.width +',' + canvas.height);
+
+            if (roundedImageSize < 100) {
+
+              this.url=ctx.canvas.toDataURL('image/jpeg', 1.0) ;
+
+              console.log (this.url);
+
+              ctx.canvas.toBlob((blob) => {
+
+                this.compressedFile = new File([blob], this.selectedFile.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now()
+                });
+              }, 'image/jpeg', 1.0);
+            }  
+
+            if ((roundedImageSize >= 100) && (roundedImageSize <500))  {
+
+              this.url=ctx.canvas.toDataURL('image/jpeg', 0.7) ;
+
+              console.log (this.url);
+
+              ctx.canvas.toBlob((blob) => {
+
+                this.compressedFile = new File([blob], this.selectedFile.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now()
+                });
+              }, 'image/jpeg', 0.7);
+            }            
+
+            if ((roundedImageSize >= 500) && (roundedImageSize <5000)){
+
+              this.url=ctx.canvas.toDataURL('image/jpeg', 0.5) ;
+
+              console.log (this.url);
+
+              ctx.canvas.toBlob((blob) => {
+
+                this.compressedFile = new File([blob], this.selectedFile.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now()
+                });
+              }, 'image/jpeg', 0.5);
+            }
+
+            if ((roundedImageSize >= 5000) && (roundedImageSize <16000)){
+
+              window.alert('Image will be compressed significantly as the file is large!');
+
+              this.url=ctx.canvas.toDataURL('image/jpeg', 0.2) ;
+
+              console.log (this.url);
+
+              ctx.canvas.toBlob((blob) => {
+
+                this.compressedFile = new File([blob], this.selectedFile.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now()
+                });
+              }, 'image/jpeg', 0.2);
+            }            
+
+            if (roundedImageSize >= 16000) {
+              
+              window.alert('Not supported! Image size is too large!');
+              this.url = '';
+              this.compressedFile = null;
+
+            }
+
+          },
+            reader.onerror = error => console.log(error)
       }
     }
   }
@@ -815,7 +916,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     var formDataImage = new FormData();
     formDataImage.append('sessionID', sID);
     formDataImage.append('imagefilename', this.selectedFile.name);
-    formDataImage.append('imagefile', this.selectedFile);
+    formDataImage.append('imagefile', this.compressedFile);
 
     console.log('formDataImage.sessionID: ' +sID);
     console.log('formDataImage.imagefilename: ' +this.selectedFile.name);
@@ -856,11 +957,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
 
       jsonMesgNA.sender = this.newUser.room;
       jsonMesgNA.package = this.newUser.type;
-
-            // var objNA = { type:"text", path:"null", message: message, sender:this.newUser.room, package: "wechat" };
-      // this.socket.emit('chatMessageOperatorSessionNonAndroid', objNA, "wechat");  //send json object from op to customer
-      // console.log("operatorNonAndroid is sending object: " +objNA +" wechat");
-      
+     
       this.socket.emit('chatMessageOperatorSessionNonAndroid', jsonMesgNA, this.newUser.type);
       this.notSelected = true;
 

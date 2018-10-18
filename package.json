@@ -57,8 +57,8 @@
     "socket.io": "^2.1.0",
     "socket.io-client": "^2.1.1",
     "twilio": "^3.19.1",
-    "wechat": "^2.1.0",
     "watchdog": "^0.8.15",
+    "wechat": "^2.1.0",
     "zone.js": "^0.8.4"
   },
   "devDependencies": {
