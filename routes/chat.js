@@ -402,7 +402,7 @@ io.on('connection', function (socket) {
       }
 
 
-      if (socket.userid != 'admin'){
+      if ((socket.userid != 'admin') && (socket.userid !='transport close')){
         // userSocketIDAndUsername.pop(socket.userid + ' (' + socket.id + ')');
         // userSocketID.pop(socket.id);
         // username.pop(socket.userid);

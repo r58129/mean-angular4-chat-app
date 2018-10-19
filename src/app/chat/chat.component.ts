@@ -244,18 +244,19 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     // var goodbye = "Goodbye";
     // this.SendForm(goodbye);
     // console.log("goodbye");
-
-    this.CusMsgData = { type: this.newUser.type, phone_number: userid, socket_id: 'socket_id', room:userid , nickname:userid , message: message };
-      console.log(this.CusMsgData.room);
-      console.log(this.CusMsgData.phone_number);
-      console.log(this.CusMsgData.socket_id);
-      console.log(this.CusMsgData.message);
-      
-      this.chatService.saveChat(this.CusMsgData).then((result) => {
-      this.socket.emit('save-message', result);
-      }, (err) => {
-        console.log(err);
-      });
+    if (userid != 'transport close'){
+      this.CusMsgData = { type: this.newUser.type, phone_number: userid, socket_id: 'socket_id', room:userid , nickname:userid , message: message };
+        console.log(this.CusMsgData.room);
+        console.log(this.CusMsgData.phone_number);
+        console.log(this.CusMsgData.socket_id);
+        console.log(this.CusMsgData.message);
+        
+        this.chatService.saveChat(this.CusMsgData).then((result) => {
+        this.socket.emit('save-message', result);
+        }, (err) => {
+          console.log(err);
+        });
+    }
   }.bind(this));
   // end of from johnson
 
