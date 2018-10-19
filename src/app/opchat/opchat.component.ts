@@ -883,7 +883,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
  
   SendPhoto(){
 
-    console.log("admin is sending a photo: " +this.selectedFile );
+    console.log("admin is sending a photo: " +this.url );
     console.log("filename: " +this.selectedFile.name );
     console.log("nickname: " + this.newUser.nickname);
     console.log("room: " + this.newUser.room);
