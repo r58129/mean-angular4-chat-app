@@ -14,7 +14,7 @@ router.get('/profile', auth, ctrlProfile.profileRead);
 router.put('/profile', auth, ctrlProfile.profileUpdate);
 
 // authentication
-router.post('/register', ctrlAuth.register);
+router.post('/registerID/0a6O85y4h5cVsBfRB-57n4l4DBN6WmMlA2f94I_oaNs', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
 
 // password reset

@@ -105,7 +105,7 @@ private tinkerloginStatus: any=[];
       // console.log("request post");
       // base = this.http.post(`/api/${type}`, user);
       if (type === 'register') {
-      base = this.http.post(this.configs.expressAddr +'/api/register', user);
+      base = this.http.post(this.configs.expressAddr +'/api/registerID/0a6O85y4h5cVsBfRB-57n4l4DBN6WmMlA2f94I_oaNs', user);
       console.log("register http post");
       }
       if (type === 'login') {
@@ -332,6 +332,7 @@ private tinkerloginStatus: any=[];
           // return true;
         }, (err) => {
           console.log('loginTinker failed');
+          window.alert ('Login to web portal failed! Please logout and relogin!');
           console.log(err);
         });
       }
