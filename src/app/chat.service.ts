@@ -649,6 +649,11 @@ export class ChatService {
     this.change.emit(searchUser);
   }
 
+  viewUserInfo(viewUser){    
+    console.log("user.phone_number: " + viewUser.phone_number);
+    this.change.emit(viewUser);
+  }
+
   private handleError(error: any): Promise<any> {
     return Promise.reject(error.message || error);
   }

@@ -44,6 +44,8 @@ import { MultichatReqComponent } from './multichat-req/multichat-req.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { HistorySearchComponent } from './history-search/history-search.component';
+import { UsersComponent } from './users/users.component';
+import { UserDetailComponent } from './user-detail/user-detail.component';
 // import { EmojiModule } from 'angular-emoji/dist';
 
 // import { ApphovertableComponent } from './components/apphovertable/apphovertable.component';
@@ -79,7 +81,9 @@ import { HistorySearchComponent } from './history-search/history-search.componen
     MultichatReqComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
-    HistorySearchComponent
+    HistorySearchComponent,
+    UsersComponent,
+    UserDetailComponent
     //CallbackComponent
     // ApphovertableComponent
   ],
