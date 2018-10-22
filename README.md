@@ -143,4 +143,5 @@ https://developers.line.me/console/channel/1594950287/basic/
 #Wechat
 https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login
 
+adb push .\configuration.json /storage/emulated/0/whatsAppQueueMessagesJobs/configuration.json
 

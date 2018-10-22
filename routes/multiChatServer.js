@@ -602,7 +602,8 @@ function postTextMessageToMongooseDB(sender, text, incomingApp, nickname) {
     method: 'POST',
     headers: {
          'Content-Type': 'application/x-www-form-urlencoded',
-         'Content-Length': postData.length
+         'Content-Length': postData.length,
+         'Authorization': 'Bearer '+serverConfig.meanToken
        },
     rejectUnauthorized: false, 
   };
@@ -639,7 +640,8 @@ function postUserDataToMongooseDB(id, name, package) {
     method: 'POST',
     headers: {
          'Content-Type': 'application/x-www-form-urlencoded',
-         'Content-Length': postData.length
+         'Content-Length': postData.length,
+         'Authorization': 'Bearer '+serverConfig.meanToken
        },
     rejectUnauthorized: false, 
   };

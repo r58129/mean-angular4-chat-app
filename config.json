@@ -20,7 +20,8 @@
     "OperatorUnavailableMesg":"Operator is currently unavailable. Please check back again. Sorry for the inconvenience caused.",
     "mongooseUrl": "airpoint.com.hk",
     "mongoosePort": "4060",
-    "userDataFilename": "../userData.json"
+    "userDataFilename": "../userData.json",
+    "meanToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YmM0MWZiNzgxZTc2OTQ5MDVjYTg3Y2EiLCJlbWFpbCI6InJvYm90IiwibmFtZSI6InJvYm90IiwiZXhwIjo0NjkzMTg4NTMxLCJpYXQiOjE1Mzk1ODg1MzF9.0a6O85y4h5cVsBfRB-57n4l4DBN6WmMlA2f94I_oaNs"
   },
   "dialogflow":{
     "accessToken": "4b0ee509f5fb4c0e82f7039726be838f"

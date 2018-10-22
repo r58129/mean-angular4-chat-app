@@ -402,7 +402,7 @@ io.on('connection', function (socket) {
       }
 
 
-      if (socket.userid != 'admin'){
+      if ((socket.userid != 'admin') && (socket.userid !='transport close')){
         // userSocketIDAndUsername.pop(socket.userid + ' (' + socket.id + ')');
         // userSocketID.pop(socket.id);
         // username.pop(socket.userid);
@@ -1055,18 +1055,18 @@ router.get('/contact/:name', auth, function(req, res, next) {
 });
 
 /* SAVE contact */
-router.post('/contact', function(req, res, next) {
-// router.post('/contact', auth, function(req, res, next) {
-  // if (!req.payload._id) {
-  //   res.status(401).json({
-  //     "message" : "UnauthorizedError:"
-  //   });
-  // } else {  
+// router.post('/contact', function(req, res, next) {
+router.post('/contact', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
     Contact.create(req.body, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });
-  // }
+  }
 });
 
 /* UPDATE contact */

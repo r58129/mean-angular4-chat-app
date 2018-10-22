@@ -22,6 +22,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   ImageObject = {};
   displayImage = '';
   selectedFile: File;
+  compressedFile: File;
   getFile: any;
   chats: any =[];
   appName: string ='whatsapp';
@@ -243,18 +244,19 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     // var goodbye = "Goodbye";
     // this.SendForm(goodbye);
     // console.log("goodbye");
-
-    this.CusMsgData = { type: this.newUser.type, phone_number: userid, socket_id: 'socket_id', room:userid , nickname:userid , message: message };
-      console.log(this.CusMsgData.room);
-      console.log(this.CusMsgData.phone_number);
-      console.log(this.CusMsgData.socket_id);
-      console.log(this.CusMsgData.message);
-      
-      this.chatService.saveChat(this.CusMsgData).then((result) => {
-      this.socket.emit('save-message', result);
-      }, (err) => {
-        console.log(err);
-      });
+    if (userid != 'transport close'){
+      this.CusMsgData = { type: this.newUser.type, phone_number: userid, socket_id: 'socket_id', room:userid , nickname:userid , message: message };
+        console.log(this.CusMsgData.room);
+        console.log(this.CusMsgData.phone_number);
+        console.log(this.CusMsgData.socket_id);
+        console.log(this.CusMsgData.message);
+        
+        this.chatService.saveChat(this.CusMsgData).then((result) => {
+        this.socket.emit('save-message', result);
+        }, (err) => {
+          console.log(err);
+        });
+    }
   }.bind(this));
   // end of from johnson
 
@@ -541,55 +543,127 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   onFileSelected(event) {    
 
+    // this.compressedFile = event.target.files[0];
+
+    // this.selectedFile = this.compressFile();
     this.selectedFile = event.target.files[0];
+
+
     console.log("event.target.files[0]: " +this.selectedFile);
     console.log("onFileSelected name: " +this.selectedFile.name);
     // console.log("event.target.files: " +event.target.files);  //file list
 
     if (event.target.files && event.target.files[0]) {
+
       var reader = new FileReader();
       reader.readAsDataURL(this.selectedFile); // read file as data url
       // reader.readAsArrayBuffer(event.target.files[0]);  //read as Array buffer
-      reader.onload = (event:any) => { // called once readAsDataURL is completed
-        
+      reader.onload = (event:any) => { // called once readAsDataURL is completed        
         // this.url = event.target.result;
         // console.log("url: " +this.url);    //base64
 
-        const img = new Image();
-        img.src = event.target.result;
-        this.url = img.src;
-        
-        img.onload = () => {
-            
-            const width = 300;
-            const scaleFactor = width / img.width;
+        var img = new Image();
+        var imageSize:any;
+        var roundedImageSize:any;
 
-            const elem = document.createElement('canvas');
-            elem.width = width;
-            elem.height = img.height * scaleFactor;
-            const ctx = elem.getContext('2d');
+        img.src = event.target.result;        
+
+        //jpeg -> base64, size increase 33%. scale factor = 0.75 to get the actual file size
+        imageSize = (encodeURI(img.src).split(/%..|./).length - 1)*0.75/1024;
+        roundedImageSize = Math.round(imageSize);  
+
+        console.log('image size : ' + roundedImageSize +'kB');        
+
+        // console.log('image: ' + img.src );
+
+        img.onload = () => {
+           
+            var canvas: HTMLCanvasElement = document.createElement("canvas");
+            var ctx: CanvasRenderingContext2D = canvas.getContext("2d");
+
+            console.log('img.width: ' +img.width);
+            console.log('img.height: ' +img.height);           
+
+            canvas.width = img.width;
+            canvas.height = img.height;
             
             // img.width and img.height will give the original dimensions
-            ctx.drawImage(img, 0, 0, width, img.height * scaleFactor);
-            console.log('drawing image');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            console.log('drawing image: ' + canvas.width +',' + canvas.height);
 
-            var mime = 'image/jpeg';
-            var quality = 0.7;
+            if (roundedImageSize < 100) {
 
-            // this.url = ctx.canvas.toDataURL(img, mime, quality) ;
+              this.url=ctx.canvas.toDataURL('image/jpeg', 1.0) ;
 
-            
-            ctx.canvas.toBlob((blob) => {
+              console.log (this.url);
 
-              const file = new File([blob], this.selectedFile.name, {
-                type: 'image/jpeg',
-                lastModified: Date.now()
-              });
+              ctx.canvas.toBlob((blob) => {
 
-            }, 'image/jpeg', 0.7);
+                this.compressedFile = new File([blob], this.selectedFile.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now()
+                });
+              }, 'image/jpeg', 1.0);
+            }  
+
+            if ((roundedImageSize >= 100) && (roundedImageSize <500))  {
+
+              this.url=ctx.canvas.toDataURL('image/jpeg', 0.7) ;
+
+              console.log (this.url);
+
+              ctx.canvas.toBlob((blob) => {
+
+                this.compressedFile = new File([blob], this.selectedFile.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now()
+                });
+              }, 'image/jpeg', 0.7);
+            }            
+
+            if ((roundedImageSize >= 500) && (roundedImageSize <5000)){
+
+              this.url=ctx.canvas.toDataURL('image/jpeg', 0.5) ;
+
+              console.log (this.url);
+
+              ctx.canvas.toBlob((blob) => {
+
+                this.compressedFile = new File([blob], this.selectedFile.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now()
+                });
+              }, 'image/jpeg', 0.5);
+            }
+
+            if ((roundedImageSize >= 5000) && (roundedImageSize <16000)){
+
+              window.alert('Image will be compressed significantly as the file is large!');
+
+              this.url=ctx.canvas.toDataURL('image/jpeg', 0.2) ;
+
+              console.log (this.url);
+
+              ctx.canvas.toBlob((blob) => {
+
+                this.compressedFile = new File([blob], this.selectedFile.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now()
+                });
+              }, 'image/jpeg', 0.2);
+            }            
+
+            if (roundedImageSize >= 16000) {
+              
+              window.alert('Not supported! Image size is too large!');
+              this.url = '';
+              this.compressedFile = null;
+
+            }
+
           },
-            reader.onerror = error => console.log(error);
-        };
+            reader.onerror = error => console.log(error)
+        }
     
     }
 
@@ -597,7 +671,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
  
   SendPhoto(){
 
-    console.log("admin is sending a photo: " +this.selectedFile );
+    console.log("admin is sending a photo: " +this.url );
     console.log("filename: " +this.selectedFile.name );
     console.log("nickname: " + this.newUser.nickname);
     console.log("room: " + this.newUser.room);
@@ -609,33 +683,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     var flow = this.appName;
     console.log("appname: " + flow);    
 
-    // var imageString = ((this.url).split(",")[1]);
-    // console.log("imageString: " + imageString);
-
-    // var imageType = ((this.url).split(",")[0]);
-    // console.log("imageType: " + imageType);  //  data:image/png;base64
-
-    // var bindata = new Buffer(string.split(",")[1],"base64");
-
-    // var imageBuffer = Buffer.from(imageString, 'base64');
-    // console.log ("buffer: " +imageBuffer);
-
-    // // convert file to bson    
-    // var imageBuffer = BSON.serialize(this.selectedFile);  //uint8array
-    // // var imageBuffer = BSON.Binary(this.selectedFile);  //uint8array
-    // console.log('imageBuffer:', imageBuffer);
-
-    // // var imageSize = BSON.getElementSize(this.selectedFile);  //uint8array
-    // // console.log('imageSize:', imageSize);
-
-    // // var bufferImage = Buffer.from(new Uint8Array(bsonImage));
-    // var imageArray = Array.from (imageBuffer);
-    // console.log('imageArray:', imageArray);
-
-    // var uploadImage =  {
-    //   data: imageString,
-    //   contentType: imageType
-    // }
 
     //save to DB
     this.imgData = {type:this.newUser.type, phone_number:this.newUser.room, socket_id: this.newUser.socket_id, 
@@ -658,7 +705,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       var formDataImage = new FormData();
       formDataImage.append('sessionID', sID);
       formDataImage.append('imagefilename', this.selectedFile.name);
-      formDataImage.append('imagefile', this.selectedFile);
+      formDataImage.append('imagefile', this.compressedFile);
 
       console.log('formDataImage.sessionID: ' +sID);
       console.log('formDataImage.imagefilename: ' +this.selectedFile.name);
@@ -713,38 +760,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     
   }
 
-  // RetrievePhoto(data){
-
-  //   console.log("RetrievePhoto binary");
-  //   console.log("filename: " +data.filename );
-  //   console.log("nickname: " + data.nickname);
-  //   console.log("room: " + data.room);
-  //   console.log("socket_id: " + data.socket_id);
-  //   console.log("message: " + data.message);
-
-  //   // var imageString = ((this.url).split(",")[1]);
-  //   // console.log("imageString: " + imageString);
-  //   // var bindata = new Buffer(string.split(",")[1],"base64");
-
-  //   var image = Buffer.from(data.image, 'base64');
-  //   console.log ("buffer: " +image);
-
-  // }
-
-  // getImage(base64image){
-
-  //   console.log ("displayImage");
-  //   // var imageString = ((this.url).split(",")[1]);
-  //   // console.log("imageString: " + imageString);
-  //   // var bindata = new Buffer(string.split(",")[1],"base64");
-
-  //   var image = Buffer.from(base64image, 'base64');
-  //   console.log ("buffer: " +image);
-
-  //   this.displayImage = "data:image/png;base64" + image;
-
-  // }
-
   CancelPhoto(){
     console.log('clicked cancel Photo' );
     this.notSelected = true;
@@ -753,6 +768,5 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     // this.selectedFile.name = null;
     // console.log(this.selectedFile.name);
   }
-
 
 }
