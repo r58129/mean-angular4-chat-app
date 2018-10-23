@@ -66,7 +66,7 @@ const appRoutes: Routes = [
       { path: 'historybox/:id', component: HistoryComponent, outlet:'historyOutlet',canActivate: [AuthGuardService]},
   ], canActivate: [AuthGuardService]},
 
-  { path: 'chat/users', component: UsersComponent, 
+  { path: 'chat/userSettingPage', component: UsersComponent, 
     children:[
       { path: 'userdetailbox/:id', component: UserDetailComponent, outlet:'userdetailOutlet',canActivate: [AuthGuardService]},
   ], canActivate: [AuthGuardService]},

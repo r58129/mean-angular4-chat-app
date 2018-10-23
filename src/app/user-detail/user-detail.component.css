@@ -36,12 +36,14 @@
     text-overflow: ellipsis;
 }
 
-#return-to-table{
+#return-to-table
+{
     margin-right: 10px;
     margin-left: 10px;
 }
 
-#edit-button{
+#edit-button, #create-button, #update-button
+{
     margin-right: 10px;
     margin-left: 10px;
 }

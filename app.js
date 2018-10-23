@@ -59,6 +59,12 @@ mongoose.Promise = global.Promise;
 
 mongoose.connect( global.dbIp +global.dbName);
 
+mongoose.connection.once('open', function() {
+  mongoose.connection.db.stats(function(err, stats) {
+    console.log(stats);
+  });
+});
+
 // CONNECTION EVENTS
 mongoose.connection.on('connected', function() {
   console.log('Mongoose connected to ' +  global.dbIp +global.dbName);

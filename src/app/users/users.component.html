@@ -7,24 +7,14 @@
             <div class="box box-primary direct-chat direct-chat-primary">
               <div class="box-header with-border">
                 <h3 class="box-title">User List</h3>
-<!--                 <div class="box-tools ">
-                  <div class="btn-group pull-right no-padding">
-                  <form class="input-group" id="search-by-name" (ngSubmit)="search()" #searchForm="ngForm" >
-                    <div class="input-group input-group-sm" >
-                      <input type="search" [(ngModel)]="searchName" [ngModelOptions]="{standalone: true}" class="form-control pull-right" placeholder="Search by name">
-
-                      <div class="input-group-btn">
-                        <button class="btn btn-default"><i class="fa fa-search"></i></button>
+                    <div class="btn-group pull-right no-padding"> 
+                      <form (ngSubmit)="refreshList()">
+              
+                      <div class="form-group btn-group pull-right no-margin ">
+                        <button type="submit" class="btn btn-default btn-xs" > Refresh </button>
                       </div>
-
+                      </form>
                     </div>
-                  </form>
-                  </div>
-                  <div class="btn-group pull-right">
-                    <button type="button" class="btn btn-default btn-sm" id="return-to-table" (click)="returnToTable()"><i class="fa fa-arrow-left" ></i></button>
-                  </div> 
-                </div> -->
-                <!-- box-tools -->
               </div>
               <!-- /.box-header -->
 
@@ -36,7 +26,8 @@
                     <th>Phone/ID</th>
                     <th>Name</th>
                     <th>Updated</th>
-                    <th>Action</th>
+                    <!-- <th>Delete</th> -->
+                    <th>View</th>
                   </tr>
                 </thead>
                 <tbody id="table-body">
@@ -45,9 +36,14 @@
                   <td>{{viewUser.phone_number}}</td>
       			      <td>{{viewUser.nickname }}</td>
                   <td>{{viewUser.updated_at | date: 'medium'}}</td>
+ <!--                  <td>
+                    <button type="button" class="btn btn-danger btn-xs" id="delete-user" (click)="deleteUser(viewUser)">Delete</button> 
+                   
+                  </td> -->
                   <td>
-					<button type="button" class="btn btn-primary btn-xs" id="view-user" (click)="clickedView(viewUser)">View</button>            
-                    </td>
+					          <button type="button" class="btn btn-primary btn-xs" id="view-user" (click)="clickedView(viewUser)">View</button> 
+                   
+                  </td>
                   </tr>
                 </tbody>
                   <!-- </div> -->

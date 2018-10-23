@@ -46,4 +46,8 @@ export class UsersComponent implements OnInit {
       });
   	}
 
+    refreshList(){
+      this.getAllUserDetail();      
+    }
+
 }
