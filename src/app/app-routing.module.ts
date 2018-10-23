@@ -34,6 +34,9 @@ import { MultichatReqComponent } from './multichat-req/multichat-req.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { HistorySearchComponent } from './history-search/history-search.component';
+import { UsersComponent } from './users/users.component';
+import { UserDetailComponent } from './user-detail/user-detail.component';
+
 
 const appRoutes: Routes = [
     // { path: '', component: HomeComponent },
@@ -63,6 +66,11 @@ const appRoutes: Routes = [
   { path: 'chat/history', component: HistorySearchComponent, 
     children:[
       { path: 'historybox/:id', component: HistoryComponent, outlet:'historyOutlet',canActivate: [AuthGuardService]},
+  ], canActivate: [AuthGuardService]},
+
+  { path: 'chat/users', component: UsersComponent, 
+    children:[
+      { path: 'userdetailbox/:id', component: UserDetailComponent, outlet:'userdetailOutlet',canActivate: [AuthGuardService]},
   ], canActivate: [AuthGuardService]},
   // { path: 'opchat', component: OpchatComponent, canActivate: [AuthguardGuard] },
   // { path: 'admin', component: AdminComponent , canActivate: [AuthguardGuard]},
