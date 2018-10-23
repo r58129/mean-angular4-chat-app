@@ -1,6 +1,8 @@
 import { NgModule }              from '@angular/core';
 import { RouterModule, Routes }  from '@angular/router';
 
+import { csRegPath } from './../environments/environment';
+
 import { AppComponent } from './app.component';
 import { ChatService } from './chat.service';
 import { ChatComponent } from './chat/chat.component';
@@ -36,7 +38,7 @@ import { HistorySearchComponent } from './history-search/history-search.componen
 const appRoutes: Routes = [
     // { path: '', component: HomeComponent },
   { path: '', component: LoginComponent, pathMatch: 'full' },
-  { path: 'api/registerID/0a6O85y4h5cVsBfRB-57n4l4DBN6WmMlA2f94I_oaNs', component: RegisterComponent },
+  { path: csRegPath , component: RegisterComponent },
   { path: 'api/forgotpwd', component: ForgotPasswordComponent },
   { path: 'api/resetpwd/:token', component: ResetPasswordComponent },
   { path: 'api/profile', component: ProfileComponent, canActivate: [AuthGuardService] },
@@ -82,8 +84,9 @@ const appRoutes: Routes = [
  
 @NgModule({
   imports: [
+      
     RouterModule.forRoot(
-      appRoutes,
+        appRoutes,
       //{ useHash: false }
       { enableTracing: false } // <-- debugging purposes only
     )

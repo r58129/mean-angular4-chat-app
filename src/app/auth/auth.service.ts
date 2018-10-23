@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators/map';
 import { Router } from '@angular/router';
 //import { Configs } from './../configurations';
 import { Configs } from './../../environments/environment';
+import { csRegPath } from './../../environments/environment';
 import { of } from 'rxjs/observable/of';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
@@ -105,7 +106,7 @@ private tinkerloginStatus: any=[];
       // console.log("request post");
       // base = this.http.post(`/api/${type}`, user);
       if (type === 'register') {
-      base = this.http.post(this.configs.expressAddr +'/api/registerID/0a6O85y4h5cVsBfRB-57n4l4DBN6WmMlA2f94I_oaNs', user);
+      base = this.http.post(this.configs.expressAddr +'/'+csRegPath, user);
       console.log("register http post");
       }
       if (type === 'login') {

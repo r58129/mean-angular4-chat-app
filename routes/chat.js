@@ -17,7 +17,7 @@ cert: cert
 
 var jwt = require('express-jwt');
 var auth = jwt({
-  secret: 'MY_SECRET',
+  secret: global.mySecret,
   userProperty: 'payload'
 });
 
