@@ -22,7 +22,7 @@
 				        	<div class="form-horizontal" *ngFor ="let user of user">
 					          <div class="form-group">
 					            <label class="col-sm-5 control-label">Phone Number</label>
-					            <input type="text" class="form-control-static" [(ngModel)]="userDetail.phone_number" placeholder="Required" name="user.phone_number" required="" >
+					            <input type="text" class="form-control-static" [(ngModel)]="userDetail.phone_number" placeholder="Required" name="user.phone_number" required="" [disabled]="true" >
 					          </div>
 					          <div class="form-group">
 					            <label class="col-sm-5 control-label">First Name</label>

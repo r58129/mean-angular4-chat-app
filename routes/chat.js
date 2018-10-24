@@ -1100,17 +1100,17 @@ router.delete('/contact/:id', auth, function(req, res, next) {
 });
 
 /* GET SINGLE CHAT BY ID */
-router.get('/dbsize', auth, function(req, res, next) {
-  if (!req.payload._id) {
-    res.status(401).json({
-      "message" : "UnauthorizedError:"
-    });
-  } else {
-    Chat.stats(req.body, function (err, chats) {
-      if (err) return next(err);
-      res.json(chats);
-    });
-  }
-});
+// router.get('/dbstats/storage', auth, function(req, res, next) {
+//   if (!req.payload._id) {
+//     res.status(401).json({
+//       "message" : "UnauthorizedError:"
+//     });
+//   } else {
+//     Chat.find(req.body, function (err, chats) {
+//       if (err) return next(err);
+//       res.json(chats);
+//     });
+//   }
+// });
 
 module.exports = router;
