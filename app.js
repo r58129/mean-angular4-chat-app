@@ -43,7 +43,7 @@ global.dbName = process.env.DBNAME;
 
 global.mulChatConfigPath=process.env.MULTICHATCONFIGPATH;
 
-global.csRegPath==process.env.CS_REG_PATH;
+//global.csRegPath==process.env.CS_REG_PATH;
 global.mySecret=process.env.MY_SECRET;
 
 
