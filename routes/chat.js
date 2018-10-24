@@ -926,7 +926,7 @@ router.delete('/userdelete/:phone_number', auth, function(req, res, next) {
       "message" : "UnauthorizedError:"
     });
   } else { 
-    User.findByIdAndRemove({phone_number:req.params.phone_number}, req.body, function (err, post) {
+    User.findOneAndRemove({phone_number:req.params.phone_number}, req.body, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });
@@ -1095,6 +1095,20 @@ router.delete('/contact/:id', auth, function(req, res, next) {
     Contact.findByIdAndRemove(req.params.id, req.body, function (err, post) {
       if (err) return next(err);
       res.json(post);
+    });
+  }
+});
+
+/* GET SINGLE CHAT BY ID */
+router.get('/dbsize', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {
+    Chat.stats(req.body, function (err, chats) {
+      if (err) return next(err);
+      res.json(chats);
     });
   }
 });
