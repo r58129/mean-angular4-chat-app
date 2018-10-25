@@ -4,6 +4,14 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+
+const options =  {
+                server: {
+                    reconnectTries: Number.MAX_VALUE,
+                    reconnectInterval: 1000, // reconnect after 1 second(s)
+                }
+            };
+
 // var fs = require('fs');
 // Auth
 var cookieParser = require('cookie-parser');
@@ -64,7 +72,7 @@ global.mySecret=process.env.MY_SECRET;
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect( global.dbIp +global.dbName);
+mongoose.connect( global.dbIp +global.dbName,options);
 
 mongoose.connection.once('open', function() {
   mongoose.connection.db.stats(function(err, stats) {
