@@ -778,6 +778,42 @@ router.get('/staff/online_nickname', auth, function(req, res, next) {
 
 // db.inventory.find( { $and: [ { price: { $ne: 1.99 } }, { price: { $exists: true } } ] } )
 
+router.get('/exporthistory/:startTime/:endTime', auth, function(req, res, next) {
+  var currentTime = Date.now();
+  var startTime = req.params.startTime;
+  var startYear = startTime.substring(0,4);
+  var startMonth = startTime.substring(4,6);
+  var startDay = startTime.substring(6,8);
+  var startDate = new Date(startYear, startMonth-1, startDay).getTime();
+  
+  var endTime = req.params.endTime;
+  var endYear = endTime.substring(0,4);
+  var endMonth = endTime.substring(4,6);
+  var endDay = endTime.substring(6,8);
+  var endDate = new Date(endYear, endMonth-1, endDay).getTime();
+
+
+  console.log('startNum: ' + startDate);
+  console.log('endNum: ' +endDate);
+  console.log('currentTime: '+currentTime);
+
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {
+    Chat.find({ $and:
+      [ 
+        { updated_at: { $gte: startDate } },
+        { updated_at: { $lte: endDate} }
+      ]
+    }, function (err, chats) {
+      if (err) return next(err);
+      res.json(chats);
+    });
+  }
+});
+
 /* GET ALL CHATS in the room 192.168.0.102:4080/chat/roomhistory/phone#*/ 
 router.get('/roomhistory/:room', auth, function(req, res, next) {
   if (!req.payload._id) {

@@ -34,7 +34,8 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 import { HistorySearchComponent } from './history-search/history-search.component';
 import { UsersComponent } from './users/users.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
-
+import { ExportHistoryComponent } from './export-history/export-history.component';
+import { ReportSearchComponent } from './report-search/report-search.component';
 
 const appRoutes: Routes = [
     // { path: '', component: HomeComponent },
@@ -64,6 +65,11 @@ const appRoutes: Routes = [
   { path: 'chat/history', component: HistorySearchComponent, 
     children:[
       { path: 'historybox/:id', component: HistoryComponent, outlet:'historyOutlet',canActivate: [AuthGuardService]},
+  ], canActivate: [AuthGuardService]},
+
+  { path: 'chat/report', component: ReportSearchComponent, 
+    children:[
+      { path: 'exportbox/:id', component: ExportHistoryComponent, outlet:'reportOutlet',canActivate: [AuthGuardService]},
   ], canActivate: [AuthGuardService]},
 
   { path: 'chat/userSettingPage', component: UsersComponent, 

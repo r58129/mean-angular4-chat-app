@@ -318,6 +318,20 @@ export class ChatService {
   // }
 
   // get all chats in room
+  exportChatHistory(startTime, endTime){
+    return new Promise((resolve, reject) => {
+        // this.updateUrl();
+      this.http.get(this.serverUrl+'/chat/exporthistory/' +startTime+'/'+endTime, { headers: { Authorization: `Bearer ${this.getToken()}` }} )
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
+  // get all chats in room
   getAllChatHistory(phoneNum){
     return new Promise((resolve, reject) => {
         // this.updateUrl();

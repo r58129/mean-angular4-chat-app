@@ -46,6 +46,8 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 import { HistorySearchComponent } from './history-search/history-search.component';
 import { UsersComponent } from './users/users.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
+import { ExportHistoryComponent } from './export-history/export-history.component';
+import { ReportSearchComponent } from './report-search/report-search.component';
 // import { EmojiModule } from 'angular-emoji/dist';
 
 // import { ApphovertableComponent } from './components/apphovertable/apphovertable.component';
@@ -83,7 +85,9 @@ import { UserDetailComponent } from './user-detail/user-detail.component';
     ResetPasswordComponent,
     HistorySearchComponent,
     UsersComponent,
-    UserDetailComponent
+    UserDetailComponent,
+    ExportHistoryComponent,
+    ReportSearchComponent
     //CallbackComponent
     // ApphovertableComponent
   ],
