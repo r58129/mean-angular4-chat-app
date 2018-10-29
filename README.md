@@ -123,6 +123,9 @@ mongodump --gzip --db chatService
 // To archive and gzip chatService DB to gz file under /dump folder 
 mongodump --gzip --archive=dump/chatServiceBackUp.20181025.gz --db chatService 
 
+// To archive and gzip chats collection of chatService DB to gz file under /dump folder with filtering in the query.json file.
+mongodump --gzip --archive=dump/chatServiceBackUp.20181025.gz --db chatService  --collection chats --queryFile query.json
+
 // To restore chatService DB from folder /dump/chatService
 mongorestore --gzip --db chatService dump/chatService
 

@@ -805,7 +805,7 @@ router.get('/exporthistory/:startTime/:endTime', auth, function(req, res, next) 
     Chat.find({ $and:
       [ 
         { updated_at: { $gte: startDate } },
-        { updated_at: { $lte: endDate} }
+        { updated_at: { $lt: endDate} }
       ]
     }, function (err, chats) {
       if (err) return next(err);
