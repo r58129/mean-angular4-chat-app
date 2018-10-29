@@ -46,15 +46,23 @@ export class ReportSearchComponent implements OnInit {
   	  console.log ('end Time: ' + this.endNum);
   	  console.log ('today: ' + this.todayNum);
   	  
-  	  if (this.endNum > this.todayNum){
+  	  if ((this.endNum > this.todayNum) ||(this.endNum < this.startNum)){
 
-  	  	console.log('End time cannot exceed today!');
-  	  	window.alert('End time cannot exceed today!');
+  	  	console.log('There is something wrong with the input date!');
+  	  	window.alert('There is something wrong with the input date!');
   	  } else {
+
   	  	this.chatService.exportChatHistory(this.searchRange.start_time, this.searchRange.end_time).then((res) => {  //from chatService, 
 		      this.allChat = res;
 		      this.saveToFs(this.allChat);
 		      // console.log(this.allChat);
+          if (this.allChat.length == 0){
+            window.alert('No Content is found within the period !');
+          } 
+          else {
+            window.alert('Downloaded file can be found in broswer default path!');
+          }
+          
 		    }, (err) => {
 		      console.log(err);
 		    });
