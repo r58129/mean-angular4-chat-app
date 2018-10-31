@@ -116,6 +116,23 @@ db.dropUser("user")
 //change pw to SOh3TbYhxuLiW8ypJPxmt1oOfL
 db.changeUserPassword("reporting", "SOh3TbYhxuLiW8ypJPxmt1oOfL")
 
+
+// To dump chatService DB in default folder /dump
+mongodump --gzip --db chatService
+
+// To archive and gzip chatService DB to gz file under /dump folder 
+mongodump --gzip --archive=dump/chatServiceBackUp.20181025.gz --db chatService 
+
+// To archive and gzip chats collection of chatService DB to gz file under /dump folder with filtering in the query.json file.
+mongodump --gzip --archive=dump/chatServiceBackUp.20181025.gz --db chatService  --collection chats --queryFile query.json
+
+// To restore chatService DB from folder /dump/chatService
+mongorestore --gzip --db chatService dump/chatService
+
+// To restore chatService DB from gz and archive file under /dump folder
+mongorestore --gzip --archive=dump/chatServiceBackUp.20181025.gz --db chatService
+
+
 Check mongoDB command
 - mongo
 - Show dbs
@@ -144,4 +161,5 @@ https://developers.line.me/console/channel/1594950287/basic/
 https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login
 
 adb push .\configuration.json /storage/emulated/0/whatsAppQueueMessagesJobs/configuration.json
+
 

@@ -11,6 +11,9 @@
 #key 
 /routes/encryption
 
+#dump file
+/dump
+
 #image
 /routes/image
 

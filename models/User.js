@@ -1,7 +1,11 @@
 var mongoose = require('mongoose');
 
 var UserSchema = new mongoose.Schema({
-	phone_number:String,	
+	phone_number:{
+      type: String,
+      unique: true,
+      required: true
+    },	
   	first_name: String,
   	middle_name: String,
   	last_name: String,			

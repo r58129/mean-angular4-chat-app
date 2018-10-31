@@ -1,0 +1,56 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- <div class="wrapper"> -->
+    <!-- <div class="container"> -->
+      <div class="row no-padding" id="users-page" >
+          <!-- <div class="col-xs-6 no-padding" > -->
+            <div class="box box-primary direct-chat direct-chat-primary">
+              <div class="box-header with-border">
+                <h3 class="box-title">Export History</h3>
+                    <div class="btn-group pull-right no-padding"> 
+ <!--                      <form (ngSubmit)="refreshList()">
+              
+                      <div class="form-group btn-group pull-right no-margin ">
+                        <button type="submit" class="btn btn-default btn-xs" > Refresh </button>
+                      </div>
+                      </form> -->
+                    </div>
+              </div>
+              <!-- /.box-header -->
+
+              <div  class="box-body no-padding">
+			        	<form (ngSubmit)="exportHistory()" #exportHistoryForm="ngForm"> 
+				        	<div class="form-horizontal">
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label"></label>
+					          </div>				        		
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">Start Date</label>
+					            <input type="text" class="form-control-static" [(ngModel)]="searchRange.start_time" placeholder="20181001" name="start_time" required=""  >
+					          </div>
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">End Date</label>
+					            <input type="text" class="form-control-static" [(ngModel)]="searchRange.end_time" placeholder="20181026" name="end_time" required="" >
+					          </div>
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">Filename</label>
+					            <input type="text" class="form-control-static" [(ngModel)]="searchRange.filename" placeholder="filename" name="filename" required="" >.json
+					          </div>					          
+                    
+	                  <div id = export-button class="form-group">
+	                    <div class="form-group center">
+	                      <label class="col-sm-5 control-label"></label>
+	                      <button  type="submit" class="btn btn-warning btn" [disabled]="!exportHistoryForm.form.valid"> Export </button>
+	                    </div>                        
+	                  </div> 
+				        	</div>
+				        </form>              	
+
+              </div>
+
+
+            </div>
+
+    </div>
+  <!-- </div> -->
+</div>
