@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MultichatReqComponent } from './multichat-req.component';
+import { OurServicesComponent } from './our-services.component';
 
-describe('MultichatReqComponent', () => {
-  let component: MultichatReqComponent;
-  let fixture: ComponentFixture<MultichatReqComponent>;
+describe('OurServicesComponent', () => {
+  let component: OurServicesComponent;
+  let fixture: ComponentFixture<OurServicesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MultichatReqComponent ]
+      declarations: [ OurServicesComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MultichatReqComponent);
+    fixture = TestBed.createComponent(OurServicesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

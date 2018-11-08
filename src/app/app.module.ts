@@ -39,15 +39,19 @@ import { AuthGuardService } from './auth/auth.guard.service';
 import { HomeComponent } from './components/home/home.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { HistoryComponent } from './history/history.component';
-import { MultichatComponent } from './multichat/multichat.component';
-import { MultichatReqComponent } from './multichat-req/multichat-req.component';
+// import { MultichatComponent } from './multichat/multichat.component';
+// import { MultichatReqComponent } from './multichat-req/multichat-req.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { HistorySearchComponent } from './history-search/history-search.component';
 import { UsersComponent } from './users/users.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
-import { ExportHistoryComponent } from './export-history/export-history.component';
+// import { ExportHistoryComponent } from './export-history/export-history.component';
 import { ReportSearchComponent } from './report-search/report-search.component';
+import { OurServicesComponent } from './our-services/our-services.component';
+import { CommandListComponent } from './command-list/command-list.component';
+import { WhitelistComponent } from './whitelist/whitelist.component';
+
 // import { EmojiModule } from 'angular-emoji/dist';
 
 // import { ApphovertableComponent } from './components/apphovertable/apphovertable.component';
@@ -79,15 +83,18 @@ import { ReportSearchComponent } from './report-search/report-search.component';
     HomeComponent,
     ProfileComponent,
     HistoryComponent,
-    MultichatComponent,
-    MultichatReqComponent,
+    // MultichatComponent,
+    // MultichatReqComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
     HistorySearchComponent,
     UsersComponent,
     UserDetailComponent,
-    ExportHistoryComponent,
-    ReportSearchComponent
+    // ExportHistoryComponent,
+    ReportSearchComponent,
+    OurServicesComponent,
+    CommandListComponent,
+    WhitelistComponent
     //CallbackComponent
     // ApphovertableComponent
   ],
