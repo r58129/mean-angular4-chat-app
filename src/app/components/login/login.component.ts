@@ -3,8 +3,13 @@ import { AuthService, TokenPayload, UserDetails } from '../../auth/auth.service'
 import { Router } from '@angular/router';
 //import { Configs } from '../../configurations';
 import { Configs } from '../../../environments/environment';
+import * as Version from '../../../environments/version';
+//import VERSION from '../../../environments/version';
+//var version = Version;
 // import * as $ from 'jquery';
 // declare var $:any;
+
+
 
 @Component({
   selector: 'app-login',
@@ -35,7 +40,7 @@ export class LoginComponent {
     // $.fn.layout.Constuctor.prototype.fix();
   // $layout = $('body').data('lte.layout');  
    // $('body').layout('fixed');
-
+  console.log('Version is '+JSON.stringify(Version.VERSION.hash));
 
     if (!sessionStorage.getItem('loginTinkerDone'))
       {
