@@ -29,15 +29,18 @@ import { AuthGuardService } from './auth/auth.guard.service';
 import { HomeComponent } from './components/home/home.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { HistoryComponent } from './history/history.component';
-import { MultichatComponent } from './multichat/multichat.component';
-import { MultichatReqComponent } from './multichat-req/multichat-req.component';
+// import { MultichatComponent } from './multichat/multichat.component';
+// import { MultichatReqComponent } from './multichat-req/multichat-req.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { HistorySearchComponent } from './history-search/history-search.component';
 import { UsersComponent } from './users/users.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
-import { ExportHistoryComponent } from './export-history/export-history.component';
+// import { ExportHistoryComponent } from './export-history/export-history.component';
 import { ReportSearchComponent } from './report-search/report-search.component';
+import { OurServicesComponent } from './our-services/our-services.component';
+import { CommandListComponent } from './command-list/command-list.component';
+import { WhitelistComponent } from './whitelist/whitelist.component';
 
 const appRoutes: Routes = [
     // { path: '', component: HomeComponent },
@@ -69,15 +72,19 @@ const appRoutes: Routes = [
       { path: 'historybox/:id', component: HistoryComponent, outlet:'historyOutlet',canActivate: [AuthGuardService]},
   ], canActivate: [AuthGuardService]},
 
-  { path: 'chat/report', component: ReportSearchComponent, 
-    children:[
-      { path: 'exportbox/:id', component: ExportHistoryComponent, outlet:'reportOutlet',canActivate: [AuthGuardService]},
-  ], canActivate: [AuthGuardService]},
+  { path: 'chat/report', component: ReportSearchComponent, canActivate: [AuthGuardService]},
 
   { path: 'chat/userSettingPage', component: UsersComponent, 
     children:[
       { path: 'userdetailbox/:id', component: UserDetailComponent, outlet:'userdetailOutlet',canActivate: [AuthGuardService]},
   ], canActivate: [AuthGuardService]},
+  
+  { path: 'chat/whatsappwhitelist', component: WhitelistComponent, 
+    children:[
+      { path: 'adduserbox/:id', component: UsersComponent, outlet:'adduserOutlet',canActivate: [AuthGuardService]},
+  ], canActivate: [AuthGuardService]},  
+  { path: 'chat/ourservices', component: OurServicesComponent, canActivate: [AuthGuardService] },
+  { path: 'chat/commandlist', component: CommandListComponent, canActivate: [AuthGuardService] },  
   // { path: 'opchat', component: OpchatComponent, canActivate: [AuthguardGuard] },
   // { path: 'admin', component: AdminComponent , canActivate: [AuthguardGuard]},
   // { path: 'oldoperator', component: OperatorComponent, canActivate: [AuthguardGuard] },

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MultichatComponent } from './multichat.component';
+import { CommandListComponent } from './command-list.component';
 
-describe('MultichatComponent', () => {
-  let component: MultichatComponent;
-  let fixture: ComponentFixture<MultichatComponent>;
+describe('CommandListComponent', () => {
+  let component: CommandListComponent;
+  let fixture: ComponentFixture<CommandListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MultichatComponent ]
+      declarations: [ CommandListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MultichatComponent);
+    fixture = TestBed.createComponent(CommandListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

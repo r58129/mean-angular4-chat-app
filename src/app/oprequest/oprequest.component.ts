@@ -15,7 +15,7 @@ import { Configs } from '../../environments/environment';
   styleUrls: ['./oprequest.component.css']
 })
 
-export class OprequestComponent implements OnInit, AfterViewChecked {
+export class OprequestComponent implements OnInit {
 
   private unsubscribe: Subject<any> = new Subject();
   // private subscription: Subscription = new Subscription();
@@ -27,6 +27,7 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
   requests: any;  //new request
   interval: any;
   timer: any;
+  loadList: any;
   joinned: boolean = false;
   notSearch: boolean = true;
   contacts: any;  //contacts
@@ -63,13 +64,18 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
   ngOnInit() {
 
     this.getOperatorRequest();
-    this.scrollTableToBottom();
+    // this.scrollTableToBottom();
 
     
   this.timer = setInterval(() => {
     this.getOperatorRequest();
     // console.log("operator refresh requests");
   }, 3000);
+
+    this.loadList = setInterval(() => {
+    this.scrollTableToBottom();
+    // console.log("operator refresh requests");
+  }, 5000);
 
   }  //ngOnInit
 
@@ -84,12 +90,17 @@ export class OprequestComponent implements OnInit, AfterViewChecked {
       console.log('stop refreshing');
     }
 
+    if (this.loadList){
+      clearInterval(this.loadList);
+      console.log('stop loadList');
+    }
+
   }
 
     
-  ngAfterViewChecked() {
-    this.scrollTableToBottom();
-  }
+  // ngAfterViewChecked() {
+  //   // this.scrollTableToBottom();
+  // }
 
 
   scrollTableToBottom(): void {

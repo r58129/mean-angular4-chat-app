@@ -872,6 +872,35 @@ router.delete('/request/:id', auth, function(req, res, next) {
   }
 });
 
+/*GET whatsapp user whitelist*/
+router.get('/user/whatsappwhitelist', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Chat.distinct("phone_number", {type:{ $exists: false }}
+    , function (err, chats) {
+      if (err) return next(err);
+      res.json(chats);
+    });
+ }
+});
+
+/*GET whatsapp user whitelist*/
+router.get('/user/whatsappuserphonelist', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    User.distinct("phone_number"
+    , function (err, users) {
+      if (err) return next(err);
+      res.json(users);
+    });
+ }
+});
 
 /* GET ALL USERS in same room 192.168.0.102:4080/chat/user/all*/ 
 // router.get('/user/all', function(req, res, next) {
@@ -887,6 +916,20 @@ router.get('/user/all', auth, function(req, res, next) {
     });
  }
 });
+
+// export whatsapp user list
+// router.get('/user/exportwhatsappuser', auth, function(req, res, next) {
+//  if (!req.payload._id) {
+//    res.status(401).json({
+//      "message" : "UnauthorizedError:"
+//    });
+//  } else {  
+//     User.find( req.body, function (err, users) {
+//       if (err) return next(err);
+//       res.json(users);
+//     });
+//  }
+// });
 
 /* GET SINGLE user BY ID */
 // router.get('/user/:id', auth, function(req, res, next) {

@@ -34,9 +34,16 @@
 					          </div>
 					          <div class="form-group">
 					            <label class="col-sm-5 control-label">Filename</label>
-					            <input type="text" class="form-control-static" [(ngModel)]="searchRange.filename" placeholder="filename" name="filename" required="" >.json
+					            <input type="text" class="form-control-static" [(ngModel)]="searchRange.filename" placeholder="filename" name="filename" required="" >
 					          </div>					          
-                    
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">Format</label>
+                      <select class="form-control-static" [(ngModel)]="searchRange.format" name="format" required="" >
+                        <option value ="" disabled selected >Select file format</option>
+                        <option value="json"> JSON </option>
+                        <option value="csv"> CSV </option>
+                      </select>					            
+					          </div>		                    
 	                  <div id = export-button class="form-group">
 	                    <div class="form-group center">
 	                      <label class="col-sm-5 control-label"></label>

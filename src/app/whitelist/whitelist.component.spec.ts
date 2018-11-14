@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ExportHistoryComponent } from './export-history.component';
+import { WhitelistComponent } from './whitelist.component';
 
-describe('ExportHistoryComponent', () => {
-  let component: ExportHistoryComponent;
-  let fixture: ComponentFixture<ExportHistoryComponent>;
+describe('WhitelistComponent', () => {
+  let component: WhitelistComponent;
+  let fixture: ComponentFixture<WhitelistComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ExportHistoryComponent ]
+      declarations: [ WhitelistComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ExportHistoryComponent);
+    fixture = TestBed.createComponent(WhitelistComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

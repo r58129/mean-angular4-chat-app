@@ -381,8 +381,32 @@ export class ChatService {
     });
   }
 
-  //get all users
+  //get all whitelist users
+  getWhatsappWhiteList() {
+    return new Promise((resolve, reject) => {
+      this.http.get(this.serverUrl+'/chat/user/whatsappwhitelist', { headers: { Authorization: `Bearer ${this.getToken()}` }})
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
 
+  //get all users
+  getWhatsappUserPhoneList() {
+    return new Promise((resolve, reject) => {
+      this.http.get(this.serverUrl+'/chat/user/whatsappuserphonelist', { headers: { Authorization: `Bearer ${this.getToken()}` }})
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+  //get all users
   getAllUser() {
     return new Promise((resolve, reject) => {
       this.http.get(this.serverUrl+'/chat/user/all', { headers: { Authorization: `Bearer ${this.getToken()}` }})
@@ -395,6 +419,18 @@ export class ChatService {
     });
   }
 
+  //export whatsapp users
+  // exportWhatsappUser() {
+  //   return new Promise((resolve, reject) => {
+  //     this.http.get(this.serverUrl+'/chat/user/exportwhatsappuser', { headers: { Authorization: `Bearer ${this.getToken()}` }})
+  //       // .map(res => res.json())
+  //       .subscribe(res => {
+  //         resolve(res);
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //   });
+  // }
 
   showUser(phoneNum) {
     return new Promise((resolve, reject) => {
@@ -667,6 +703,11 @@ export class ChatService {
     console.log("user.phone_number: " + viewUser.phone_number);
     this.change.emit(viewUser);
   }
+
+  addWhitelistUser(addUser){    
+    console.log("user.phone_number: " + addUser.phone_number);
+    this.change.emit(addUser);
+  }  
 
   private handleError(error: any): Promise<any> {
     return Promise.reject(error.message || error);
