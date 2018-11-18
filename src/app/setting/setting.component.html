@@ -1,0 +1,67 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- <div class="wrapper"> -->
+    <!-- <div class="container"> -->
+      <div class="row no-padding" id="staffs-page" >
+          <div class="col-xs-6 no-padding" >
+            <div class="box box-primary direct-chat direct-chat-primary">
+              <div class="box-header with-border">
+                <h3 class="box-title">Change Staff Plan</h3>
+                    <div class="btn-group pull-right no-padding"> 
+                      <form (ngSubmit)="refreshList()">            
+                        <div class="form-group btn-group pull-right no-margin ">
+                          <button type="submit" class="btn btn-default btn-xs" > Refresh </button>
+                        </div>
+                      </form>
+
+                    </div>
+              </div>
+              <!-- /.box-header -->
+
+              <div  id="page-content" class="box-body">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <!-- <th style="display:none;">ID</th> -->
+                    <!-- <th>Name</th> -->
+                    <th>Email</th>
+                    <th>Plan</th>
+                    <!-- <th>Delete</th> -->
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="table-body">
+                  <tr *ngFor="let viewStaff of staffDetail">
+                  <!-- <td style="display:none;" name="opRequestId">{{op._id}}</td> -->  
+                  <!-- <td>{{staff.name}}</td> -->
+                  <td>{{viewStaff.email }}</td>
+                  <td>{{viewStaff.role}}</td>
+<!--                   <td>
+                      <select class="form-control" [(ngModel)]="updateStaff.role" name="role" required="" >
+                        <option value ="" disabled selected >{{staff.role}}</option>
+                        <option value="basic"> BASIC </option>
+                        <option value="basic+"> BASIC+ </option>
+                        <option value="premium"> PREMIUM </option>
+                        <option value="premium+"> PREMIUM+ </option>
+                      </select>
+                   
+                  </td> -->
+                  <td>
+                    <button type="button" class="btn btn-primary btn-xs" id="view-staff" (click)="clickedView(viewStaff)">View</button>                   
+                  </td>
+                  </tr>
+                </tbody>
+                  <!-- </div> -->
+                </table>          	
+
+              </div>
+
+            </div>
+          </div>
+
+          <div class="row no-padding" id="staff-role-page">
+            <app-staff-plan></app-staff-plan>
+                  
+          </div>
+    </div>
+</div>

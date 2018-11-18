@@ -1,0 +1,111 @@
+          <div class="col-xs-6 no-padding" >
+            <div class="box box-primary direct-chat direct-chat-primary" *ngIf="editDetail; else viewDetail">
+              <!-- <div class="box" *ngIf="joinned; else joinroom"> -->
+                  <!-- /.box-header -->
+                  <div class="box-header with-border" ><strong>
+                    <!-- <div class="panel-heading"> -->
+                      <!-- <span class="glyphicon glyphicon-comment"></span>  -->
+                      {{ staffDetail.name }}</strong>
+
+                    <div class="btn-group pull-right no-padding"> 
+                      <form (ngSubmit)="exit()">
+              
+                      <div class="form-group btn-group pull-right no-margin ">
+                        <button type="submit" class="btn btn-default btn-xs" > Exit </button>
+                      </div>
+                  	  </form>
+                  	</div>
+                  </div>
+              <!-- /.box-body -->
+              <div class="box-body" *ngIf="editDetail; else viewDetail" >
+			        	<form (ngSubmit)="updateStaffDetail()" #updateStaffForm="ngForm"> 
+				        	<div class="form-horizontal" >
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">Name</label>
+					            <input type="text" class="form-control-static" [(ngModel)]="staffDetail.name" placeholder="Required" name="staffDetail.name" required="" [disabled]="true" >
+					          </div>
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">Email</label>
+					            <input type="text" class="form-control-static" [(ngModel)]="staffDetail.email" placeholder="Required" name="staffDetail.email" required="" [disabled]="true">
+					          </div>
+<!-- 					          <div class="form-group">
+					            <label class="col-sm-5 control-label">Company Name</label>
+					            <input type="text" class="form-control-static" [(ngModel)]="staffDetail.companyName" placeholder="Optional" name="staffDetail.companyName" >
+					          </div> -->
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">Staff Plan</label>
+                      <select class="form-control-static" [(ngModel)]="staffDetail.role" name="role" required="" >
+                        <option value ="" disabled selected >Select Plan</option>
+                        <option value="BASIC"> BASIC </option>
+                        <option value="BASIC+"> BASIC+ </option>
+                        <option value="PREMIUM"> PREMIUM </option>
+                        <option value="PREMIUM+"> PREMIUM+ </option>
+                      </select>					            
+					            <!-- <input type="text" class="form-control-static" [(ngModel)]="staffDetail.role" placeholder="required" name="staff.role" > -->
+					          </div>
+
+                    
+	                  <div id = edit-button class="form-group">
+	                    <div class="form-group center">
+	                      <label class="col-sm-5 control-label"></label>
+	                      <button  type="submit" class="btn btn-warning btn" [disabled]="!updateStaffForm.form.valid"> Update </button>
+	                    </div>                        
+	                  </div> 
+				        	</div>
+				        </form>
+<!-- 
+	              <div id = delete-button class="form-group">
+	                <div class="form-group center">
+	                  <label class="col-sm-5 control-label"></label>
+	                  <button  type="submit" class="btn btn-danger btn" (click)="deleteUser()"> Delete User </button>
+	                </div>                        
+	              </div --> 				        
+              </div>                  
+              </div>
+
+              <ng-template #viewDetail>
+                <div class="box box-primary direct-chat direct-chat-primary">
+                  <div class="box-header with-border">
+                    <h3 class="box-title">View Detail</h3>
+                  
+<!--                     <div class="btn-group pull-right no-padding"> 
+                      <form (ngSubmit)="createUser()">              
+                      <div class="form-group btn-group pull-right no-margin ">
+                        <button type="submit" class="btn btn-default btn-xs" > Add User </button>
+                      </div>
+                      </form>
+                  	</div>  -->
+                  </div>                              
+                  <div class="box-body">
+                  	<form (ngSubmit)="editStaffDetail()">     
+							        <div class="form-horizontal"  *ngFor="let staff of staff">
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Name</label>
+							            <p class="form-control-static">{{ staff.name }}</p>
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Email</label>
+							            <p class="form-control-static">{{ staff.email }}</p>
+							          </div>
+<!-- 							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Company Name</label>
+							            <p class="form-control-static">{{ staff.companyName }}</p>
+							          </div> -->
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Plan</label>
+							            <p class="form-control-static">{{ staff.role }}</p>
+							          </div>							  
+				                    
+				                <div id = update-button class="form-group"> 
+				                  <div class="form-group center">
+				                    <label class="col-sm-5 control-label"></label>
+				                    <button  type="submit" class="btn btn-primary btn" > Edit </button>
+				                  </div>				                       
+				                </div> 
+							        </div>
+										</form>
+                  </div>
+                </div>
+              </ng-template>
+
+          </div>

@@ -13,6 +13,10 @@ var UserSchema = new mongoose.Schema({
   	service: String,	//translate, namecard, others
   	default_spoken_lang: String,
   	default_text_lang: String,
+    namecard: {
+      vcf: String,
+      image: String
+    },
   	reserve1: String,
 	  reserve2: String,
   	updated_at: { type: Date, default: Date.now },

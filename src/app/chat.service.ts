@@ -247,76 +247,6 @@ export class ChatService {
     });
   }
 
-  // get staff session id count from staff model
-  // getStaffTinkerSessionId(){
-  //   return new Promise((resolve, reject) => {
-  //       // this.updateUrl();
-  //     this.http.get(this.serverUrl+'/chat/staff/session_id', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
-  //       // .map(res => res.json())
-  //       .subscribe(res => {
-  //         resolve(res);
-  //       }, (err) => {
-  //         reject(err);
-  //       });
-  //   });
-  // }
-
-  // get staff session id count from staff model
-  // getOnlineStaffCount(){
-  //   return new Promise((resolve, reject) => {
-  //       // this.updateUrl();
-  //     this.http.get(this.serverUrl+'/chat/staff/online_count', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
-  //       // .map(res => res.json())
-  //       .subscribe(res => {
-  //         resolve(res);
-  //       }, (err) => {
-  //         reject(err);
-  //       });
-  //   });
-  // }
-
-  // get staff session id count from staff model
-  // getOnlineStaffNickname(){
-  //   return new Promise((resolve, reject) => {
-  //       // this.updateUrl();
-  //     this.http.get(this.serverUrl+'/chat/staff/online_nickname', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
-  //       // .map(res => res.json())
-  //       .subscribe(res => {
-  //         resolve(res);
-  //       }, (err) => {
-  //         reject(err);
-  //       });
-  //   });
-  // }
-
-  // get operator Request
-  // checkOperatorChannel(){
-  //   return new Promise((resolve, reject) => {
-  //       // this.updateUrl();
-  //     this.http.get(this.serverUrl+'/chat/request/operator_channel', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
-  //       // .map(res => res.json())
-  //       .subscribe(res => {
-  //         resolve(res);
-  //       }, (err) => {
-  //         reject(err);
-  //       });
-  //   });
-  // }
-
-  //   // get operator Request
-  // updateOperatorChannel(id, data){
-  //   return new Promise((resolve, reject) => {
-  //       // this.updateUrl();
-  //     this.http.put(this.serverUrl+'/chat/request/operator_channel/'+id, data, { headers: { Authorization: `Bearer ${this.getToken()}` }} )
-  //       // .map(res => res.json())
-  //       .subscribe(res => {
-  //         resolve(res);
-  //       }, (err) => {
-  //         reject(err);
-  //       });
-  //   });
-  // }
-
   // get all chats in room
   exportChatHistory(startTime, endTime){
     return new Promise((resolve, reject) => {
@@ -382,9 +312,9 @@ export class ChatService {
   }
 
   //get all whitelist users
-  getWhatsappWhiteList() {
+  getAllWhatsappUserList() {
     return new Promise((resolve, reject) => {
-      this.http.get(this.serverUrl+'/chat/user/whatsappwhitelist', { headers: { Authorization: `Bearer ${this.getToken()}` }})
+      this.http.get(this.serverUrl+'/chat/user/allwhatsappuserlist', { headers: { Authorization: `Bearer ${this.getToken()}` }})
         // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -419,19 +349,6 @@ export class ChatService {
     });
   }
 
-  //export whatsapp users
-  // exportWhatsappUser() {
-  //   return new Promise((resolve, reject) => {
-  //     this.http.get(this.serverUrl+'/chat/user/exportwhatsappuser', { headers: { Authorization: `Bearer ${this.getToken()}` }})
-  //       // .map(res => res.json())
-  //       .subscribe(res => {
-  //         resolve(res);
-  //       }, (err) => {
-  //         reject(err);
-  //       });
-  //   });
-  // }
-
   showUser(phoneNum) {
     return new Promise((resolve, reject) => {
         this.http.get(this.serverUrl+'/chat/userphone/' + phoneNum, { headers: { Authorization: `Bearer ${this.getToken()}` }})
@@ -443,7 +360,6 @@ export class ChatService {
         });
     });
   }
-
 
   saveUser(data) {
     return new Promise((resolve, reject) => {
@@ -479,6 +395,67 @@ export class ChatService {
           });
     });
   }
+
+  //get all campaigns
+  getAllCampaigns() {
+    return new Promise((resolve, reject) => {
+      this.http.get(this.serverUrl+'/chat/campaign/all', { headers: { Authorization: `Bearer ${this.getToken()}` }})
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
+  showCampaign(keyword) {
+    return new Promise((resolve, reject) => {
+        this.http.get(this.serverUrl+'/chat/campaigndetail/' + keyword, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+          // .map(res => res.json())
+          .subscribe(res => {
+            resolve(res)
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
+  saveCampaign(data) {
+    return new Promise((resolve, reject) => {
+        this.http.post(this.serverUrl+'/chat/campaign', data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+          // .map(res => res.json())
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }
+
+  updateCampaign(keyword, data) {
+    return new Promise((resolve, reject) => {
+        this.http.put(this.serverUrl+'/chat/updatecampaign/'+keyword, data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+          // .map(res => res.json())
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }
+
+  deleteCampaign(keyword) {
+    return new Promise((resolve, reject) => {
+        this.http.delete(this.serverUrl+'/chat/deletecampaign/'+keyword, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }
+
 
 //get all images
   getAllImage() {
@@ -693,6 +670,7 @@ export class ChatService {
     });
   }
 
+
   copyInfo(searchUser){
     console.log("id: " + searchUser.id);
     console.log("package: " + searchUser.package);
@@ -704,10 +682,20 @@ export class ChatService {
     this.change.emit(viewUser);
   }
 
+  viewCampaignInfo(viewCampaign){    
+    console.log("campaign.keyword: " + viewCampaign.keyword);
+    this.change.emit(viewCampaign);
+  }
+
   addWhitelistUser(addUser){    
     console.log("user.phone_number: " + addUser.phone_number);
     this.change.emit(addUser);
   }  
+
+  viewStaffRole(viewStaff){    
+    console.log("staff.email: " + viewStaff.email);
+    this.change.emit(viewStaff);
+  }
 
   private handleError(error: any): Promise<any> {
     return Promise.reject(error.message || error);

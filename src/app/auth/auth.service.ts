@@ -8,7 +8,8 @@ import { Configs } from './../../environments/environment';
 import { of } from 'rxjs/observable/of';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
-// import { HttpHeaders } from '@angular/common/http';
+import { ChatService } from '../chat.service';
+// import { AuthGroup } from './auth.type';
 
 
 export interface UserDetails {
@@ -40,18 +41,15 @@ const httpOptions = {
   })
 };
 
-
-
-
 @Injectable()
 export class AuthService {
 
-private token: string;
-private resetToken: string;
-private staff: any=[];
-private sessionId: any=[];
-private onlineCount: any;
-private tinkerloginStatus: any=[];
+  private token: string;
+  private resetToken: string;
+  private staff: any=[];
+  private sessionId: any=[];
+  private onlineCount: any;
+  private tinkerloginStatus: any=[];
 
   credentials: TokenPayload = {
     online:'',
@@ -539,36 +537,49 @@ private tinkerloginStatus: any=[];
     });
   }
 
-  // public loginTinkerBoard(formdata){
-  //   return new Promise((resolve, reject) => {
-      
-  //     console.log("formdata: " +formdata);
-  //     console.log("formdata.userID: " +formdata.userID);
-  //     console.log("formdata.password: " +formdata.password);
+  // get staff session id count from staff model
+  public getAllStaff(){
+    return new Promise((resolve, reject) => {
+        // this.updateUrl();
+      this.http.get(this.serverUrl+'/chat/staff/all', { headers: { Authorization: `Bearer ${this.getToken()}` }} )
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }  
 
-  //       //construct form data
-  //       // var userID:string = 'admin';
-  //       // var password:string = 'Aptc123456';
-  //       // var tinkerloginData = new FormData();
-  //       // tinkerloginData.append('userID', 'admin');
-  //       // tinkerloginData.append('password', 'Aptc123456');
-    
+  // get staff session id count from staff model
+  public getStaffDetail(email){
+    return new Promise((resolve, reject) => {
+        // this.updateUrl();
+      this.http.get(this.serverUrl+'/chat/staff/' +email, { headers: { Authorization: `Bearer ${this.getToken()}` }} )
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }  
 
-  //       this.http.post(this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/login', formdata) 
-
-  //       // .map(res => res.json())
-  //       .subscribe(res => {
-  //         resolve(res);
-  //         console.log("TinkerloginData: " +res);
-  //         // console.log("TinkerloginData.userID: " +res.success);
-  //         // console.log("TinkerloginData.password: " +res.data);
-          
-  //       }, (err) => {
-  //         console.log("TinkerloginData failed: ");
-  //         reject(err);
-  //       });
-  //   });
-  // }
+  // get staff session id count from staff model
+  public updateStaffPlan(email, data){
+    return new Promise((resolve, reject) => {
+        // this.updateUrl();
+        console.log(email);
+        console.log(data.role);
+      this.http.put(this.serverUrl+'/chat/updatestaff/'+email, data, { headers: { Authorization: `Bearer ${this.getToken()}` }} )
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }  
 
 }
 

@@ -1,0 +1,202 @@
+          <div class="col-xs-6 no-padding" >
+            <div class="box box-primary direct-chat direct-chat-primary" *ngIf="editDetail; else viewDetail">
+              <!-- <div class="box" *ngIf="joinned; else joinroom"> -->
+                  <!-- /.box-header -->
+                  <div class="box-header with-border" *ngIf="editCampaignPage; else addCampaignHeader">
+                    <!-- <div class="panel-heading"> -->
+                      <!-- <span class="glyphicon glyphicon-comment"></span>  -->
+                      {{ campaignDetail.eventName }}
+
+                    <div class="btn-group pull-right no-padding"> 
+                      <form (ngSubmit)="exit()">
+              
+                      <div class="form-group btn-group pull-right no-margin ">
+                        <button type="submit" class="btn btn-default btn-xs" > Exit </button>
+                      </div>
+                  	  </form>
+                  	</div>
+                  </div>
+              <!-- /.box-body -->
+              <div class="box-body" *ngIf="editCampaignPage; else addCampaignPage">
+			        	<form (ngSubmit)="updateCampaignDetail()" #updateCampaignForm="ngForm"> 
+				        	<div class="form-horizontal" *ngFor ="let campaign of campaign">
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">Event Name</label>
+					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.eventName" placeholder="Required" required="" name="campaignDetail.eventName" [disabled]="true" >
+					          </div>				        		
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">Campign Keyword</label>
+					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.keyword" placeholder="Required" name="campaignDetail.keyword" required="" [disabled]="true" >
+					          </div>
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">Start Time</label>
+					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.startTime" placeholder="yyyymmdd" name="campaignDetail.startTime" required="" >
+					          </div>
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">End Time</label>
+					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.endTime" placeholder="yyyymmdd" name="campaignDetail.endTime" required="">
+					          </div>
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">Auto Reply Before Campaign</label>
+					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.beforeCampaignMessage" placeholder="Required" name="campaignDetail.beforeCampaignMessage" required="" >
+					          </div>
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">Campaign Message with Name Card</label>
+					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.duringCampaignMessage.withNameCard" placeholder="Required" name="campaignDetail.withNameCard" required="">
+					          </div>
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">Campaign Message without Name Card</label>
+					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.duringCampaignMessage.withoutNameCard" placeholder="Required" name="campaignDetail.withoutNameCard" required="" >
+					          </div>
+					          <div class="form-group">
+					            <label class="col-sm-5 control-label">Auto Reply After Campaign</label>
+					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.afterCampaignMessage" placeholder="Required" name="campaignDetail.afterCampaignMessage" required="" >
+					          </div>                    
+	                  <div id = edit-button class="form-group">
+	                    <div class="form-group center">
+	                      <label class="col-sm-5 control-label"></label>
+	                      <button  type="submit" class="btn btn-warning btn" [disabled]="!updateCampaignForm.form.valid"> Update </button>
+	                    </div>                        
+	                  </div> 
+				        	</div>
+				        </form>
+
+	              <div id = delete-button class="form-group">
+	                <div class="form-group center">
+	                  <label class="col-sm-5 control-label"></label>
+	                  <button  type="submit" class="btn btn-danger btn" (click)="deleteCampaign()"> Delete Campaign </button>
+	                </div>                        
+	              </div> 				        
+					  		<p> * All fields are required </p>   	              
+              </div>
+	                             
+              </div>
+
+              <ng-template #viewDetail>
+                <div class="box box-primary direct-chat direct-chat-primary">
+                  <div class="box-header with-border">
+                    <h3 class="box-title">Campaign Detail</h3>
+                  
+                    <div class="btn-group pull-right no-padding"> 
+                      <form (ngSubmit)="createCampaign()">              
+                      <div class="form-group btn-group pull-right no-margin ">
+                        <button type="submit" class="btn btn-default btn-xs" > Add Event </button>
+                      </div>
+                      </form>
+                  	</div> 
+                  </div>               
+                  <div class="box-body">
+                  	<form (ngSubmit)="editCampaignDetail()">     
+							        <div class="form-horizontal"  *ngFor="let campaign of campaign">
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Event Name</label>
+							            <p class="form-control-static">{{ campaign.eventName }}</p>
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Start Time</label>
+							            <p class="form-control-static">{{ campaign.startTime }}</p>
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">End Time </label>
+							            <p class="form-control-static">{{ campaign.endTime }}</p>
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Keyword</label>
+							            <p class="form-control-static">{{ campaign.keyword }}</p>
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Auto Reply Before Campaign</label>
+							            <p class="form-control-static">{{ campaign.beforeCampaignMessage }}</p>
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Campaign Message with Name Card</label>
+							            <p class="form-control-static">{{ campaign.duringCampaignMessage.withNameCard }}</p>
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Campaign Message without Name Card</label>
+							            <p class="form-control-static">{{ campaign.duringCampaignMessage.withoutNameCard }}</p>
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Auto Reply After Campaign</label>
+							            <p class="form-control-static">{{ campaign.afterCampaignMessage }}</p>
+							          </div>
+				                    
+				                <div id = update-button class="form-group"> 
+				                  <div class="form-group center">
+				                    <label class="col-sm-5 control-label"></label>
+				                    <button  type="submit" class="btn btn-primary btn" > Edit </button>
+				                  </div>				                       
+				                </div> 
+							        </div>
+										</form>
+                  </div>
+                </div>
+              </ng-template>
+
+              <ng-template #addCampaignPage>
+		              <div class="box-body">
+					        	<form (ngSubmit)="saveCampaignDetail()" #addCampaignForm="ngForm"> 
+						        	<div class="form-horizontal" >
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Campaign Name*</label>
+							            <input type="text" class="form-control-static" [(ngModel)]="newCampaign.eventName" placeholder="Required" required="" name="newCampaign.eventName" >
+							          </div>				        		
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Campaign Keyword*</label>
+							            <input type="text" class="form-control-static" [(ngModel)]="newCampaign.keyword" placeholder="Required" name="newCampaign.eventName" required="" >
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Start Time*</label>
+							            <input type="text" class="form-control-static" [(ngModel)]="newCampaign.startTime" placeholder="yyyymmdd" name="newCampaign.startTime" required="" >
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">End Time*</label>
+							            <input type="text" class="form-control-static" [(ngModel)]="newCampaign.endTime" placeholder="yyyymmdd" name="newCampaign.endTime" required="">
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Auto Reply Before Campaign*</label>
+							            <input type="text" class="form-control-static" [(ngModel)]="newCampaign.beforeCampaignMessage" placeholder="Required" name="newCampaignbeforeCampaignMessage" required="" >
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Campaign Message with Name Card*</label>
+							            <input type="text" class="form-control-static" [(ngModel)]="newCampaign.duringCampaignMessage.withNameCard" placeholder="Required" name="newCampaign.withNameCard" required="">
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Campaign Message without Name Card*</label>
+							            <input type="text" class="form-control-static" [(ngModel)]="newCampaign.duringCampaignMessage.withoutNameCard" placeholder="Required" name="newCampaign.withoutNameCard" required="" >
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Auto Reply After Campaign*</label>
+							            <input type="text" class="form-control-static" [(ngModel)]="newCampaign.afterCampaignMessage" placeholder="Required" name="newCampaign.afterCampaignMessage" required="" >
+							          </div>                    
+									          
+		                    
+			                  <div id = edit-button class="form-group"> 
+			                                    
+			                    <div class="form-group center">
+			                      <label class="col-sm-5 control-label"></label>
+			                      <button  type="submit" class="btn btn-success btn" [disabled]="!addCampaignForm.form.valid"> Create </button>
+			                    </div>                        
+			                  </div> 
+						        	</div>
+						        </form>
+						        <p> * All fields are required </p>
+		              </div>  
+              </ng-template>
+
+              <ng-template #addCampaignHeader>
+              	<div class="box-header with-border"> 
+              		<h3 class="box-title">New Campaign</h3>
+
+                    <div class="btn-group pull-right no-padding"> 
+                      <form (ngSubmit)="exit()">
+              
+                      <div class="form-group btn-group pull-right no-margin ">
+                        <button type="submit" class="btn btn-default btn-xs" > Exit </button>
+                      </div>
+                  	  </form>
+                  	</div>
+                  </div>
+              </ng-template>
+
+          </div>

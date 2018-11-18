@@ -39,7 +39,7 @@
             <!-- <li ><a routerLink="/admin" routerLinkActive="active-link" href=""><i class="fa fa-circle-o"></i> Administrator </a></li> -->
             <!-- <li ><a routerLink="/oldoperator" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> No UI Operator </a></li> -->
             <li ><a routerLink="/chat/request" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Administrator </a></li>
-            <li ><a routerLink="/chat/operator" routerLinkActive="" href=""><i class="fa fa-circle-o"></i> Operator </a></li>
+            <li ><a routerLink="/chat/operator" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Operator </a></li>
             <!-- <li ><a routerLink="/chat/multichat" routerLinkActive="" href=""><i class="fa fa-circle-o"></i> MultiChat Operator </a></li> -->
             </ul>
         </li>
@@ -72,6 +72,45 @@
         </li>
 
         <li class="treeview">
+          <a href="/chat/boardcast">
+            <i class="fa fa-bullhorn"></i>
+            <!-- <i class="fa fa-lightbulb-o"></i> -->
+            <span>Marketing Service</span>
+            <span class="pull-right-container">
+             <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li ><a routerLink="/chat/boardcast" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Boardcast </a></li>
+            <li ><a routerLink="/chat/campaign" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Campaign </a></li>            
+          </ul>          
+        </li>
+
+        <li class="treeview">
+          <a href="/chat/settings">
+            <i class="fa fa-gears"></i>
+            <span>Settings</span>
+            <span class="pull-right-container">
+             <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li ><a routerLink="/chat/settings" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Change Staff Plan </a></li>
+          </ul>          
+        </li>                
+        <li class="treeview">
+          <a href="/api/profile">
+            <i class="fa fa-user"></i>
+            <span>My Profile</span>
+            <span class="pull-right-container">
+             <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li ><a routerLink="/api/profile" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> View Profile </a></li>
+          </ul>
+        </li>    
+        <li class="treeview">
           <a href="/chat/commandlist">
             <i class="fa fa-lightbulb-o"></i>
             <span>What's New</span>
@@ -83,19 +122,8 @@
             <li ><a routerLink="/chat/commandlist" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Command List </a></li>
            <li ><a routerLink="/chat/ourservices" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Our Services </a></li>
           </ul>          
-        </li>
-<!--         <li class="treeview">
-          <a href="/api/profile">
-            <i class="fa fa-user"></i>
-            <span>My Setting</span>
-            <span class="pull-right-container">
-             <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li ><a routerLink="/api/profile" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> View Profile </a></li>
-          </ul>
-        </li> -->        
+        </li>        
+    
         
 
         <!-- <li>

@@ -191,7 +191,7 @@ module.exports.register = function(req, res) {
 
   staff.name = req.body.name;
   staff.email = req.body.email;
-
+  staff.role = "BASIC";
   staff.setPassword(req.body.password);
 
   staff.save(function(err) {

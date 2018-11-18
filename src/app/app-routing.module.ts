@@ -39,6 +39,10 @@ import { ReportSearchComponent } from './report-search/report-search.component';
 import { OurServicesComponent } from './our-services/our-services.component';
 import { CommandListComponent } from './command-list/command-list.component';
 import { WhitelistComponent } from './whitelist/whitelist.component';
+import { BoardcastComponent } from './boardcast/boardcast.component';
+import { SettingComponent } from './setting/setting.component';
+import { CampaignDetailComponent } from './campaign-detail/campaign-detail.component';
+import { CampaignsComponent } from './campaigns/campaigns.component';
 
 const appRoutes: Routes = [
     // { path: '', component: HomeComponent },
@@ -59,31 +63,30 @@ const appRoutes: Routes = [
     children:[
       { path: 'opchatbox/:id/:id2', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthGuardService]},
   ], canActivate: [AuthGuardService]},
-
-  // { path: 'chat/multichat', component: MultichatReqComponent, 
-  //   children:[
-  //     { path: 'multichatbox/:id', component: MultichatComponent, outlet:'multichatOutlet',canActivate: [AuthGuardService]},
-  // ], canActivate: [AuthGuardService]},
  
   { path: 'chat/history', component: HistorySearchComponent, 
     children:[
       { path: 'historybox/:id', component: HistoryComponent, outlet:'historyOutlet',canActivate: [AuthGuardService]},
   ], canActivate: [AuthGuardService]},
 
-  { path: 'chat/report', component: ReportSearchComponent, canActivate: [AuthGuardService]},
+  { path: 'chat/report', component: ReportSearchComponent, canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}},
 
   { path: 'chat/userSettingPage', component: UsersComponent, 
     children:[
       { path: 'userdetailbox/:id', component: UserDetailComponent, outlet:'userdetailOutlet',canActivate: [AuthGuardService]},
-  ], canActivate: [AuthGuardService]},
+  ], canActivate: [AuthGuardService], data: {role: ['BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']} }, 
   
-  { path: 'chat/whatsappwhitelist', component: WhitelistComponent, 
-    children:[
-      { path: 'adduserbox/:id', component: UsersComponent, outlet:'adduserOutlet',canActivate: [AuthGuardService]},
-  ], canActivate: [AuthGuardService]},  
+  { path: 'chat/whatsappwhitelist', component: WhitelistComponent, canActivate: [AuthGuardService], data: {role: ['PREMIUM', 'PREMIUM+', 'ADMIN']}},  
+  
+  { path: 'chat/boardcast', component: BoardcastComponent, canActivate: [AuthGuardService], data: {role: ['PREMIUM+', 'ADMIN']} },
+
+  { path: 'chat/campaign', component: CampaignsComponent, canActivate: [AuthGuardService], data: {role: ['PREMIUM+', 'ADMIN']} },
+  
+  { path: 'chat/settings', component: SettingComponent, canActivate: [AuthGuardService], data: {role: ['ADMIN']} }, // { path: 'opchat', component: OpchatComponent, canActivate: [AuthguardGuard] },
+  
   { path: 'chat/ourservices', component: OurServicesComponent, canActivate: [AuthGuardService] },
-  { path: 'chat/commandlist', component: CommandListComponent, canActivate: [AuthGuardService] },  
-  // { path: 'opchat', component: OpchatComponent, canActivate: [AuthguardGuard] },
+  
+  { path: 'chat/commandlist', component: CommandListComponent, canActivate: [AuthGuardService] },    
   // { path: 'admin', component: AdminComponent , canActivate: [AuthguardGuard]},
   // { path: 'oldoperator', component: OperatorComponent, canActivate: [AuthguardGuard] },
   { path: '**', component: PagenotfoundComponent}
