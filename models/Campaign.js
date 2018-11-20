@@ -16,7 +16,14 @@ var CampaignSchema = new mongoose.Schema({
     eventName: String,
     createdBy: String,
     companyName: String,
-    registeredUser: String,
+    registeredUser: [{ 
+        type: String,
+        unique: true,
+    }],
+    registeredUserwithNameCard: [{ 
+        type: String,
+        unique: true,
+    }],
     newUser: String,
   	reserve1: String,
 	reserve2: String,

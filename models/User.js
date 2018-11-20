@@ -14,7 +14,16 @@ var UserSchema = new mongoose.Schema({
   	default_spoken_lang: String,
   	default_text_lang: String,
     namecard: {
-      vcf: String,
+      formatted_name: String,
+      family_name: String,
+      given_name: String,
+      organization_name: Array,
+      organization_unit: Array,
+      title:Array,
+      email: String,
+      telephone: Array,
+      address: Array,
+      url: String,
       image: String
     },
   	reserve1: String,

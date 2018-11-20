@@ -1056,7 +1056,7 @@ router.get('/campaign/all', auth, function(req, res, next) {
  } else {  
     Campaign.find({ $and:
       [ 
-        { registeredUser: { $exists: false } },
+        // { registeredUser: { $exists: false } },
         { keyword: { $exists: true} }
       ]
     }, function (err, campaigns) {
@@ -1078,7 +1078,7 @@ router.get('/campaigndetail/:keyword', auth, function(req, res, next) {
  } else {  
     Campaign.find({ $and:
       [ 
-        { registeredUser: { $exists: false } },
+        // { registeredUser: { $exists: false } },
         { keyword:req.params.keyword }
         // { keyword: { $exists: true} }
       ]
@@ -1090,7 +1090,7 @@ router.get('/campaigndetail/:keyword', auth, function(req, res, next) {
 });
 
 // get campaign with keyword
-router.get('/androidgetcampaign/:keyword', auth, function(req, res, next) {
+router.get('/androidgetcampaign/:keyword/:phone_number', auth, function(req, res, next) {
 
  if (!req.payload._id) {
    res.status(401).json({
@@ -1099,57 +1099,94 @@ router.get('/androidgetcampaign/:keyword', auth, function(req, res, next) {
  } else {  
     Campaign.find({ $and:
       [ 
-        { registeredUser: { $exists: false } },
-        { keyword:req.params.keyword }
-        // { keyword: { $exists: true} }
+        // { registeredUser: { $exists: false } },
+        // { registeredUserwithNameCard: { $exists: false } },
+        { keyword:req.params.keyword }        
       ]
     }, function (err, campaigns) {
       if (err) return next(err);
         // console.log(campaigns); 
         // console.log(campaigns[0].startTime);
-        var jsonObj = {campaignActive:'', message:{withNameCard:'',withoutNameCard:''}};
+        // console.log(campaigns[0].registeredUser);
+        // console.log((campaigns[0].registeredUser).includes(req.params.phone_number));
+        // console.log(campaigns[0].registeredUserwithNameCard);
+
+        var jsonObj = {campaignActive:'', message:{withNameCard:'',withoutNameCard:''}, registered:{withNameCard:'',withoutNameCard:''}};
         
         if (campaigns.length !=0){
-        // var jsonObj = {campaignActive:'', message:{withNameCard:'',withoutNameCard:''}};     
-        var startTime = campaigns[0].startTime;
-        var endTime = campaigns[0].endTime;
-        var currentDate = Date.now();
-        
-        var startYear = startTime.substring(0,4);
-        var startMonth = startTime.substring(4,6);
-        var startDay = startTime.substring(6,8);
-        var startDate = new Date(startYear, startMonth-1, startDay).getTime();
-              
-        var endYear = endTime.substring(0,4);
-        var endMonth = endTime.substring(4,6);
-        var endDay = endTime.substring(6,8);
-        var endDate = new Date(endYear, endMonth-1, endDay).getTime();      
+          // var jsonObj = {campaignActive:'', message:{withNameCard:'',withoutNameCard:''}};     
+          var startTime = campaigns[0].startTime;
+          var endTime = campaigns[0].endTime;
+          var currentDate = Date.now();
+          
+          var startYear = startTime.substring(0,4);
+          var startMonth = startTime.substring(4,6);
+          var startDay = startTime.substring(6,8);
+          var startDate = new Date(startYear, startMonth-1, startDay).getTime();
+                
+          var endYear = endTime.substring(0,4);
+          var endMonth = endTime.substring(4,6);
+          var endDay = endTime.substring(6,8);
+          var endDate = new Date(endYear, endMonth-1, endDay).getTime();      
 
-        // console.log(startDate);
-        // console.log(endDate);
-        // console.log(currentDate);
+          if (campaigns[0].registeredUser.length !=0){
 
-        if (currentDate < startDate){
-          jsonObj.campaignActive = "false";
-          jsonObj.message.withNameCard = campaigns[0].beforeCampaignMessage;
-          jsonObj.message.withoutNameCard = campaigns[0].beforeCampaignMessage;
-        }
-        if ((currentDate >= startDate) && (currentDate <=endDate)){
-          jsonObj.campaignActive = "true";
-          jsonObj.message.withNameCard = campaigns[0].duringCampaignMessage.withNameCard;
-          jsonObj.message.withoutNameCard = campaigns[0].duringCampaignMessage.withoutNameCard;
-        }
-        if (currentDate > endDate){
-          jsonObj.campaignActive = "false";
-          jsonObj.message.withNameCard = campaigns[0].afterCampaignMessage;
-          jsonObj.message.withoutNameCard = campaigns[0].afterCampaignMessage;         
-        }
+            var register = (campaigns[0].registeredUser).includes(req.params.phone_number);
+            
+            if (register){
+              jsonObj.registered.withoutNameCard = "true";
 
-        res.json(jsonObj);
+            } else {
+              jsonObj.registered.withoutNameCard = "false";
+            }
+          } else {
+            jsonObj.registered.withoutNameCard = "false";
+          }
+          
+          if (campaigns[0].registeredUserwithNameCard.length !=0){
+
+            var registerNC = (campaigns[0].registeredUserwithNameCard).includes(req.params.phone_number);
+            if (registerNC){
+              jsonObj.registered.withNameCard = "true";
+            } else {
+              jsonObj.registered.withNameCard = "false";
+            }          
+          } else {
+            jsonObj.registered.withNameCard = "false";
+          }
+
+          // if ((campaigns[0].registeredUser.length ==0)&&(campaigns[0].registeredUserwithNameCard.length ==0)){
+          //   console.log("campaigns[0].registeredUser ==0")  
+          //   jsonObj.registered.withoutNameCard = "false";
+          //   jsonObj.registered.withNameCard = "false";            
+          // }
+
+          // console.log(startDate);
+          // console.log(endDate);
+          // console.log(currentDate);
+
+          if (currentDate < startDate){
+            jsonObj.campaignActive = "false";
+            jsonObj.message.withNameCard = campaigns[0].beforeCampaignMessage;
+            jsonObj.message.withoutNameCard = campaigns[0].beforeCampaignMessage;
+          }
+          if ((currentDate >= startDate) && (currentDate <=endDate)){
+            jsonObj.campaignActive = "true";
+            jsonObj.message.withNameCard = campaigns[0].duringCampaignMessage.withNameCard;
+            jsonObj.message.withoutNameCard = campaigns[0].duringCampaignMessage.withoutNameCard;
+          }
+          if (currentDate > endDate){
+            jsonObj.campaignActive = "false";
+            jsonObj.message.withNameCard = campaigns[0].afterCampaignMessage;
+            jsonObj.message.withoutNameCard = campaigns[0].afterCampaignMessage;         
+          }
+
+          res.json(jsonObj);
 
       } else {
           jsonObj.campaignActive = "null";
           jsonObj.message = "null";
+          jsonObj.registered = "null";
           res.json(jsonObj);
       }
     });
@@ -1171,17 +1208,44 @@ router.post('/campaign', auth, function(req, res, next) {
 });
 
 
-// update campaign
+// update campaign without Name card
 router.put('/updatecampaign/:keyword', auth, function(req, res, next) {
   if (!req.payload._id) {
     res.status(401).json({
       "message" : "UnauthorizedError:"
     });
-  } else {  
-    Campaign.findOneAndUpdate({keyword:req.params.keyword}, req.body, function (err, campaigns) {
-      if (err) return next(err);
-      res.json(campaigns);
+  } else {    
+      // console.log("update event");
+      Campaign.findOneAndUpdate({keyword:req.params.keyword}, req.body, function (err, campaigns) {
+        if (err) return next(err);
+        res.json(campaigns);
+      });
+  }
+});
+
+// update campaign without Name card
+router.put('/updatecampaignregisterlist/:keyword', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
     });
+  } else {
+
+    if (req.body.registeredUser){
+      console.log("update register list " +req.body.registeredUser);
+      Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUser:req.body.registeredUser}}, function (err, campaigns) {
+        if (err) return next(err);
+        res.json(campaigns);
+      });
+    }
+
+    if (req.body.registeredUserwithNameCard){
+      console.log("update register namecard list " +req.body.registeredUserwithNameCard);      
+      Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUserwithNameCard:req.body.registeredUserwithNameCard}}, function (err, campaigns) {
+        if (err) return next(err);
+        res.json(campaigns);
+      });
+    }
   }
 });
 
