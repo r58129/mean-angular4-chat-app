@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 var UserSchema = new mongoose.Schema({
+  // _id: Schema.Types.ObjectId,
 	phone_number:{
       type: String,
       unique: true,
@@ -29,6 +31,7 @@ var UserSchema = new mongoose.Schema({
   	reserve1: String,
 	  reserve2: String,
   	updated_at: { type: Date, default: Date.now },
+    // campaigns: [{ type: Schema.Types.ObjectId, ref: 'Campaign' }]
 });
 
 module.exports = mongoose.model('User', UserSchema);

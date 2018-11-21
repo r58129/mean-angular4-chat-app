@@ -1054,12 +1054,7 @@ router.get('/campaign/all', auth, function(req, res, next) {
      "message" : "UnauthorizedError:"
    });
  } else {  
-    Campaign.find({ $and:
-      [ 
-        // { registeredUser: { $exists: false } },
-        { keyword: { $exists: true} }
-      ]
-    }, function (err, campaigns) {
+    Campaign.find( req.body, function (err, campaigns) {
       if (err) return next(err);
       res.json(campaigns);
     });
@@ -1097,21 +1092,24 @@ router.get('/androidgetcampaign/:keyword/:phone_number', auth, function(req, res
      "message" : "UnauthorizedError:"
    });
  } else {  
-    Campaign.find({ $and:
-      [ 
+    Campaign.find(
+      // [ 
         // { registeredUser: { $exists: false } },
         // { registeredUserwithNameCard: { $exists: false } },
         { keyword:req.params.keyword }        
-      ]
-    }, function (err, campaigns) {
+      // ]
+      ).
+    // populate('InUserList').
+    exec( function (err, campaigns) {
       if (err) return next(err);
         // console.log(campaigns); 
         // console.log(campaigns[0].startTime);
         // console.log(campaigns[0].registeredUser);
         // console.log((campaigns[0].registeredUser).includes(req.params.phone_number));
         // console.log(campaigns[0].registeredUserwithNameCard);
+        // console.log(campaigns[0].InUserList);
 
-        var jsonObj = {campaignActive:'', message:{withNameCard:'',withoutNameCard:''}, registered:{withNameCard:'',withoutNameCard:''}};
+        var jsonObj = {campaignActive:'', type:'', message:{withNameCard:'',withoutNameCard:''}, registered:{withNameCard:'',withoutNameCard:''}, failedMessage:{nameCardCampaign:'',phoneNumCampaign:''}};
         
         if (campaigns.length !=0){
           // var jsonObj = {campaignActive:'', message:{withNameCard:'',withoutNameCard:''}};     
@@ -1127,32 +1125,50 @@ router.get('/androidgetcampaign/:keyword/:phone_number', auth, function(req, res
           var endYear = endTime.substring(0,4);
           var endMonth = endTime.substring(4,6);
           var endDay = endTime.substring(6,8);
-          var endDate = new Date(endYear, endMonth-1, endDay).getTime();      
+          var endDate = new Date(endYear, endMonth-1, endDay).getTime();
 
-          if (campaigns[0].registeredUser.length !=0){
+          if (campaigns[0].type !=undefined){
+            console.log(campaigns[0].type);            
+            jsonObj.type = campaigns[0].type;  
+          }
 
-            var register = (campaigns[0].registeredUser).includes(req.params.phone_number);
-            
-            if (register){
-              jsonObj.registered.withoutNameCard = "true";
+          jsonObj.failedMessage.nameCardCampaign = campaigns[0].registerFailedMessage.nameCardCampaign; 
+          jsonObj.failedMessage.phoneNumCampaign = campaigns[0].registerFailedMessage.phoneNumCampaign; 
 
+          try{
+            if (campaigns[0].registeredUser.length !=0){
+
+              var register = (campaigns[0].registeredUser).includes(req.params.phone_number);
+              
+              if (register){
+                jsonObj.registered.withoutNameCard = "true";
+
+              } else {
+                jsonObj.registered.withoutNameCard = "false";
+              }
             } else {
               jsonObj.registered.withoutNameCard = "false";
             }
-          } else {
-            jsonObj.registered.withoutNameCard = "false";
+          }
+          catch (err){
+            console.log(err);
           }
           
-          if (campaigns[0].registeredUserwithNameCard.length !=0){
+          try{
+            if (campaigns[0].registeredUserwithNameCard.length !=0){
 
-            var registerNC = (campaigns[0].registeredUserwithNameCard).includes(req.params.phone_number);
-            if (registerNC){
-              jsonObj.registered.withNameCard = "true";
+              var registerNC = (campaigns[0].registeredUserwithNameCard).includes(req.params.phone_number);
+              if (registerNC){
+                jsonObj.registered.withNameCard = "true";
+              } else {
+                jsonObj.registered.withNameCard = "false";
+              }          
             } else {
               jsonObj.registered.withNameCard = "false";
-            }          
-          } else {
-            jsonObj.registered.withNameCard = "false";
+            }
+          }
+          catch (err){
+            console.log(err);
           }
 
           // if ((campaigns[0].registeredUser.length ==0)&&(campaigns[0].registeredUserwithNameCard.length ==0)){
@@ -1185,8 +1201,10 @@ router.get('/androidgetcampaign/:keyword/:phone_number', auth, function(req, res
 
       } else {
           jsonObj.campaignActive = "null";
+          jsonObj.type = "null";
           jsonObj.message = "null";
           jsonObj.registered = "null";
+          jsonObj.failedMessage = "null";
           res.json(jsonObj);
       }
     });

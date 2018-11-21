@@ -23,7 +23,16 @@
 					          <div class="form-group">
 					            <label class="col-sm-5 control-label">Event Name</label>
 					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.eventName" placeholder="Required" required="" name="campaignDetail.eventName" [disabled]="true" >
-					          </div>				        		
+					          </div>	
+							      <div class="form-group">
+							        <label class="col-sm-5 control-label">Campaign Type*</label>
+							        <select class="form-control-static" [(ngModel)]="campaignDetail.type" name="campaignDetail.type" required="" >
+		                    <option value ="" disabled selected >Select Campaign Type</option>
+		                    <option value="mixed"> Name Card + Phone Number</option>
+		                    <option value="nameCard"> Name Card Only </option>
+		                    <option value="phoneNum"> Phone Number Only </option>
+		                  </select>									            
+							      </div>					          			        		
 					          <div class="form-group">
 					            <label class="col-sm-5 control-label">Campign Keyword</label>
 					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.keyword" placeholder="Required" name="campaignDetail.keyword" required="" [disabled]="true" >
@@ -51,7 +60,15 @@
 					          <div class="form-group">
 					            <label class="col-sm-5 control-label">Auto Reply After Campaign</label>
 					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.afterCampaignMessage" placeholder="Required" name="campaignDetail.afterCampaignMessage" required="" >
-					          </div>                    
+					          </div>  
+							      <div class="form-group">
+							        <label class="col-sm-5 control-label">Failed message in name card only campaign*</label>
+							        <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.registerFailedMessage.nameCardCampaign" placeholder="Failed! Namecard is needed!" name="campaignDetail.nameCardCampaign" required="">
+							      </div>
+							      <div class="form-group">
+							        <label class="col-sm-5 control-label">Failed Message in phone number only campaign*</label>
+							        <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.registerFailedMessage.phoneNumCampaign" placeholder="Failed! No namecard is needed!" name="campaignDetail.phoneNumCampaign" required="" >
+							      </div>								                            
 	                  <div id = edit-button class="form-group">
 	                    <div class="form-group center">
 	                      <label class="col-sm-5 control-label"></label>
@@ -89,8 +106,12 @@
                   	<form (ngSubmit)="editCampaignDetail()">     
 							        <div class="form-horizontal"  *ngFor="let campaign of campaign">
 							          <div class="form-group">
-							            <label class="col-sm-5 control-label">Event Name</label>
+							            <label class="col-sm-5 control-label">Campaign Name</label>
 							            <p class="form-control-static">{{ campaign.eventName }}</p>
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Campaign Type</label>
+							            <p class="form-control-static">{{ campaign.type }}</p>
 							          </div>
 							          <div class="form-group">
 							            <label class="col-sm-5 control-label">Campaign Keyword</label>
@@ -120,7 +141,14 @@
 							            <label class="col-sm-5 control-label">Auto Reply After Campaign</label>
 							            <p class="form-control-static">{{ campaign.afterCampaignMessage }}</p>
 							          </div>
-				                    
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Failed message in name card only campaign</label>
+							            <p class="form-control-static">{{ campaign.registerFailedMessage.nameCardCampaign }}</p>
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Failed Message in phone number only campaign</label>
+							            <p class="form-control-static">{{ campaign.registerFailedMessage.phoneNumCampaign }}</p>
+							          </div>				                    
 				                <div id = update-button class="form-group"> 
 				                  <div class="form-group center">
 				                    <label class="col-sm-5 control-label"></label>
@@ -141,6 +169,15 @@
 							            <label class="col-sm-5 control-label">Campaign Name*</label>
 							            <input type="text" class="form-control-static" [(ngModel)]="newCampaign.eventName" placeholder="Required" required="" name="newCampaign.eventName" >
 							          </div>				        		
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Campaign Type*</label>
+							            <select class="form-control-static" [(ngModel)]="newCampaign.type" name="newCampaign.type" required="" >
+		                        <option value ="" disabled selected >Select Campaign Type</option>
+		                        <option value="mixed"> Name Card + Phone Number</option>
+		                        <option value="namecard"> Name Card Only </option>
+		                        <option value="phoneNum"> Phone Number Only </option>
+		                      </select>									            
+							          </div>
 							          <div class="form-group">
 							            <label class="col-sm-5 control-label">Campaign Keyword*</label>
 							            <input type="text" class="form-control-static" [(ngModel)]="newCampaign.keyword" placeholder="Required" name="newCampaign.eventName" required="" >
@@ -169,7 +206,14 @@
 							            <label class="col-sm-5 control-label">Auto Reply After Campaign*</label>
 							            <input type="text" class="form-control-static" [(ngModel)]="newCampaign.afterCampaignMessage" placeholder="Required" name="newCampaign.afterCampaignMessage" required="" >
 							          </div>                    
-									          
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Failed message in name card only campaign*</label>
+							            <input type="text" class="form-control-static" [(ngModel)]="newCampaign.registerFailedMessage.nameCardCampaign" placeholder="Failed! Namecard is needed!" name="newCampaign.nameCardCampaign" >
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Failed Message in phone number only campaign*</label>
+							            <input type="text" class="form-control-static" [(ngModel)]="newCampaign.registerFailedMessage.phoneNumCampaign" placeholder="Failed! No namecard is needed!" name="newCampaign.phoneNumCampaign"  >
+							          </div>									          
 		                    
 			                  <div id = edit-button class="form-group"> 
 			                                    

@@ -25,8 +25,8 @@ export class CampaignDetailComponent implements OnInit {
   editCampaignPage: boolean = false;
 
   // campaignPeriod = {startTime: '', endTime:''};
-  campaignDetail = { startTime: '', endTime:'', startDate:'', endDate:'', beforeCampaignMessage: '', duringCampaignMessage: {withNameCard:'',withoutNameCard:''} , afterCampaignMessage:'', keyword:'', eventName:'',createdBy:'',companyName:'', newUser:'', updated_at: Date, reserve1:'', reserve2:''};  //campaign detail
-  newCampaign = { startTime:'', endTime: '',beforeCampaignMessage: '', duringCampaignMessage: {withNameCard:'',withoutNameCard:''} , afterCampaignMessage:'', keyword:'', eventName:'',createdBy:'',companyName:''};  //campaign detail
+  campaignDetail = { startTime: '', endTime:'', type:'', beforeCampaignMessage: '', duringCampaignMessage: {withNameCard:'',withoutNameCard:''} , afterCampaignMessage:'', registerFailedMessage: {nameCardCampaign:'',phoneNumCampaign:''}, keyword:'', eventName:'',createdBy:'',companyName:'', newUser:'', updated_at: Date, reserve1:'', reserve2:''};  //campaign detail
+  newCampaign = { startTime:'', endTime: '', type:'', beforeCampaignMessage: '', duringCampaignMessage: {withNameCard:'',withoutNameCard:''} , afterCampaignMessage:'',registerFailedMessage: {nameCardCampaign:'',phoneNumCampaign:''}, keyword:'', eventName:'',createdBy:'',companyName:''};  //campaign detail
 
  	today = new Date();
 	dd = this.today.getDate();
