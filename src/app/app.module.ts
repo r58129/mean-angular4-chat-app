@@ -51,6 +51,11 @@ import { ReportSearchComponent } from './report-search/report-search.component';
 import { OurServicesComponent } from './our-services/our-services.component';
 import { CommandListComponent } from './command-list/command-list.component';
 import { WhitelistComponent } from './whitelist/whitelist.component';
+import { BoardcastComponent } from './boardcast/boardcast.component';
+import { SettingComponent } from './setting/setting.component';
+import { CampaignDetailComponent } from './campaign-detail/campaign-detail.component';
+import { CampaignsComponent } from './campaigns/campaigns.component';
+import { StaffPlanComponent } from './staff-plan/staff-plan.component';
 
 // import { EmojiModule } from 'angular-emoji/dist';
 
@@ -94,7 +99,12 @@ import { WhitelistComponent } from './whitelist/whitelist.component';
     ReportSearchComponent,
     OurServicesComponent,
     CommandListComponent,
-    WhitelistComponent
+    WhitelistComponent,
+    BoardcastComponent,
+    SettingComponent,
+    CampaignDetailComponent,
+    CampaignsComponent,
+    StaffPlanComponent
     //CallbackComponent
     // ApphovertableComponent
   ],

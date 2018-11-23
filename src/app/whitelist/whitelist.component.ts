@@ -59,7 +59,7 @@ export class WhitelistComponent implements OnInit {
 
   	getWhatsappWhiteListUser(){
   	  
-      this.chatService.getWhatsappWhiteList().then((res) => {  //from chatService, 
+      this.chatService.getAllWhatsappUserList().then((res) => {  //from chatService, 
       	this.allWhitelistUser = res;	//{"85212345678", "85212346579", "85212345680",...}
 
       		this.chatService.getWhatsappUserPhoneList().then((result) =>{

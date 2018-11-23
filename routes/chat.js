@@ -29,6 +29,7 @@ var Chat = require('../models/Chat.js');
 var User = require('../models/User.js');
 var Contact = require('../models/Contact.js');
 var Staff = require('../models/Staff.js');
+var Campaign = require('../models/Campaign.js');
 
 var watchdog = require("watchdog")
 const timeout = 33000;  //33s
@@ -762,6 +763,47 @@ router.get('/staff/online_nickname', auth, function(req, res, next) {
   }
 });
 
+/* get staff online count from staff model*/ 
+router.get('/staff/all', auth, function(req, res, next) { 
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {
+    Staff.find(req.body , function (err, staffs) {
+      if (err) return next(err);
+      res.json(staffs);
+    })
+  }
+});
+
+/* get staff online count from staff model*/ 
+router.get('/staff/:email', auth, function(req, res, next) { 
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {
+    Staff.find({email:req.params.email} , function (err, staffs) {
+      if (err) return next(err);
+      res.json(staffs);
+    })
+  }
+});
+
+router.put('/updatestaff/:email', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Staff.findOneAndUpdate({email:req.params.email},req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  }
+});
+
 /* UPDATE operator channel */
 // router.put('/request/operator_channel/:id', auth, function(req, res, next) {
 //   if (!req.payload._id) {
@@ -872,8 +914,8 @@ router.delete('/request/:id', auth, function(req, res, next) {
   }
 });
 
-/*GET whatsapp user whitelist*/
-router.get('/user/whatsappwhitelist', auth, function(req, res, next) {
+/*GET all whatsapp user phone list in DB*/
+router.get('/user/allwhatsappuserlist', auth, function(req, res, next) {
  if (!req.payload._id) {
    res.status(401).json({
      "message" : "UnauthorizedError:"
@@ -887,7 +929,7 @@ router.get('/user/whatsappwhitelist', auth, function(req, res, next) {
  }
 });
 
-/*GET whatsapp user whitelist*/
+/*GET whatsapp user list in User collection*/
 router.get('/user/whatsappuserphonelist', auth, function(req, res, next) {
  if (!req.payload._id) {
    res.status(401).json({
@@ -898,6 +940,35 @@ router.get('/user/whatsappuserphonelist', auth, function(req, res, next) {
     , function (err, users) {
       if (err) return next(err);
       res.json(users);
+    });
+ }
+});
+
+/*GET whatsapp user list in User collection*/
+router.get('/androidcheckuserlist/:phone_number', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+
+    var jsonObj = {userExist:''};
+    
+    User.find({phone_number:req.params.phone_number}, function (err, users) {
+      if (err) return next(err);
+
+      if (users.length != 0){
+
+        console.log(req.params.phone_number);
+        console.log(users[0].phone_number);     
+        jsonObj.userExist = "true";
+
+      } else {
+        console.log('user not exits');
+        jsonObj.userExist = "false";
+      }
+
+      res.json(jsonObj);
     });
  }
 });
@@ -916,42 +987,6 @@ router.get('/user/all', auth, function(req, res, next) {
     });
  }
 });
-
-// export whatsapp user list
-// router.get('/user/exportwhatsappuser', auth, function(req, res, next) {
-//  if (!req.payload._id) {
-//    res.status(401).json({
-//      "message" : "UnauthorizedError:"
-//    });
-//  } else {  
-//     User.find( req.body, function (err, users) {
-//       if (err) return next(err);
-//       res.json(users);
-//     });
-//  }
-// });
-
-/* GET SINGLE user BY ID */
-// router.get('/user/:id', auth, function(req, res, next) {
-//   if (!req.payload._id) {
-//     res.status(401).json({
-//       "message" : "UnauthorizedError:"
-//     });
-//   } else {  
-//     User.findById(req.params.id, function (err, post) {
-//       if (err) return next(err);
-//       res.json(post);
-//     });
-//   }
-// });
-
-/* UPDATE user */
-// router.put('/user/:id', function(req, res, next) {
-//   User.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
-//     if (err) return next(err);
-//     res.json(post);
-//   });
-// });
 
 /* GET SINGLE user BY phone_number */
 // router.get('/userphone/:phone_number', function(req, res, next) {
@@ -1012,6 +1047,239 @@ router.delete('/userdelete/:phone_number', auth, function(req, res, next) {
   }
 });
 
+// get all campaign 
+router.get('/campaign/all', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Campaign.find( req.body, function (err, campaigns) {
+      if (err) return next(err);
+      res.json(campaigns);
+    });
+ }
+});
+
+// get campaign with keyword
+router.get('/campaigndetail/:keyword', auth, function(req, res, next) {
+
+  var currentTime = Date.now();
+
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Campaign.find({ $and:
+      [ 
+        // { registeredUser: { $exists: false } },
+        { keyword:req.params.keyword }
+        // { keyword: { $exists: true} }
+      ]
+    }, function (err, campaigns) {
+      if (err) return next(err);
+      res.json(campaigns);
+    });
+ }
+});
+
+// get campaign with keyword
+router.get('/androidgetcampaign/:keyword/:phone_number', auth, function(req, res, next) {
+
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Campaign.find(
+      // [ 
+        // { registeredUser: { $exists: false } },
+        // { registeredUserwithNameCard: { $exists: false } },
+        { keyword:req.params.keyword }        
+      // ]
+      ).
+    // populate('InUserList').
+    exec( function (err, campaigns) {
+      if (err) return next(err);
+        // console.log(campaigns); 
+        // console.log(campaigns[0].startTime);
+        // console.log(campaigns[0].registeredUser);
+        // console.log((campaigns[0].registeredUser).includes(req.params.phone_number));
+        // console.log(campaigns[0].registeredUserwithNameCard);
+        // console.log(campaigns[0].InUserList);
+
+        var jsonObj = {campaignActive:'', type:'', message:{withNameCard:'',withoutNameCard:''}, registered:{withNameCard:'',withoutNameCard:''}, failedMessage:{nameCardCampaign:'',phoneNumCampaign:''}};
+        
+        if (campaigns.length !=0){
+          // var jsonObj = {campaignActive:'', message:{withNameCard:'',withoutNameCard:''}};     
+          var startTime = campaigns[0].startTime;
+          var endTime = campaigns[0].endTime;
+          var currentDate = Date.now();
+          
+          var startYear = startTime.substring(0,4);
+          var startMonth = startTime.substring(4,6);
+          var startDay = startTime.substring(6,8);
+          var startDate = new Date(startYear, startMonth-1, startDay).getTime();
+                
+          var endYear = endTime.substring(0,4);
+          var endMonth = endTime.substring(4,6);
+          var endDay = endTime.substring(6,8);
+          var endDate = new Date(endYear, endMonth-1, endDay).getTime();
+
+          if (campaigns[0].type !=undefined){
+            console.log(campaigns[0].type);            
+            jsonObj.type = campaigns[0].type;  
+          }
+
+          jsonObj.failedMessage.nameCardCampaign = campaigns[0].registerFailedMessage.nameCardCampaign; 
+          jsonObj.failedMessage.phoneNumCampaign = campaigns[0].registerFailedMessage.phoneNumCampaign; 
+
+          try{
+            if (campaigns[0].registeredUser.length !=0){
+
+              var register = (campaigns[0].registeredUser).includes(req.params.phone_number);
+              
+              if (register){
+                jsonObj.registered.withoutNameCard = "true";
+
+              } else {
+                jsonObj.registered.withoutNameCard = "false";
+              }
+            } else {
+              jsonObj.registered.withoutNameCard = "false";
+            }
+          }
+          catch (err){
+            console.log(err);
+          }
+          
+          try{
+            if (campaigns[0].registeredUserwithNameCard.length !=0){
+
+              var registerNC = (campaigns[0].registeredUserwithNameCard).includes(req.params.phone_number);
+              if (registerNC){
+                jsonObj.registered.withNameCard = "true";
+              } else {
+                jsonObj.registered.withNameCard = "false";
+              }          
+            } else {
+              jsonObj.registered.withNameCard = "false";
+            }
+          }
+          catch (err){
+            console.log(err);
+          }
+
+          // if ((campaigns[0].registeredUser.length ==0)&&(campaigns[0].registeredUserwithNameCard.length ==0)){
+          //   console.log("campaigns[0].registeredUser ==0")  
+          //   jsonObj.registered.withoutNameCard = "false";
+          //   jsonObj.registered.withNameCard = "false";            
+          // }
+
+          // console.log(startDate);
+          // console.log(endDate);
+          // console.log(currentDate);
+
+          if (currentDate < startDate){
+            jsonObj.campaignActive = "false";
+            jsonObj.message.withNameCard = campaigns[0].beforeCampaignMessage;
+            jsonObj.message.withoutNameCard = campaigns[0].beforeCampaignMessage;
+          }
+          if ((currentDate >= startDate) && (currentDate <=endDate)){
+            jsonObj.campaignActive = "true";
+            jsonObj.message.withNameCard = campaigns[0].duringCampaignMessage.withNameCard;
+            jsonObj.message.withoutNameCard = campaigns[0].duringCampaignMessage.withoutNameCard;
+          }
+          if (currentDate > endDate){
+            jsonObj.campaignActive = "false";
+            jsonObj.message.withNameCard = campaigns[0].afterCampaignMessage;
+            jsonObj.message.withoutNameCard = campaigns[0].afterCampaignMessage;         
+          }
+
+          res.json(jsonObj);
+
+      } else {
+          jsonObj.campaignActive = "null";
+          jsonObj.type = "null";
+          jsonObj.message = "null";
+          jsonObj.registered = "null";
+          jsonObj.failedMessage = "null";
+          res.json(jsonObj);
+      }
+    });
+ }
+});
+
+// create campaign
+router.post('/campaign', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Campaign.create(req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+ }
+});
+
+
+// update campaign without Name card
+router.put('/updatecampaign/:keyword', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {    
+      // console.log("update event");
+      Campaign.findOneAndUpdate({keyword:req.params.keyword}, req.body, function (err, campaigns) {
+        if (err) return next(err);
+        res.json(campaigns);
+      });
+  }
+});
+
+// update campaign without Name card
+router.put('/updatecampaignregisterlist/:keyword', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {
+
+    if (req.body.registeredUser){
+      console.log("update register list " +req.body.registeredUser);
+      Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUser:req.body.registeredUser}}, function (err, campaigns) {
+        if (err) return next(err);
+        res.json(campaigns);
+      });
+    }
+
+    if (req.body.registeredUserwithNameCard){
+      console.log("update register namecard list " +req.body.registeredUserwithNameCard);      
+      Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUserwithNameCard:req.body.registeredUserwithNameCard}}, function (err, campaigns) {
+        if (err) return next(err);
+        res.json(campaigns);
+      });
+    }
+  }
+});
+
+/* DELETE campaign */
+router.delete('/deletecampaign/:keyword', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else { 
+    Campaign.findOneAndRemove({keyword:req.params.keyword}, req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  }
+});
 
 // Get image
 /* GET ALL USERS in same room 192.168.0.102:4080/chat/image/all*/ 

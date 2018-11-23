@@ -16,7 +16,6 @@ export class UserDetailComponent implements OnInit {
 
   @HostBinding('class.view-user') 
   viewUser: any;
-
   user: any =[];
   editDetail: boolean = false;
   viewDetail: boolean = true;
