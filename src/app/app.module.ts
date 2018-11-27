@@ -56,6 +56,8 @@ import { SettingComponent } from './setting/setting.component';
 import { CampaignDetailComponent } from './campaign-detail/campaign-detail.component';
 import { CampaignsComponent } from './campaigns/campaigns.component';
 import { StaffPlanComponent } from './staff-plan/staff-plan.component';
+import { DisableIfUnauthorizedDirective } from './disable-if-unauthorized.directive';
+import { HideIfUnauthorizedDirective } from './hide-if-unauthorized.directive';
 
 // import { EmojiModule } from 'angular-emoji/dist';
 
@@ -104,7 +106,9 @@ import { StaffPlanComponent } from './staff-plan/staff-plan.component';
     SettingComponent,
     CampaignDetailComponent,
     CampaignsComponent,
-    StaffPlanComponent
+    StaffPlanComponent,
+    DisableIfUnauthorizedDirective,
+    HideIfUnauthorizedDirective
     //CallbackComponent
     // ApphovertableComponent
   ],

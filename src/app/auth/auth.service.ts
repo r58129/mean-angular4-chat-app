@@ -9,7 +9,7 @@ import { of } from 'rxjs/observable/of';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
 import { ChatService } from '../chat.service';
-// import { AuthGroup } from './auth.type';
+import { AuthGroup } from './auth.type';
 
 
 export interface UserDetails {
@@ -55,6 +55,9 @@ export class AuthService {
     online:'',
     tinkerSessionId:''
   };
+
+  // public permissions: Array<string>; // Store the staff role 
+  public permissions: string; // Store the staff role 
 
   constructor(private http: HttpClient, private router: Router, private configs: Configs) {}
 
@@ -580,6 +583,39 @@ export class AuthService {
         });
     });
   }  
+
+  public hasPermission(authGroup: AuthGroup) {
+    // console.log('this.permissions= ' +this.permissions);
+    if (this.permissions != undefined){
+      // if (this.permissions && this.permissions.find(permission => {
+      //   return permission === authGroup;
+      // })) {
+      if (authGroup.includes(this.permissions)){
+      console.log(authGroup.includes(this.permissions));    
+        // console.log('authGroup= ' +authGroup);
+        return true;
+      }
+      return false;    
+    }
+
+    console.log('hasPermission return false');
+    return false;
+  }
+
+  // This method is called once and a list of permissions is stored in the permissions property
+  public initializePermissions() {
+    return new Promise((resolve, reject) => {
+      // console.log('inside initializePermissions');
+      this.profile().subscribe(staff => {
+        this.permissions = staff.role;
+        resolve(staff);
+        console.log('staff: ' +this.permissions);
+      }, (err) => {
+        // console.error(err);
+        reject(err);
+      });
+    });
+  }
 
 }
 
