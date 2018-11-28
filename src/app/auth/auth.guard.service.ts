@@ -34,7 +34,7 @@ export class AuthGuardService implements CanActivate {
           // console.log('authGroup: ' +authGroup);
           // console.log('this.authService.permissions: ' +this.authService.permissions);
           if (this.authService.permissions) {
-          	console.log('this.authService.permissions: ' +this.authService.permissions);
+          	// console.log('this.authService.permissions: ' +this.authService.permissions);
                if (authGroup) {
                     return this.authService.hasPermission(authGroup);
                } else {

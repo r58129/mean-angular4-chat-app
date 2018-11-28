@@ -10,27 +10,91 @@ import { AuthGroup } from '../../auth/auth.type';
 })
 export class AppmenuComponent implements OnInit {
 
-	showMenuItem: boolean = true;
   staffRole: string;	
+	exportHistory: boolean = false;
+	userServices: boolean = false;
+	userList: boolean = false;
+	whiteList: boolean = false;
+	marketingServices: boolean = false;	
+	boardcast: boolean = false;
+	campaign: boolean = false;
+	adminSetting: boolean = false;
 
-  constructor(public authService: AuthService) { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
 
-  	console.log("inside menubar");
+  	// console.log("inside menubar");
   	// console.log("route.data" + this.route.data['role']);
 
-    // this.authService.profile().subscribe(user => {
-    //   this.staffRole = user.role;
+    this.authService.profile().subscribe(user => {
+      this.staffRole = user.role;
+      // console.log('role in menubar: ' + this.staffRole);      
 
-    //   console.log('role in menubar: ' + this.staffRole);
-    // }, (err) => {
-    //   console.error(err);
-    // });
+      if (this.staffRole == 'BASIC'){
+				// this.exportHistory = true;
+				// this.userList = true;				
+				// this.userList = true;
+				// this.whiteList = true;
+				// this.marketingServices = true;	
+				// this.boardcast = true;
+				// this.campaign = true;
+				// this.adminSetting = true;       	
 
+      }
+      if (this.staffRole == 'BASIC+'){
+				this.exportHistory = true;
+				this.userServices = true;
+				this.userList = true;
+				// this.whiteList = true;
+				// this.marketingServices = true;	
+				// this.boardcast = true;
+				// this.campaign = true;
+				// this.adminSetting = true;   
+    
+      }
+      if (this.staffRole == 'PREMIUM'){
+				this.exportHistory = true;
+				this.userServices = true;
+				this.userList = true;
+				this.whiteList = true;
+				// this.marketingServices = true;	
+				// this.boardcast = true;
+				// this.campaign = true;
+				// this.adminSetting = true;   
+  
+      }
+      if (this.staffRole == 'PREMIUM+'){
+				this.exportHistory = true;
+				this.userServices = true;
+				this.userList = true;
+				this.whiteList = true;
+				this.marketingServices = true;	
+				this.boardcast = true;
+				this.campaign = true;
+				// this.adminSetting = true;   
 
+      }
+      if (this.staffRole == 'ADMIN'){
+				this.exportHistory = true;
+				this.userServices = true;
+				this.userList = true;
+				this.whiteList = true;
+				this.marketingServices = true;	
+				this.boardcast = true;
+				this.campaign = true;
+				this.adminSetting = true;            	
+
+      }      
+    }, (err) => {
+      console.error(err);
+    });
   }
 
+// private showMenuBarItem(authGroup: AuthGroup) {
+// 	console.log(this.authService.hasPermission(authGroup));
+//      return this.authService.hasPermission(authGroup);
+// }
 
 // private showMenuItem() {
 // 		if (this.authService.permissions ! =undefined) {

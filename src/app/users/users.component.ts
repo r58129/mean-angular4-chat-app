@@ -6,7 +6,7 @@ import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval'
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
-//import { Configs } from '../configurations';
+import { AuthService, UserDetails } from '../auth/auth.service';
 import { Configs } from '../../environments/environment';
 import { saveAs } from 'file-saver';
 
@@ -21,8 +21,10 @@ export class UsersComponent implements OnInit {
   whatsappUserList: any;
   userContactList: any;
 	notSearch: boolean = true;
+  exportUserList: boolean = false;
+  staffRole: string;    
 
-  	constructor(private chatService: ChatService, private configs: Configs) {}
+  	constructor(private chatService: ChatService, private configs: Configs,private authService: AuthService) {}
 
     @HostListener('click')
     clickedView(viewUser) {
@@ -38,7 +40,23 @@ export class UsersComponent implements OnInit {
   	ngOnInit() {
 
   		this.getAllUserDetail();
-  	}
+
+      this.authService.profile().subscribe(user => {
+        this.staffRole = user.role;
+        // console.log('role in user page: ' + this.staffRole);      
+
+        if ((this.staffRole == 'BASIC') ||(this.staffRole == 'BASIC+')){
+          // this.exportUserList = true;        
+        } 
+        if ((this.staffRole == 'PREMIUM') || (this.staffRole == 'PREMIUM+') || (this.staffRole == 'ADMIN')) {
+          this.exportUserList = true;   
+        }
+    
+      }, (err) => {
+        console.error(err);
+      });
+  }      
+  	
 
   	getAllUserDetail(){
   	  // var operator_request = "true";

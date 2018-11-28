@@ -43,7 +43,7 @@
             <!-- <li ><a routerLink="/chat/multichat" routerLinkActive="" href=""><i class="fa fa-circle-o"></i> MultiChat Operator </a></li> -->
             </ul>
         </li>
-        <li class="treeview">
+        <li class="treeview" >
           <a href="/chat/history">
             <i class="fa fa-files-o"></i>
             <span>Chat History</span>
@@ -53,11 +53,11 @@
           </a>
           <ul class="treeview-menu">
             <li ><a routerLink="/chat/history" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> View History </a></li>         
-            <li *ngIf = "showMenuItem"><a routerLink="/chat/report" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Export History</a></li>          
+            <li *ngIf="exportHistory"><a routerLink="/chat/report" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Export History</a></li>          
           </ul> 
         </li>
 
-        <li class="treeview" *ngIf = "showMenuItem">
+        <li class="treeview" *ngIf="userServices">
           <a href="/chat/userSettingPage">
             <i class="fa fa-users"></i>
             <span>User Service</span>
@@ -66,12 +66,12 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li *ngIf = "showMenuItem"><a routerLink="/chat/userSettingPage" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> User List </a></li>
-            <li *ngIf = "showMenuItem"><a routerLink="/chat/whatsappwhitelist" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Whatsapp White List </a></li>
+            <li  *ngIf="userList"><a routerLink="/chat/userSettingPage" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> User List </a></li>
+            <li  *ngIf="whiteList"><a routerLink="/chat/whatsappwhitelist" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Whatsapp White List </a></li>
           </ul>
         </li>
 
-        <li class="treeview" *ngIf = "showMenuItem">
+        <li class="treeview" *ngIf="marketingServices">
           <a href="/chat/boardcast">
             <i class="fa fa-bullhorn"></i>
             <!-- <i class="fa fa-lightbulb-o"></i> -->
@@ -81,12 +81,12 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li *ngIf = "showMenuItem"><a routerLink="/chat/boardcast" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Boardcast </a></li>
-            <li *ngIf = "showMenuItem"><a routerLink="/chat/campaign" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Campaign </a></li>            
+            <li *ngIf="boardcast"><a routerLink="/chat/boardcast" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Boardcast </a></li>
+            <li *ngIf="campaign"><a routerLink="/chat/campaign" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Campaign </a></li>            
           </ul>          
         </li>
 
-        <li class="treeview" *ngIf = "showMenuItem">
+        <li class="treeview" *ngIf="adminSetting">
           <a href="/chat/settings">
             <i class="fa fa-gears"></i>
             <span>Settings</span>
@@ -95,7 +95,7 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li *ngIf = "showMenuItem"><a routerLink="/chat/settings" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Change Staff Plan </a></li>
+            <li ><a routerLink="/chat/settings" routerLinkActive="active" href=""><i class="fa fa-circle-o"></i> Change Staff Plan </a></li>
           </ul>          
         </li>                
         <li class="treeview">
