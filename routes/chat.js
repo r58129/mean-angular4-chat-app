@@ -30,6 +30,7 @@ var User = require('../models/User.js');
 var Contact = require('../models/Contact.js');
 var Staff = require('../models/Staff.js');
 var Campaign = require('../models/Campaign.js');
+var Group = require('../models/Group.js');
 
 var watchdog = require("watchdog")
 const timeout = 33000;  //33s
@@ -873,7 +874,7 @@ router.get('/roomhistory/:room', auth, function(req, res, next) {
 
 /* SAVE REQUEST */
 // router.post('/request', function(req, res, next) {
-  router.post('/request', auth, function(req, res, next) {
+router.post('/request', auth, function(req, res, next) {
   if (!req.payload._id) {
     res.status(401).json({
       "message" : "UnauthorizedError:"
@@ -998,6 +999,16 @@ router.get('/userphone/:phone_number', auth, function(req, res, next) {
   } else {  
     User.find({phone_number:req.params.phone_number}, function (err, users) {
       if (err) return next(err);
+
+      // console.log(users[0].namecard.organization_name.length);
+
+      // if (users[0].namecard.organization_name.length ==0){
+      //   users[0].namecard.organization_name = "null";
+      // }
+      // console.log(users.namecard.organization_unit[0].length);
+      // console.log(users.namecard.telephone[0].length);
+      // console.log(users.namecard.address[0].length);
+      // console.log(users.namecard.title[0].length);
       res.json(users);
     });
   }
@@ -1446,18 +1457,91 @@ router.delete('/contact/:id', auth, function(req, res, next) {
   }
 });
 
-/* GET SINGLE CHAT BY ID */
-// router.get('/dbstats/storage', auth, function(req, res, next) {
-//   if (!req.payload._id) {
-//     res.status(401).json({
-//       "message" : "UnauthorizedError:"
-//     });
-//   } else {
-//     Chat.find(req.body, function (err, chats) {
-//       if (err) return next(err);
-//       res.json(chats);
-//     });
-//   }
-// });
+/* GET ALL group users */ 
+router.get('/group/all', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Group.find( req.body, function (err, groups) {
+      if (err) return next(err);
+      res.json(groups);
+    });
+ }
+});
+
+/* GET SINGLE user BY phone_number */
+// router.get('/userphone/:phone_number', function(req, res, next) {
+router.get('/group/:groupkey', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Group.find({key:req.params.groupkey}, function (err, groups) {
+      if (err) return next(err);
+      res.json(groups);
+    });
+  }
+});
+
+/* SAVE user */
+// router.post('/user', function(req, res, next) {
+router.post('/group', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Group.create(req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+ }
+});
+
+/* UPDATE user by user phone number*/
+// router.put('/userupdate/:phone_number', function(req, res, next) {
+router.put('/addgroupuser/:groupkey', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Group.findOneAndUpdate({key:req.params.groupkey}, {$addToSet:{phone_number:req.body.phone_number}}, function (err, groups) {
+      if (err) return next(err);
+      res.json(groups);
+    });
+  }
+});
+
+/* DELETE group user */
+router.put('/deletegroupuser/:groupkey', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else { 
+    Group.findOneAndUpdate({key:req.params.groupkey}, {$pull:{phone_number:req.body.phone_number}}, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  }
+});
+
+/* DELETE group */
+router.delete('/deletegroup/:groupkey', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else { 
+    Group.findOneAndRemove({key:req.params.groupkey}, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  }
+});
 
 module.exports = router;

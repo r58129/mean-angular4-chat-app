@@ -45,6 +45,8 @@ import { BoardcastComponent } from './boardcast/boardcast.component';
 import { SettingComponent } from './setting/setting.component';
 import { CampaignDetailComponent } from './campaign-detail/campaign-detail.component';
 import { CampaignsComponent } from './campaigns/campaigns.component';
+import { DisableIfUnauthorizedDirective } from './disable-if-unauthorized.directive';
+import { HideIfUnauthorizedDirective } from './hide-if-unauthorized.directive';
 
 const appRoutes: Routes = [
     // { path: '', component: HomeComponent },
@@ -52,26 +54,26 @@ const appRoutes: Routes = [
   { path: csRegPath , component: RegisterComponent },
   { path: 'api/forgotpwd', component: ForgotPasswordComponent },
   { path: 'api/resetpwd/:token', component: ResetPasswordComponent },
-  { path: 'api/profile', component: ProfileComponent, canActivate: [AuthGuardService] },
+  { path: 'api/profile', component: ProfileComponent, canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']} },
   
   // { path: '', component: ApploginComponent, pathMatch: 'full'},
   
   { path: 'chat/request', component: RequestComponent, 
     children:[
       { path: 'chatbox/:id/:id2/:id3/:id4/:id5', component: ChatComponent, outlet:'chatOutlet',canActivate: [AuthGuardService]},
-  ], canActivate: [AuthGuardService]},
+  ], canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}},
   
   { path: 'chat/operator', component: OprequestComponent, 
     children:[
       { path: 'opchatbox/:id/:id2', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthGuardService]},
-  ], canActivate: [AuthGuardService]},
+  ], canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}},
  
   { path: 'chat/history', component: HistorySearchComponent, 
     children:[
       { path: 'historybox/:id', component: HistoryComponent, outlet:'historyOutlet',canActivate: [AuthGuardService]},
-  ], canActivate: [AuthGuardService]},
+  ], canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}},
 
-  { path: 'chat/report', component: ReportSearchComponent, canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}},
+  { path: 'chat/report', component: ReportSearchComponent, canActivate: [AuthGuardService], data: {role: ['BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}},
 
   { path: 'chat/userSettingPage', component: UsersComponent, 
     children:[
@@ -86,9 +88,9 @@ const appRoutes: Routes = [
   
   { path: 'chat/settings', component: SettingComponent, canActivate: [AuthGuardService], data: {role: ['ADMIN']} }, // { path: 'opchat', component: OpchatComponent, canActivate: [AuthguardGuard] },
   
-  { path: 'chat/ourservices', component: OurServicesComponent, canActivate: [AuthGuardService] },
+  { path: 'chat/ourservices', component: OurServicesComponent, canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']} },
   
-  { path: 'chat/commandlist', component: CommandListComponent, canActivate: [AuthGuardService] },    
+  { path: 'chat/commandlist', component: CommandListComponent, canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']} },    
   // { path: 'admin', component: AdminComponent , canActivate: [AuthguardGuard]},
   // { path: 'oldoperator', component: OperatorComponent, canActivate: [AuthguardGuard] },
   { path: '**', component: PagenotfoundComponent}

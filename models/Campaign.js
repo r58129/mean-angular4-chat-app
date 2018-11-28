@@ -22,11 +22,11 @@ var CampaignSchema = new mongoose.Schema({
     companyName: String,
     registeredUser: [{ 
         type: String,
-        unique: true,
+        // unique: true,
     }],
     registeredUserwithNameCard: [{ 
         type: String,
-        unique: true,
+        // unique: true,
     }],
     newUser: String,
     // InUserList: [{ 
