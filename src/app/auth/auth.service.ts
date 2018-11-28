@@ -19,6 +19,7 @@ export interface UserDetails {
   name: string;
   exp: number;
   iat: number;
+    role: String;  //Lewis test 
 }
 
 interface TokenResponse {
