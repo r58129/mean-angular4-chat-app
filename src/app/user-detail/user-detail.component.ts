@@ -21,6 +21,7 @@ export class UserDetailComponent implements OnInit {
   viewDetail: boolean = true;
   addUserPage: boolean = false;
   editUserPage: boolean = false;
+  showImage: boolean = false;
 
 
   userDetail = { phone_number:'', first_name: '',middle_name: '', last_name: '' , nickname:'', service:'', default_spoken_lang:'',default_text_lang:'',reserve1:'', reserve2:''};  //user detail
@@ -45,6 +46,12 @@ export class UserDetailComponent implements OnInit {
 
 		this.chatService.showUser(phoneNum).then((res) => {  //from chatService, 
 	      this.user = res;
+        console.log(this.user[0].namecard.image);
+        if (this.user[0].namecard.image !=undefined){
+          this.showImage = true;          
+        } else {
+          this.showImage = false;          
+        }
 	    }, (err) => {
 	      console.log(err);
 	    });

@@ -28,7 +28,10 @@ var CampaignSchema = new mongoose.Schema({
         type: String,
         // unique: true,
     }],
-    newUser: String,
+    alreadyRegistered: String,
+    newUser: [{ 
+        type: String       
+    }],
     // InUserList: [{ 
     //     type: Schema.Types.ObjectId, 
     //     ref: 'User'

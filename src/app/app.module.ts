@@ -51,13 +51,14 @@ import { ReportSearchComponent } from './report-search/report-search.component';
 import { OurServicesComponent } from './our-services/our-services.component';
 import { CommandListComponent } from './command-list/command-list.component';
 import { WhitelistComponent } from './whitelist/whitelist.component';
-import { BoardcastComponent } from './boardcast/boardcast.component';
 import { SettingComponent } from './setting/setting.component';
 import { CampaignDetailComponent } from './campaign-detail/campaign-detail.component';
 import { CampaignsComponent } from './campaigns/campaigns.component';
 import { StaffPlanComponent } from './staff-plan/staff-plan.component';
 import { DisableIfUnauthorizedDirective } from './disable-if-unauthorized.directive';
 import { HideIfUnauthorizedDirective } from './hide-if-unauthorized.directive';
+import { BroadcastDetailComponent } from './broadcast-detail/broadcast-detail.component';
+import { BroadcastComponent } from './broadcast/broadcast.component';
 
 // import { EmojiModule } from 'angular-emoji/dist';
 
@@ -102,13 +103,14 @@ import { HideIfUnauthorizedDirective } from './hide-if-unauthorized.directive';
     OurServicesComponent,
     CommandListComponent,
     WhitelistComponent,
-    BoardcastComponent,
     SettingComponent,
     CampaignDetailComponent,
     CampaignsComponent,
     StaffPlanComponent,
     DisableIfUnauthorizedDirective,
-    HideIfUnauthorizedDirective
+    HideIfUnauthorizedDirective,
+    BroadcastDetailComponent,
+    BroadcastComponent
     //CallbackComponent
     // ApphovertableComponent
   ],
