@@ -30,6 +30,7 @@ export class BroadcastDetailComponent implements OnInit {
   selectedImage: File;
   compressedImage: File;
   csvFile: File;   
+  filename: string;
  
 
 

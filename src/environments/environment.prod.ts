@@ -26,7 +26,7 @@ export class Configs {
 
   multiChatNgrokAddr: string = ' https://79fec3a3.ngrok.io'; 
   multiChatAddr: string = 'https://cs.roboassistant.ai'; 
-  multiChatPort: string = '3991';
+  multiChatPort: string = '3891';
   multiChatCode: string = 'Aptc123456';
   
 
