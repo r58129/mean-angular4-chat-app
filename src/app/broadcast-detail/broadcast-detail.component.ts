@@ -22,9 +22,15 @@ export class BroadcastDetailComponent implements OnInit {
   addBroadcastPage: boolean = false;
   editBroadcastPage: boolean = false;
   notSelected: boolean = true;
+  url = '';  
+  showImage: boolean = false;
+  enableBroadcast: any = [];
+  disableBroadcast: any = [];
+  jobDetail: any = [];
   selectedImage: File;
   compressedImage: File;
-  url = '';  
+  csvFile: File;   
+ 
 
 
   broadcastDetail = { jobID:'', message: '', contactListCsvName:'', imagefile:'', imagefilename:'', notSendAck:'', prependContactName:'', jobStatus:''
@@ -37,6 +43,8 @@ export class BroadcastDetailComponent implements OnInit {
   constructor(private chatService: ChatService, private route: ActivatedRoute, private configs: Configs) {}
 
   ngOnInit() {
+
+  	this.newBroadcast.prependContactName = "Y";	//Yes
 
     this.chatService.change.subscribe(viewBroadcast => {
       console.log("this.viewBroadcast.jobID: "+viewBroadcast.jobID);
@@ -52,6 +60,16 @@ export class BroadcastDetailComponent implements OnInit {
 
 		this.chatService.getBroadcastbyJobId(jobID).then((res) => {  //from chatService, 
 	      this.broadcast = res;
+
+        if (this.broadcast[0] !=undefined){
+          if (this.broadcast[0].imagefile !=undefined){
+            console.log(this.broadcast[0].imagefile);          
+            this.showImage = true;          
+          } else {
+            this.showImage = false;          
+          }           
+        }
+
 	    }, (err) => {
 	      console.log(err);
 	    });
@@ -60,23 +78,131 @@ export class BroadcastDetailComponent implements OnInit {
   saveBroadcastDetail(){
 
   	console.log("create new broadcast job");  	
+		// console.log("prepend name: " + this.newBroadcast.prependContactName);
+
+  	this.newBroadcast.jobStatus = "Pending";
+
+    // get admin sessionID
+    var sID=localStorage.getItem('res.data.sessionID');
+      
+    //construct form data
+    var enable = new FormData();
+    enable.append('sessionID', sID);
+    // formDataImage.append('imagefilename', this.selectedImage.name);
+    // formDataImage.append('imagefile', this.compressedImage);
 	     
 	  if (window.confirm('Once broadcast job is submitted, opeartor and administrator chat services will not be available until the job is completed!')){
 			
-			this.chatService.saveBroadcast(this.newBroadcast).then((res) => {  //from chatService, 
-		      
-		    window.alert('Broadcast job is submitted successfully!');
+			this.chatService.enableBroadcast(enable).then((res) => {
+
+				this.enableBroadcast = res;
+				console.log("Enable broadcast: " +this.enableBroadcast.success);
+				// window.alert(' Broadcast mode is enabled!');
+				
+				// check if image is attached and post to tinker 				  
+				if (this.url.length != 0){	//broadcast image
+
+					console.log("newBroadcast.imagefile: " + this.newBroadcast.imagefile);
+  				console.log("newBroadcast.imagefilename: " + this.newBroadcast.imagefilename);
+					
+			    //construct form data
+			    var boardcastImage = new FormData();
+			    boardcastImage.append('sessionID', sID);
+			    boardcastImage.append('message', this.newBroadcast.message);
+			    boardcastImage.append('prependContactName', this.newBroadcast.prependContactName); 					
+			    boardcastImage.append('contactListCsv', this.csvFile);			    
+			    boardcastImage.append('imagefilename', this.selectedImage.name);
+			    boardcastImage.append('imagefile', this.compressedImage);  				
+
+					//write to DB
+					this.chatService.broadcastImage(boardcastImage).then((res) => {  //from chatService, 
+				  
+				    window.alert('Broadcast job with image is submitted successfully!');
+
+				    this.jobDetail = res;
+
+						if (this.jobDetail.jobID !=undefined){
+
+							this.newBroadcast.jobID = this.jobDetail.jobID;
+					  	this.newBroadcast.contactListCsvName = this.csvFile.name;	
+					  	this.newBroadcast.imagefile = this.url;
+					  	this.newBroadcast.imagefilename = this.selectedImage.name;		
+				
+
+							//write to DB
+							this.chatService.saveBroadcast(this.newBroadcast).then((res) => {  //from chatService, 
+						  
+						    // window.alert('Broadcast job is uploaded to DB successfully!');
+						  }, (err) => {
+						    console.log(err);
+						    window.alert('Write Broadcast to DB failed!');
+						  });	  
+						} else {
+							console.log("not able to get job ID");
+						}
+
+				  	this.viewBroadcastDetail();  
+
+				  }, (err) => {
+				    console.log(err);
+				    window.alert('Add Broadcast job failed!');
+				  });	  				  
+
+				} else {	//image not exists
+
+					console.log("No imagefile");
+
+			    //construct form data
+			    var boardcastMessage = new FormData();
+			    boardcastMessage.append('sessionID', sID);
+			    boardcastMessage.append('message', this.newBroadcast.message);
+			    boardcastMessage.append('prependContactName', this.newBroadcast.prependContactName); 					
+			    boardcastMessage.append('contactListCsv', this.csvFile);
+
+					//write to DB
+					this.chatService.broadcastMessage(boardcastMessage).then((res) => {  //from chatService, 
+				  
+				    window.alert('Broadcast job with message only is submitted successfully!');
+
+				    this.jobDetail = res;
+
+						if (this.jobDetail.jobID !=undefined){
+
+							this.newBroadcast.jobID = this.jobDetail.jobID;
+					  	this.newBroadcast.contactListCsvName = this.csvFile.name;		
+
+							//write to DB
+							this.chatService.saveBroadcast(this.newBroadcast).then((res) => {  //from chatService, 
+						  
+						    // window.alert('Broadcast job is uploaded to DB successfully!');
+						  }, (err) => {
+						    console.log(err);
+						    window.alert('Write Broadcast to DB failed!');
+						  });	  
+						} else {
+							console.log("not able to get job ID");
+						}
+
+				    this.viewBroadcastDetail();
+
+				  }, (err) => {
+				    console.log(err);
+				    window.alert('Add Broadcast job failed!');
+				  });	
+
+				}
+
 		  }, (err) => {
 		    console.log(err);
 		    window.alert('Add Broadcast job failed!');
 		  });	  	
 
-	  }else {
+	  } else {
 	  	console.log('Broadcast job is cancelled')
 	  }
 
 
-		this.viewBroadcastDetail();
+
 
   }
 
@@ -121,6 +247,7 @@ export class BroadcastDetailComponent implements OnInit {
 		this.viewDetail = false;
 		this.editBroadcastPage = false; 
 		this.addBroadcastPage = true; 
+		this.filename = '';
   	console.log(' add Broadcast!');
 
   }
@@ -257,16 +384,66 @@ export class BroadcastDetailComponent implements OnInit {
     }
 
   } 
-  // deleteUser(){
-  //   console.log('userDetail: ' +this.userDetail.phone_number)
-  //   if (window.confirm('User will be deleted!')){
-  //     this.chatService.deleteUser(this.userDetail.phone_number).then((res) => {  //from chatService,    
-  //     }, (err) => {
-  //       console.log(err);
-  //     });
-  //   } else {
-  //     console.log('do nothing!')
-  //   }
-  // 	this.viewUserDetail();
+
+  onCSVSelected(event) {    
+
+    // this.compressedFile = event.target.files[0];
+
+    // this.selectedFile = this.compressFile();
+    this.csvFile = event.target.files[0];
+
+
+    console.log("event.target.files[0]: " +this.csvFile);
+    console.log("csvFile name: " +this.csvFile.name);
+    // console.log("event.target.files: " +event.target.files);  //file list
+
+    if (event.target.files && event.target.files[0]) {
+
+      var reader = new FileReader();
+      reader.readAsText(this.csvFile); // read file as data url
+      // reader.readAsArrayBuffer(event.target.files[0]);  //read as Array buffer
+      reader.onload = (event:any) => { // called once readAsDataURL is completed        
+        // this.url = event.target.result;
+        // console.log("url: " +this.url);    //base64
+
+        // var img = new Image();
+        // var imageSize:any;
+        // var roundedImageSize:any;
+
+        var csvData = event.target.result;   
+        console.log("csv Data: " +csvData );
+      }
+
+      reader.onerror = error => console.log(error)    
+    }
+
+  } 
+
+  // disableBroadcastMode(){
+
+  //   // get admin sessionID
+  //   var sID=localStorage.getItem('res.data.sessionID');
+      
+  //   //construct form data
+  //   var disable = new FormData();
+  //   disable.append('sessionID', sID);
+
+  // 	this.chatService.disableBroadcast(disable).then((res) => {
+  		
+  // 		this.jobDetail = res;
+  		
+  // 		if (this.jobDetail.success =="true"){
+  // 			window.alert('Disabled broadcast mode! Other features is now resumed');
+  // 			console.log("disable broadcast");
+  // 		} else {
+  // 			console.log("disable broadcast failed!");
+  // 		}
+
+  // 	}, (err) => {
+		//   console.log(err);
+
+		// });	
+
   // }
+
 }

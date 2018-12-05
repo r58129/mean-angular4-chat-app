@@ -38,10 +38,12 @@
 
 #displayImage, #displayGetImage{
     
-    max-height: 20vw;
-    max-width: 30vw;
-/*    margin-right: 10px;
-    margin-left: 10px;*/
+    /*max-height: 20vw;*/
+    /*max-width: 30vw;*/
+    /*display: block;*/
+    margin-left: 5vw;
+    /*margin-right: auto;*/
+    width: 80%;
 }
 
 #return-to-table

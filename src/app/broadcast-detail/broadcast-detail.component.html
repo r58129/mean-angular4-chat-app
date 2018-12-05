@@ -32,7 +32,7 @@
 					            <label class="col-sm-5 control-label">CSV file </label>
 					            <input type="text" class="form-control-static" [(ngModel)]="broadcastDetail.contactListCsvName" placeholder="Optional" name="broadcastDetail.contactListCsvName" >
 					          </div>
-					          <div class="form-group">
+					          <div class="form-group" >
 					            <label class="col-sm-5 control-label">Select image</label>
                       <img id="displayImage" [src]="url" height="200px"><br/>
                       <input style = "display: none" type="file" class="form-control-static" (change)="onImageFileSelected($event)" #fileInput name="filename" >
@@ -91,28 +91,29 @@
                   	<form (ngSubmit)="editBroadcastDetail()">     
 							        <div class="form-horizontal"  *ngFor="let broadcast of broadcast">
 							          <div class="form-group">
-							            <label class="col-sm-5 control-label">Job ID</label>
+							            <label class="col-sm-3 control-label">Job ID</label>
 							            <p class="form-control-static">{{ broadcast.jobID }}</p>
 							          </div>
 							          <div class="form-group">
-							            <label class="col-sm-5 control-label">Message</label>
-							            <p class="form-control-static">{{ broadcast.message }}</p>
+							            <label class="col-sm-3 control-label">Prepend Contact Name</label>
+							            <p *ngIf="broadcast.prependContactName=Y" class="form-control-static">Yes</p>
+							            <p *ngIf="broadcast.prependContactName=Y" class="form-control-static">No</p>
 							          </div>
 							          <div class="form-group">
-							            <label class="col-sm-5 control-label">CSV file </label>
+							            <label class="col-sm-3 control-label">CSV file </label>
 							            <p class="form-control-static">{{ broadcast.contactListCsvName }}</p>
 							          </div>
 							          <div class="form-group">
-							            <label class="col-sm-5 control-label">Select image</label>
-		                      <img id="displayImage" [src]="broadcast.imagefile" ><br/>
+							            <label class="col-sm-3 control-label">Message</label>
+							            <textarea id="message-box" readonly class="form-control-static">{{ broadcast.message }}</textarea>
+							          </div>
+							          <div class="form-group" *ngIf ="showImage">
+							            <label class="col-sm-3 control-label">Select image</label>
+		                      <img id="displayImage" class="form-control-static" [src]="broadcast.imagefile" ><br/>
 		                      				            
 							            <!-- <input type="text" class="form-control-static" [(ngModel)]="broadcastDetail.last_name" placeholder="Optional" name="broadcastDetail.last_name" > -->
 							          </div>							          
-			<!-- 				          <div class="form-group">
-							            <label class="col-sm-5 control-label">Last Name</label>
-							            <p class="form-control-static">{{ broadcast.last_name }}</p>
-							          </div>
-							          <div class="form-group">
+<!-- 							          <div class="form-group">
 							            <label class="col-sm-5 control-label">Nickname</label>
 							            <p class="form-control-static">{{ broadcast.nickname }}</p>
 							          </div>
@@ -129,12 +130,12 @@
 							            <p class="form-control-static">{{ user.default_text_lang }}</p>
 							          </div> -->
 				                    
-				                <div id = update-button class="form-group"> 
+<!-- 				                <div id = update-button class="form-group"> 
 				                  <div class="form-group center">
 				                    <label class="col-sm-5 control-label"></label>
 				                    <button  type="submit" class="btn btn-primary btn" > Edit </button>
 				                  </div>				                       
-				                </div> 
+				                </div> --> 
 							        </div>
 										</form>
                   </div>
@@ -145,31 +146,41 @@
 		              <div class="box-body">
 					        	<form (ngSubmit)="saveBroadcastDetail()" #addBroadcastForm="ngForm"> 
 						        	<div class="form-horizontal" >
-							          <div class="form-group">
+<!-- 							          <div class="form-group">
 							            <label class="col-sm-4 control-label">Job ID</label>
 							            <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.jobID" placeholder="Required" name="jobID" >
-							          </div>
+							          </div> -->
 							          <div class="form-group">
-							            <label class="col-sm-4 control-label">Message</label>
-							            <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.message" placeholder="Required" name="newBroadcast.message" required="" >
-							          </div>
+							            <label class="col-sm-4 control-label">Prepend Contact Name</label>							
+							            <div class="input-group form-control-static">
+										        <input id = "radio-button" type="radio" [(ngModel)]="newBroadcast.prependContactName" name="prepend" class="minimal" value="Y">
+										        Yes
+										        <input id = "radio-button" type="radio" [(ngModel)]="newBroadcast.prependContactName" name="prepend" class="minimal" value="">
+										        No<br>
+									        </div>
+												</div>
 							          <div class="form-group">
 							            <label class="col-sm-4 control-label">CSV file</label>
-							            <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.contactListCsvName" placeholder="Required" name="newBroadcast.contactListCsvName file" required="" >
-							          </div>
-	                      <div class="form-group">
-							            <label class="col-sm-4 control-label">
-	          
-	                        <button type="button" class="btn btn-default btn-sm " (click)="fileInput.click()">Browse Image</button></label>
-              						<input style = "display: none" type="file" class="form-control-static" (change)="onImageFileSelected($event)" placeholder="Optional" #fileInput name="filename" >							                                   
-	                        <img id="displayImage" [src]="url" height="200px"><br/>	                        
-	                      </div>	                      
-<!-- 							          <div class="form-group">
-							            <label class="col-sm-5 control-label">Last Name</label>
-							            
-							            <input type="text" class="form-control-static" [(ngModel)]="newUser.last_name" placeholder="Optional" name="last_name" >
-							          </div>
+							            <input type="file" class="form-control-static" (change)="onCSVSelected($event)" placeholder="Required" #fileInput name="csvFile" required="" >
+							          </div>												
 							          <div class="form-group">
+							            <label class="col-sm-4 control-label">Message</label>
+							            <textarea id="message-box" type="text" class="form-control-static" [(ngModel)]="newBroadcast.message" placeholder="Required" name="newBroadcast.message" required="" ></textarea>
+							          </div>
+							            <!-- <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.prependContactName" placeholder="Optional" name="last_name" > -->
+							          						          
+	                      <div class="form-group">
+							            <label class="col-sm-4 control-label">Select Image	          
+	                        </label>
+              						<button type="button" class="btn btn-default btn-sm " (click)="fileInput.click()">Browse Image</button>
+              						<input style = "display: none" type="file" class="form-control-static" (change)="onImageFileSelected($event)" placeholder="Optional" #fileInput name="filename" >							                                   
+	                        <!-- <img id="addImage" [src]="url" width="300px"><br/>	                         -->
+	                      </div>	                      
+	                      <div class="form-group">
+							            <label class="col-sm-4 control-label"></label>
+	                        <img id="addImage" [src]="url" width="300px"><br/>	                        
+	                      </div>
+							          <!-- <div class="form-group">
 							            <label class="col-sm-5 control-label">Nickname</label>
 							            
 							            <input type="text" class="form-control-static" [(ngModel)]="newUser.nickname" placeholder="Required" name="nickname" >
@@ -193,7 +204,7 @@
 			                  <div id = edit-button class="form-group"> 
 			                                    
 			                    <div class="form-group center">
-			                      <label class="col-sm-5 control-label"></label>
+			                      <label class="col-sm-4 control-label"></label>
 			                      <button  type="submit" class="btn btn-success btn" [disabled]="!addBroadcastForm.form.valid"> Create </button>
 			                    </div>                        
 			                  </div> 

@@ -32,6 +32,7 @@ var Staff = require('../models/Staff.js');
 var Campaign = require('../models/Campaign.js');
 var Group = require('../models/Group.js');
 var Broadcast = require('../models/Broadcast.js');
+var Translate = require('../models/Translate.js');
 
 var watchdog = require("watchdog")
 const timeout = 33000;  //33s
@@ -1644,4 +1645,98 @@ router.delete('/deletebroadcast/:jobid', auth, function(req, res, next) {
   }
 });
 
+/* GET all translate list */ 
+router.get('/translate/all', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Translate.find( req.body, function (err, translates) {
+      if (err) return next(err);
+      res.json(translates);
+    });
+ }
+});
+
+/* GET translate BY phone_number */
+// router.get('/userphone/:phone_number', function(req, res, next) {
+router.get('/translate/:phone_number', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Translate.find({phone_number:req.params.phone_number}, function (err, translates) {
+      if (err) return next(err);
+      res.json(translates);
+    });
+  }
+});
+
+/* GET translate BY language */
+// router.get('/userphone/:phone_number', function(req, res, next) {
+router.get('/translate/:source_language/:target_language', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Translate.find({ $and:
+      [ 
+        { source_language:req.params.source_language },
+        { target_language:req.params.target_language }
+        // { keyword: { $exists: true} }
+      ]
+    }, function (err, translates) {
+      if (err) return next(err);
+      res.json(translates);
+    });
+  }
+});
+
+/* SAVE translate */
+// router.post('/translate', function(req, res, next) {
+router.post('/translate', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Translate.create(req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+ }
+});
+
+/* UPDATE user by user phone number*/
+// router.put('/userupdate/:phone_number', function(req, res, next) {
+router.put('/updatetranslate/:id', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Translate.findByIdAndUpdate(req.params.id, req.body, function (err, translates) {
+      if (err) return next(err);
+      res.json(translates);
+    });
+  }
+});
+
+
+/* DELETE group */
+router.delete('/deletetranslate/:id', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else { 
+    Translate.findByIdAndRemove(req.params.id, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  }
+});
 module.exports = router;

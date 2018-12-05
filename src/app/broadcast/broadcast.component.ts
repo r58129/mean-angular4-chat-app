@@ -18,6 +18,8 @@ import { saveAs } from 'file-saver';
 export class BroadcastComponent implements OnInit {
 
 	broadcastDetail: any;  
+  disableBroadcastStatus: any = [];
+  disableBroadcastService: boolean = true;
   // whatsappUserList: any;
   // userContactList: any;
 	// notSearch: boolean = true;
@@ -70,6 +72,34 @@ export class BroadcastComponent implements OnInit {
     refreshList(){
       this.getAllBroadcastList();      
     }
+
+  disableBroadcastMode(){
+
+    // get admin sessionID
+    var sID=localStorage.getItem('res.data.sessionID');
+      
+    //construct form data
+    var disable = new FormData();
+    disable.append('sessionID', sID);
+
+    this.chatService.disableBroadcast(disable).then((res) => {
+      
+      this.disableBroadcastStatus = res;
+      console.log("disableBroadcastStatus: " + this.disableBroadcastStatus.success);
+      
+      if (this.disableBroadcastStatus.success == true){
+        window.alert('Disabled broadcast mode! Other features are now resumed!');
+        console.log("disable broadcast");
+      } else {
+        console.log("disable broadcast failed!");
+      }
+
+    }, (err) => {
+      console.log(err);
+
+    });  
+
+  }
 
     // exportUser(){
 

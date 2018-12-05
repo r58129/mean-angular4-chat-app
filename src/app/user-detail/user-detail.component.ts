@@ -46,12 +46,16 @@ export class UserDetailComponent implements OnInit {
 
 		this.chatService.showUser(phoneNum).then((res) => {  //from chatService, 
 	      this.user = res;
-        console.log(this.user[0].namecard.image);
-        if (this.user[0].namecard.image !=undefined){
-          this.showImage = true;          
-        } else {
-          this.showImage = false;          
+
+        if (this.user[0] !=undefined){
+          if (this.user[0].namecard.image !=undefined){
+            console.log(this.user[0].namecard.image);          
+            this.showImage = true;          
+          } else {
+            this.showImage = false;          
+          }           
         }
+
 	    }, (err) => {
 	      console.log(err);
 	    });

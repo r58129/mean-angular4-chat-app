@@ -709,6 +709,7 @@ export class ChatService {
           });
     });
   }
+
   
   updateBroadcast(jobID, data) {
     return new Promise((resolve, reject) => {
@@ -733,6 +734,84 @@ export class ChatService {
           });
     });
   }  
+  
+  //broadcast formdata message to tinker
+  // https://airpoint.com.hk:8006/api/whatsapp/listtext
+  broadcastMessage(formdata) {
+    return new Promise((resolve, reject) => {
+      // console.log("formdata: " +formdata);
+      console.log("formdata.sessionID: " +formdata.get('sessionID'));
+      console.log("formdata.message: " +formdata.get('message'));
+      
+     this.http.post(this.tinkerUrl +'/api/whatsapp/listtext', formdata )
+         // .map(res => res.json())
+         .subscribe(res => {
+           resolve(res);
+           // console.log("post successful");
+         }, (err) => {
+           reject(err);
+           // console.log("post failed");
+         });
+    });
+  }
+
+  //broadcast formdata image to tinker
+  // https://airpoint.com.hk:8006/api/whatsapp/listimage
+  broadcastImage(formdata) {
+    return new Promise((resolve, reject) => {
+      // console.log("formdata: " +formdata);
+      console.log("formdata.sessionID: " +formdata.get('sessionID'));
+      console.log("formdata.imagefilename: " +formdata.get('imagefilename'));
+      
+     this.http.post(this.tinkerUrl +'/api/whatsapp/listimage', formdata )
+         // .map(res => res.json())
+         .subscribe(res => {
+           resolve(res);
+           // console.log("post successful");
+         }, (err) => {
+           reject(err);
+           // console.log("post failed");
+         });
+    });
+  }  
+
+  // https://airpoint.com.hk:8006/api/whatsapp/enablebroadcast?action=enablebroadcast
+  enableBroadcast(formdata) {
+    return new Promise((resolve, reject) => {
+      // console.log("formdata: " +formdata);
+      console.log("enableBroadcast: " +formdata.get('sessionID'));
+      
+     this.http.post(this.tinkerUrl +'/api/whatsapp/enablebroadcast?action=enablebroadcast', formdata )
+         // .map(res => res.json())
+         .subscribe(res => {
+           resolve(res);
+           // console.log("post successful");
+           // {"success":true}
+         }, (err) => {
+           reject(err);
+           // console.log("post failed");
+         });
+    });
+  }  
+
+  // https://192.168.0.106:8011/api/whatsapp/disablebroadcast?action=disablebroadcast
+  disableBroadcast(formdata) {
+    return new Promise((resolve, reject) => {
+      // console.log("formdata: " +formdata);
+      console.log("disableBroadcast: " +formdata.get('sessionID'));
+                                                  
+     this.http.post(this.tinkerUrl +'/api/whatsapp/disablebroadcast?action=disablebroadcast', formdata )
+         // .map(res => res.json())
+         .subscribe(res => {
+           resolve(res);
+           // console.log("post successful"); 
+           // {"success":true}
+         }, (err) => {
+           reject(err);
+           // console.log("post failed");
+         });
+    });
+  }
 
   copyInfo(searchUser){
     console.log("id: " + searchUser.id);
