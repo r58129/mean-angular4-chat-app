@@ -33,6 +33,7 @@ var Campaign = require('../models/Campaign.js');
 var Group = require('../models/Group.js');
 var Broadcast = require('../models/Broadcast.js');
 var Translate = require('../models/Translate.js');
+var Tinker = require('../models/Tinker.js');
 
 var watchdog = require("watchdog")
 const timeout = 33000;  //33s
@@ -1739,4 +1740,76 @@ router.delete('/deletetranslate/:id', auth, function(req, res, next) {
     });
   }
 });
+
+/* GET tinker status */
+router.get('/tinkerstatus/all', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Tinker.find(req.body, function (err, tinkers) {
+      if (err) return next(err);
+      res.json(tinkers);
+    });
+  }
+});
+
+
+/* SAVE tinker */
+router.post('/tinker', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Tinker.create(req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+ }
+});
+
+/* UPDATE tinker by port number*/
+router.put('/updatetinker/running', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Tinker.findOneAndUpdate({status:"running"}, req.body, function (err, tinkers) {
+      if (err) return next(err);
+      res.json(tinkers);
+    });
+  }
+});
+
+router.put('/tinkerlog/report', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+
+    Tinker.findOneAndUpdate({status:"running"}, {$addToSet:{log:Date.now()}}, function (err, tinkers) {
+      if (err) return next(err);
+      res.json(tinkers);
+    });
+  }
+});
+
+/* DELETE tinker */
+router.delete('/deletetinker/:port', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else { 
+    Tinker.findOneAndRemove({port:req.params.port}, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  }
+});
+
 module.exports = router;

@@ -35,11 +35,15 @@ export class AppheaderComponent implements OnInit, OnDestroy{
   online: any;
   staffName: any;
   operatorChannel: any;
-  // available: boolean = false;
+  tinkerInfo: any =[];
+  tinkerKey: string;
 
   newUser = { nickname: '', room: '' };
   newRequest = { type:'', phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
   CusMsgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
+  newTinker = { status:'', restart:'', address:'', port:'', log:[]};
+  updateTinkerStatus = { restart:''};
+  logTinkerRestart = { log: ''};
 
   socket = io(this.configs.socketIoServerAddr,{secure: true});
   // socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
@@ -58,45 +62,7 @@ export class AppheaderComponent implements OnInit, OnDestroy{
     this.socket.emit('user','admin');
 
     this.socket.emit('operatorChannel','checkAvailability');
-    // console.log("emit admin socket");
-
-    // // this.authService.getOnlineStaffCount().then((res) => {
-    // //   this.onlineCount = res;
-      
-    // //   if (this.onlineCount <=1){ 
-
-    // //     console.log("onlineCount: " +this.onlineCount);
-    //     // register to multichat server    
-    //     if (this.configs.ngrok){  // use ngrok
-    //       this.http.post (this.configs.multiChatNgrokAddr+'/api/csp/register?action=register&sessionID='+this.configs.multiChatCode, 
-    //       {}, httpOptions)
-    //       .pipe(
-    //       catchError(this.handleErrorObservable)
-    //       ).subscribe(
-    //         res => {      
-    //           console.log('register to mutlichat server with ngrok');  
-    //           return true;
-    //         });
-    //      } else {  //use 443 route server
-    //         this.http.post (this.configs.multiChatAddr+'/api/csp/register'+this.configs.multiChatPort+'?action=register&sessionID='+this.configs.multiChatCode, 
-    //         {}, httpOptions)
-    //         .pipe(
-    //         catchError(this.handleErrorObservable)
-    //         ).subscribe(
-    //           res => {      
-    //           console.log('register to mutlichat server with 443');  
-    //           return true;
-    //         });
-    //     }
-    // //   } else{
-    // //     console.log("onlineCount: " +this.onlineCount);
-    // //     console.log(" do not register to mutliChat server again")
-
-    // //   }
-
-    // // }, (err) => {
-    // //   console.log(err);
-    // // });    
+    // console.log("emit admin socket"); 
 
     this.socket.on('users', (userid, socket_id) => {
     
@@ -244,20 +210,7 @@ export class AppheaderComponent implements OnInit, OnDestroy{
 
     });
     
-    
-  // console.log('before register to tinker, session id: ' + localStorage.getItem('res.data.sessionID'))
-  // this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
-  //   {}, httpOptions)
-  //     .pipe(
-  //     catchError(this.handleErrorObservable)
-  //   ).subscribe(
-  //       res => {
-  //   // this.getHumanRequest();         
-  //     console.log('register to tinker');  
-  //       });
-
-  	// if (this.authService.isAuthenticated()){
-	 
+    	 
 		this.timer = setInterval(() => {
 	    	// this.updateRequestCount();
 	    	this.chatService.getNewRequestCount().then((res) => {
@@ -304,7 +257,80 @@ export class AppheaderComponent implements OnInit, OnDestroy{
           console.log(err);
         });    
 
-        this.socket.emit('operatorChannel','checkAvailability');    
+        this.socket.emit('operatorChannel','checkAvailability');  
+
+        // check tinker board status
+        this.authService.getTinker().then((res) =>{
+
+          this.tinkerInfo = res;
+          // console.log("this.tinkerInfo: " +this.tinkerInfo);
+          // console.log("this.tinkerInfo[0]: " +this.tinkerInfo[0]);
+
+          if (this.tinkerInfo[0]==undefined){
+            console.log("this.tinkerStatus is empty, lets create one");        
+
+            this.newTinker.status = "running";
+            this.newTinker.restart = "false";
+            this.newTinker.address = this.configs.tinkerboardAddr;
+            this.newTinker.port = this.configs.tinkerport;
+
+            this.authService.saveTinker(this.newTinker).then((res) =>{
+            
+              // console.log("set this.tinkerStatus ");  
+                     
+            }, (err) => {
+              console.log(err);
+            });   
+          } else {
+
+              // console.log("this.tinker restarted: " + this.tinkerInfo[0].restart);              
+
+            if (this.tinkerInfo[0].restart == 'true' ){
+              // window.alert("Please login out and re-login again!!!");
+              this.logTinkerRestart.log = "restart";
+              this.authService.logTinker(this.logTinkerRestart).then((res) =>{
+
+                    console.log('log tinker restart time');
+                  
+                  }, (err) => {
+                    console.log(err);
+                  });
+
+              this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
+                // this.http.post (localStorage.getItem('baseAddress')+":"+localStorage.getItem('tinkerPort')+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
+                {})
+                // .pipe(
+                //   catchError(this.handleErrorObservable)
+                // )
+                .subscribe(
+                  res => {
+                  console.log('tinker restarted and now re-register to tinker');  
+
+                  this.tinkerKey = "running";
+                  this.updateTinkerStatus.restart = "false";
+
+                  this.authService.updateTinker(this.tinkerKey, this.updateTinkerStatus).then((res) =>{
+
+                    console.log('updated tinker restart status');
+                  
+                  }, (err) => {
+                    console.log(err);
+                  });
+                });
+
+
+            } else {
+              // console.log ("tinker is not restarted");
+              // console.log("this.tinker restarted: " + this.tinkerInfo[0].restart);              
+            }
+
+          }
+
+          
+
+        }, (err) => {
+          console.log(err);
+        });          
 
 	  	}, 3000);
 	// }	//if (this.authService.isLoggedIn()) 
@@ -312,54 +338,6 @@ export class AppheaderComponent implements OnInit, OnDestroy{
 
   ngOnDestroy(){
        
-    // this.unsubscribe.next();
-    // this.unsubscribe.complete();
-    // //socket.emit('forceDisconnect');
-
-    // this.authService.getOnlineStaffCount().then((res) => {
-    //   this.onlineCount = res;
-      
-    //   if (this.onlineCount <=1){ 
-
-    //     console.log("onlineCount: " +this.onlineCount);
-
-
-        // //unregister multichat server
-        // if (this.configs.ngrok){  //ngrok
-        // this.http.post (this.configs.multiChatNgrokAddr+'/api/csp/unregister?action=unregister&sessionID='+this.configs.multiChatCode,   
-        // {}, httpOptions)
-        //   .pipe(
-        //     catchError(this.handleErrorObservable)
-        //   )
-        //   .subscribe(
-        //     res => {
-        //       console.log('unregister multichat server');
-        //       return true;
-        //     });
-        // } else { //443 server
-        //   this.http.post (this.configs.multiChatAddr+'/api/csp/unregister'+this.configs.multiChatPort+'?action=unregister&sessionID='+this.configs.multiChatCode, 
-        //   {}, httpOptions)
-        //   .pipe(
-        //     catchError(this.handleErrorObservable)
-        //   )
-        //   .subscribe(
-        //     res => {
-        //       console.log('unregister multichat server');
-        //       return true;
-        //     });
-        // }
-    //   } else {
-    //     console.log("onlineCount: " +this.onlineCount);
-    //     console.log(" do not unregister to mutliChat server")
-    //   }
-    // }, (err) => {
-    //   console.log(err);
-    // }); 
-
-    // remove token after all http requests are sent
-    // this.token = '';
-    // localStorage.removeItem('mean-token');      
-
     console.log('appheader ngOnDestroy');  
     this.socket.disconnect();
     if (this.timer){
