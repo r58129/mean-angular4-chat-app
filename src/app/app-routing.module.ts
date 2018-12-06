@@ -41,12 +41,14 @@ import { ReportSearchComponent } from './report-search/report-search.component';
 import { OurServicesComponent } from './our-services/our-services.component';
 import { CommandListComponent } from './command-list/command-list.component';
 import { WhitelistComponent } from './whitelist/whitelist.component';
-import { BoardcastComponent } from './boardcast/boardcast.component';
 import { SettingComponent } from './setting/setting.component';
 import { CampaignDetailComponent } from './campaign-detail/campaign-detail.component';
 import { CampaignsComponent } from './campaigns/campaigns.component';
 import { DisableIfUnauthorizedDirective } from './disable-if-unauthorized.directive';
 import { HideIfUnauthorizedDirective } from './hide-if-unauthorized.directive';
+import { BroadcastDetailComponent } from './broadcast-detail/broadcast-detail.component';
+import { BroadcastComponent } from './broadcast/broadcast.component';
+
 
 const appRoutes: Routes = [
     // { path: '', component: HomeComponent },
@@ -60,28 +62,31 @@ const appRoutes: Routes = [
   
   { path: 'chat/request', component: RequestComponent, 
     children:[
-          { path: 'chatbox/:id/:id2/:id3/:id4/:id5', component: ChatComponent, outlet:'chatOutlet',canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}}], canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}},
+      { path: 'chatbox/:id/:id2/:id3/:id4/:id5', component: ChatComponent, outlet:'chatOutlet',canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}},
   
   { path: 'chat/operator', component: OprequestComponent, 
     children:[
-      { path: 'opchatbox/:id/:id2', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthGuardService]},
+      { path: 'opchatbox/:id/:id2', component: OpchatComponent, outlet:'opchatOutlet',canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}},
   ], canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}},
  
   { path: 'chat/history', component: HistorySearchComponent, 
     children:[
-      { path: 'historybox/:id', component: HistoryComponent, outlet:'historyOutlet',canActivate: [AuthGuardService]},
+      { path: 'historybox/:id', component: HistoryComponent, outlet:'historyOutlet',canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}},
   ], canActivate: [AuthGuardService], data: {role: ['BASIC', 'BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}},
 
   { path: 'chat/report', component: ReportSearchComponent, canActivate: [AuthGuardService], data: {role: ['BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}},
 
   { path: 'chat/userSettingPage', component: UsersComponent, 
     children:[
-      { path: 'userdetailbox/:id', component: UserDetailComponent, outlet:'userdetailOutlet',canActivate: [AuthGuardService]},
+      { path: 'userdetailbox/:id', component: UserDetailComponent, outlet:'userdetailOutlet',canActivate: [AuthGuardService], data: {role: ['BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']}},
   ], canActivate: [AuthGuardService], data: {role: ['BASIC+', 'PREMIUM', 'PREMIUM+', 'ADMIN']} }, 
   
   { path: 'chat/whatsappwhitelist', component: WhitelistComponent, canActivate: [AuthGuardService], data: {role: ['PREMIUM', 'PREMIUM+', 'ADMIN']}},  
   
-  { path: 'chat/boardcast', component: BoardcastComponent, canActivate: [AuthGuardService], data: {role: ['PREMIUM+', 'ADMIN']} },
+  { path: 'chat/broadcast', component: BroadcastComponent, 
+    children:[
+      { path: 'broadcastdetailbox/:id', component: BroadcastDetailComponent, outlet:'broadcastdetailOutlet',canActivate: [AuthGuardService], data: {role: ['PREMIUM+', 'ADMIN']}},
+  ], canActivate: [AuthGuardService], data: {role: ['PREMIUM+', 'ADMIN']} }, 
 
   { path: 'chat/campaign', component: CampaignsComponent, canActivate: [AuthGuardService], data: {role: ['PREMIUM+', 'ADMIN']} },
   

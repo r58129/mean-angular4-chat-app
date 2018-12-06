@@ -119,7 +119,10 @@
 							            <label class="col-sm-5 control-label">Default Text Language</label>
 							            <p class="form-control-static">{{ user.default_text_lang }}</p>
 							          </div>
-				                    
+							          <div class="form-group" *ngIf ="showImage">
+							            <label class="col-sm-5 control-label">User Name Card</label>
+							            <img id="displayImage" class="form-control-static" [src]= "user.namecard.image" ><br/>
+							          </div>				                    
 				                <div id = update-button class="form-group"> 
 				                  <div class="form-group center">
 				                    <label class="col-sm-5 control-label"></label>

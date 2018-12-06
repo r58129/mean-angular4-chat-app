@@ -1,0 +1,98 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- <div class="wrapper"> -->
+    <!-- <div class="container"> -->
+      <div class="row no-padding" id="broadcast-page" >
+          <div class="col-xs-6 no-padding" >
+            <div class="box box-primary direct-chat direct-chat-primary">
+              <div class="box-header with-border">
+                <h3 class="box-title">Broadcasting</h3>
+                    <div class="btn-group pull-right no-padding"> 
+                      <form (ngSubmit)="refreshList()">
+              
+                      <div class="form-group btn-group pull-right no-margin ">
+                        <button type="submit" class="btn btn-default btn-xs" > Refresh </button>
+                      </div>
+                      </form>
+                    </div>
+                    <div class="btn-group pull-right" >
+                      <button *ngIf = "disableBroadcastService" type="button" class="btn btn-default btn-xs" id="btn-export" (click)="disableBroadcastMode()">Disable</button>
+                    </div>                    
+              </div>
+              <!-- /.box-header -->
+
+              <div  class="box-body no-padding">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <!-- <th style="display:none;">ID</th> -->
+                    <th>Job ID</th>
+                    <th>Updated</th>
+                    <th>Status</th>
+                    <!-- <th>Delete</th> -->
+                    <!-- <th>View</th> -->
+                  </tr>
+                </thead>
+                <tbody id="table-body">
+                  <tr *ngFor="let viewBroadcast of broadcastDetail">
+                  <!-- <td style="display:none;" name="opRequestId">{{op._id}}</td> -->  
+                  <td>{{viewBroadcast.jobID}}</td>
+      			      <!-- <td>{{viewUser.nickname }}</td> -->
+                  <td>{{viewBroadcast.created_at | date: 'medium'}}</td>
+ <!--                  <td>
+                    <button type="button" class="btn btn-danger btn-xs" id="delete-user" (click)="deleteUser(viewUser)">Delete</button> 
+                   
+                  </td> -->
+                  <td>
+					          <button type="button" class="btn btn-xs" id="view-broadcast" (click)="clickedView(viewBroadcast)" [ngClass]="{                          
+                      ' btn-warning ':viewBroadcast.jobStatus === 'Pending',
+                      ' btn-success ':viewBroadcast.jobStatus === 'Completed'
+                    }"> {{viewBroadcast.jobStatus}}</button> 
+                   
+                  </td>
+                  </tr>
+                </tbody>
+                  <!-- </div> -->
+                </table>
+              </div>
+              <!-- /.box-body -->
+<!--               <ng-template #searchPage>
+                <div class="box-body no-padding">
+                <table class="table">
+                  <thead>
+                    <tr>
+                    <th>Phone/ID</th>
+                    <th>Name</th>
+                    <th>Updated</th>
+                    <th>Action</th>
+                    </tr>
+                  </thead>
+                <tbody id="table-body">
+                  <tr *ngFor="let searchUser of userDetail">
+                  <td>{{searchUser.phone_number}}</td>
+                  <td>{{searchUser.nickname }}</td>
+                  <td>{{searchUser.id}}</td>
+                  <td>        
+                      <button type="button" class="btn btn-primary btn-xs" id="copy-info" (click)="clickedCopy(searchUser)">Copy</button>
+                    </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              </ng-template> -->
+
+            </div>
+            <!-- /.box -->
+		      </div>
+      	<!-- /.row -->          
+
+          <!-- Place chat box here -->
+          <div class="row no-padding" id="broadcast-detail-page">
+          	<app-broadcast-detail></app-broadcast-detail>
+          	
+          </div>
+
+      <!-- </div> -->
+    </div>
+  <!-- </div> -->
+</div>

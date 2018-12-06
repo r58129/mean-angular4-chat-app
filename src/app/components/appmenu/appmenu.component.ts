@@ -16,7 +16,7 @@ export class AppmenuComponent implements OnInit {
 	userList: boolean = false;
 	whiteList: boolean = false;
 	marketingServices: boolean = false;	
-	boardcast: boolean = false;
+	broadcast: boolean = false;
 	campaign: boolean = false;
 	adminSetting: boolean = false;
 
@@ -37,7 +37,7 @@ export class AppmenuComponent implements OnInit {
 				// this.userList = true;
 				// this.whiteList = true;
 				// this.marketingServices = true;	
-				// this.boardcast = true;
+				// this.broadcast = true;
 				// this.campaign = true;
 				// this.adminSetting = true;       	
 
@@ -48,7 +48,7 @@ export class AppmenuComponent implements OnInit {
 				this.userList = true;
 				// this.whiteList = true;
 				// this.marketingServices = true;	
-				// this.boardcast = true;
+				// this.broadcast = true;
 				// this.campaign = true;
 				// this.adminSetting = true;   
     
@@ -59,7 +59,7 @@ export class AppmenuComponent implements OnInit {
 				this.userList = true;
 				this.whiteList = true;
 				// this.marketingServices = true;	
-				// this.boardcast = true;
+				// this.broadcast = true;
 				// this.campaign = true;
 				// this.adminSetting = true;   
   
@@ -70,7 +70,7 @@ export class AppmenuComponent implements OnInit {
 				this.userList = true;
 				this.whiteList = true;
 				this.marketingServices = true;	
-				this.boardcast = true;
+				this.broadcast = true;
 				this.campaign = true;
 				// this.adminSetting = true;   
 
@@ -81,7 +81,7 @@ export class AppmenuComponent implements OnInit {
 				this.userList = true;
 				this.whiteList = true;
 				this.marketingServices = true;	
-				this.boardcast = true;
+				this.broadcast = true;
 				this.campaign = true;
 				this.adminSetting = true;            	
 

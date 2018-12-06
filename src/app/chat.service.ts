@@ -473,7 +473,7 @@ export class ChatService {
   //get image by room
   getImageByRoom(room) {    //here we use room as phone_number
     return new Promise((resolve, reject) => {
-      this.http.get(this.serverUrl+'/chat/image' + room, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+      this.http.get(this.serverUrl+'/chat/image/' + room, { headers: { Authorization: `Bearer ${this.getToken()}` }})
         // .map(res => res.json())
         .subscribe(res => {
           resolve(res);
@@ -486,7 +486,7 @@ export class ChatService {
 // Show signle image by ID
   showImage(id) {
     return new Promise((resolve, reject) => {
-        this.http.get(this.serverUrl+'/chat/image' + id, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+        this.http.get(this.serverUrl+'/chat/image/' + id, { headers: { Authorization: `Bearer ${this.getToken()}` }})
           // .map(res => res.json())
           .subscribe(res => {
             resolve(res)
@@ -670,6 +670,148 @@ export class ChatService {
     });
   }
 
+//get all images
+  getAllBroadcast() {
+    return new Promise((resolve, reject) => {
+      this.http.get(this.serverUrl+'/chat/broadcast/all', { headers: { Authorization: `Bearer ${this.getToken()}` }})
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
+  //get image by room
+  getBroadcastbyJobId(jobID) {    //here we use room as phone_number
+    return new Promise((resolve, reject) => {
+      this.http.get(this.serverUrl+'/chat/broadcast/' + jobID, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
+
+// Save image to DB
+  saveBroadcast(data) {
+    return new Promise((resolve, reject) => {
+        this.http.post(this.serverUrl+'/chat/broadcast', data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+          // .map(res => res.json())
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }
+
+  
+  updateBroadcast(jobID, data) {
+    return new Promise((resolve, reject) => {
+        this.http.put(this.serverUrl+'/chat/updatebroadcast/'+jobID, data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+          // .map(res => res.json())
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }
+
+// delete signle image by ID
+  deleteBroadcast(jobID) {
+    return new Promise((resolve, reject) => {
+        this.http.delete(this.serverUrl+'/chat/deletebroadcast/'+jobID, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }  
+  
+  //broadcast formdata message to tinker
+  // https://airpoint.com.hk:8006/api/whatsapp/listtext
+  broadcastMessage(formdata) {
+    return new Promise((resolve, reject) => {
+      // console.log("formdata: " +formdata);
+      console.log("formdata.sessionID: " +formdata.get('sessionID'));
+      console.log("formdata.message: " +formdata.get('message'));
+      
+     this.http.post(this.tinkerUrl +'/api/whatsapp/listtext', formdata )
+         // .map(res => res.json())
+         .subscribe(res => {
+           resolve(res);
+           // console.log("post successful");
+         }, (err) => {
+           reject(err);
+           // console.log("post failed");
+         });
+    });
+  }
+
+  //broadcast formdata image to tinker
+  // https://airpoint.com.hk:8006/api/whatsapp/listimage
+  broadcastImage(formdata) {
+    return new Promise((resolve, reject) => {
+      // console.log("formdata: " +formdata);
+      console.log("formdata.sessionID: " +formdata.get('sessionID'));
+      console.log("formdata.imagefilename: " +formdata.get('imagefilename'));
+      
+     this.http.post(this.tinkerUrl +'/api/whatsapp/listimage', formdata )
+         // .map(res => res.json())
+         .subscribe(res => {
+           resolve(res);
+           // console.log("post successful");
+         }, (err) => {
+           reject(err);
+           // console.log("post failed");
+         });
+    });
+  }  
+
+  // https://airpoint.com.hk:8006/api/whatsapp/enablebroadcast?action=enablebroadcast
+  enableBroadcast(formdata) {
+    return new Promise((resolve, reject) => {
+      // console.log("formdata: " +formdata);
+      console.log("enableBroadcast: " +formdata.get('sessionID'));
+      
+     this.http.post(this.tinkerUrl +'/api/whatsapp/enablebroadcast?action=enablebroadcast', formdata )
+         // .map(res => res.json())
+         .subscribe(res => {
+           resolve(res);
+           // console.log("post successful");
+           // {"success":true}
+         }, (err) => {
+           reject(err);
+           // console.log("post failed");
+         });
+    });
+  }  
+
+  // https://192.168.0.106:8011/api/whatsapp/disablebroadcast?action=disablebroadcast
+  disableBroadcast(formdata) {
+    return new Promise((resolve, reject) => {
+      // console.log("formdata: " +formdata);
+      console.log("disableBroadcast: " +formdata.get('sessionID'));
+                                                  
+     this.http.post(this.tinkerUrl +'/api/whatsapp/disablebroadcast?action=disablebroadcast', formdata )
+         // .map(res => res.json())
+         .subscribe(res => {
+           resolve(res);
+           // console.log("post successful"); 
+           // {"success":true}
+         }, (err) => {
+           reject(err);
+           // console.log("post failed");
+         });
+    });
+  }
 
   copyInfo(searchUser){
     console.log("id: " + searchUser.id);
@@ -695,6 +837,11 @@ export class ChatService {
   viewStaffRole(viewStaff){    
     console.log("staff.email: " + viewStaff.email);
     this.change.emit(viewStaff);
+  }
+
+  viewBroadcastInfo(viewBroadcast){    
+    console.log("viewBroadcast.jobID: " + viewBroadcast.jobID);
+    this.change.emit(viewBroadcast);
   }
 
   private handleError(error: any): Promise<any> {

@@ -31,6 +31,8 @@ var Contact = require('../models/Contact.js');
 var Staff = require('../models/Staff.js');
 var Campaign = require('../models/Campaign.js');
 var Group = require('../models/Group.js');
+var Broadcast = require('../models/Broadcast.js');
+var Translate = require('../models/Translate.js');
 
 var watchdog = require("watchdog")
 const timeout = 33000;  //33s
@@ -1120,7 +1122,7 @@ router.get('/androidgetcampaign/:keyword/:phone_number', auth, function(req, res
         // console.log(campaigns[0].registeredUserwithNameCard);
         // console.log(campaigns[0].InUserList);
 
-        var jsonObj = {campaignActive:'', type:'', message:{withNameCard:'',withoutNameCard:''}, registered:{withNameCard:'',withoutNameCard:''}, failedMessage:{nameCardCampaign:'',phoneNumCampaign:''}};
+        var jsonObj = {campaignActive:'', type:'', message:{withNameCard:'',withoutNameCard:''}, registered:{withNameCard:'',withoutNameCard:''}, failedMessage:{nameCardCampaign:'',phoneNumCampaign:''}, alreadyRegistered:''};
         
         if (campaigns.length !=0){
           // var jsonObj = {campaignActive:'', message:{withNameCard:'',withoutNameCard:''}};     
@@ -1145,6 +1147,7 @@ router.get('/androidgetcampaign/:keyword/:phone_number', auth, function(req, res
 
           jsonObj.failedMessage.nameCardCampaign = campaigns[0].registerFailedMessage.nameCardCampaign; 
           jsonObj.failedMessage.phoneNumCampaign = campaigns[0].registerFailedMessage.phoneNumCampaign; 
+          jsonObj.alreadyRegistered = campaigns[0].alreadyRegistered; 
 
           try{
             if (campaigns[0].registeredUser.length !=0){
@@ -1216,6 +1219,7 @@ router.get('/androidgetcampaign/:keyword/:phone_number', auth, function(req, res
           jsonObj.message = "null";
           jsonObj.registered = "null";
           jsonObj.failedMessage = "null";
+          jsonObj.alreadyRegistered = "null";
           res.json(jsonObj);
       }
     });
@@ -1260,7 +1264,7 @@ router.put('/updatecampaignregisterlist/:keyword', auth, function(req, res, next
     });
   } else {
 
-    if (req.body.registeredUser){
+    if ((req.body.registeredUser)&&(!req.body.newUser)) {
       console.log("update register list " +req.body.registeredUser);
       Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUser:req.body.registeredUser}}, function (err, campaigns) {
         if (err) return next(err);
@@ -1268,13 +1272,36 @@ router.put('/updatecampaignregisterlist/:keyword', auth, function(req, res, next
       });
     }
 
-    if (req.body.registeredUserwithNameCard){
+    if ((req.body.registeredUser)&&(req.body.newUser)){
+      console.log("update register list and newUser" +req.body.registeredUser);
+      Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUser:req.body.registeredUser, newUser:req.body.newUser}}, function (err, campaigns) {
+        if (err) return next(err);
+        res.json(campaigns);
+      });
+    }
+
+    if ((req.body.registeredUserwithNameCard)&&(!req.body.newUser)){
       console.log("update register namecard list " +req.body.registeredUserwithNameCard);      
       Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUserwithNameCard:req.body.registeredUserwithNameCard}}, function (err, campaigns) {
         if (err) return next(err);
         res.json(campaigns);
       });
     }
+
+    if ((req.body.registeredUserwithNameCard)&&(req.body.newUser)){
+      console.log("update register namecard list and newUser " +req.body.registeredUserwithNameCard);      
+      Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUserwithNameCard:req.body.registeredUserwithNameCard, newUser:req.body.newUser}}, function (err, campaigns) {
+        if (err) return next(err);
+        res.json(campaigns);
+      });
+    }
+    // if (req.body.newUser){
+    //   console.log("update register namecard list " +req.body.newUser);      
+    //   Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{newUser:req.body.newUser}}, function (err, campaigns) {
+    //     if (err) return next(err);
+    //     res.json(campaigns);
+    //   });
+    // }    
   }
 });
 
@@ -1544,4 +1571,172 @@ router.delete('/deletegroup/:groupkey', auth, function(req, res, next) {
   }
 });
 
+/* GET broadcast job list */ 
+router.get('/broadcast/all', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Broadcast.find( req.body, function (err, broadcasts) {
+      if (err) return next(err);
+      res.json(broadcasts);
+    });
+ }
+});
+
+/* GET SINGLE user BY phone_number */
+// router.get('/userphone/:phone_number', function(req, res, next) {
+router.get('/broadcast/:jobid', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Broadcast.find({jobID:req.params.jobid}, function (err, broadcasts) {
+      if (err) return next(err);
+      res.json(broadcasts);
+    });
+  }
+});
+
+/* SAVE user */
+// router.post('/user', function(req, res, next) {
+router.post('/broadcast', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Broadcast.create(req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+ }
+});
+
+/* UPDATE user by user phone number*/
+// router.put('/userupdate/:phone_number', function(req, res, next) {
+router.put('/updatebroadcast/:jobid', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Broadcast.findOneAndUpdate({jobID:req.params.jobid}, req.body, function (err, broadcasts) {
+      if (err) return next(err);
+      res.json(broadcasts);
+    });
+  }
+});
+
+
+/* DELETE group */
+router.delete('/deletebroadcast/:jobid', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else { 
+    Broadcast.findOneAndRemove({jobID:req.params.jobid}, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  }
+});
+
+/* GET all translate list */ 
+router.get('/translate/all', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Translate.find( req.body, function (err, translates) {
+      if (err) return next(err);
+      res.json(translates);
+    });
+ }
+});
+
+/* GET translate BY phone_number */
+// router.get('/userphone/:phone_number', function(req, res, next) {
+router.get('/translate/:phone_number', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Translate.find({phone_number:req.params.phone_number}, function (err, translates) {
+      if (err) return next(err);
+      res.json(translates);
+    });
+  }
+});
+
+/* GET translate BY language */
+// router.get('/userphone/:phone_number', function(req, res, next) {
+router.get('/translate/:source_language/:target_language', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Translate.find({ $and:
+      [ 
+        { source_language:req.params.source_language },
+        { target_language:req.params.target_language }
+        // { keyword: { $exists: true} }
+      ]
+    }, function (err, translates) {
+      if (err) return next(err);
+      res.json(translates);
+    });
+  }
+});
+
+/* SAVE translate */
+// router.post('/translate', function(req, res, next) {
+router.post('/translate', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Translate.create(req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+ }
+});
+
+/* UPDATE user by user phone number*/
+// router.put('/userupdate/:phone_number', function(req, res, next) {
+router.put('/updatetranslate/:id', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Translate.findByIdAndUpdate(req.params.id, req.body, function (err, translates) {
+      if (err) return next(err);
+      res.json(translates);
+    });
+  }
+});
+
+
+/* DELETE group */
+router.delete('/deletetranslate/:id', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else { 
+    Translate.findByIdAndRemove(req.params.id, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  }
+});
 module.exports = router;

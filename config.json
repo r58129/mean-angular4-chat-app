@@ -1,6 +1,6 @@
 {
   "server":{
-    "serverPort": "3991",
+    "serverPort": "3891",
     "socketIoURL":"https://192.168.0.102",
     "socketIoPort":"3637",
     "botName": "m.AI",

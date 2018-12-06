@@ -11,7 +11,7 @@
                       <form (ngSubmit)="exit()">
               
                       <div class="form-group btn-group pull-right no-margin ">
-                        <button type="submit" class="btn btn-default btn-xs" > Exit </button>
+                        <button type="submit" class="btn btn-default btn-xs" > Cancel </button>
                       </div>
                   	  </form>
                   	</div>
@@ -34,31 +34,31 @@
 		                  </select>									            
 							      </div>					          			        		
 					          <div class="form-group">
-					            <label class="col-sm-5 control-label">Campign Keyword</label>
+					            <label class="col-sm-5 control-label">Campign keyword</label>
 					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.keyword" placeholder="Required" name="campaignDetail.keyword" required="" [disabled]="true" >
 					          </div>
 					          <div class="form-group">
-					            <label class="col-sm-5 control-label">Start Time</label>
+					            <label class="col-sm-5 control-label">Start time</label>
 					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.startTime" placeholder="yyyymmdd" name="campaignDetail.startTime" required="" >
 					          </div>
 					          <div class="form-group">
-					            <label class="col-sm-5 control-label">End Time</label>
+					            <label class="col-sm-5 control-label">End time</label>
 					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.endTime" placeholder="yyyymmdd" name="campaignDetail.endTime" required="">
 					          </div>
 					          <div class="form-group">
-					            <label class="col-sm-5 control-label">Auto Reply Before Campaign</label>
+					            <label class="col-sm-5 control-label">Auto reply before campaign</label>
 					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.beforeCampaignMessage" placeholder="Required" name="campaignDetail.beforeCampaignMessage" required="" >
 					          </div>
 					          <div class="form-group">
-					            <label class="col-sm-5 control-label">Campaign Message with Name Card</label>
+					            <label class="col-sm-5 control-label">Campaign message with name card</label>
 					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.duringCampaignMessage.withNameCard" placeholder="Required" name="campaignDetail.withNameCard" required="">
 					          </div>
 					          <div class="form-group">
-					            <label class="col-sm-5 control-label">Campaign Message without Name Card</label>
+					            <label class="col-sm-5 control-label">Campaign message without name card</label>
 					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.duringCampaignMessage.withoutNameCard" placeholder="Required" name="campaignDetail.withoutNameCard" required="" >
 					          </div>
 					          <div class="form-group">
-					            <label class="col-sm-5 control-label">Auto Reply After Campaign</label>
+					            <label class="col-sm-5 control-label">Auto reply after campaign</label>
 					            <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.afterCampaignMessage" placeholder="Required" name="campaignDetail.afterCampaignMessage" required="" >
 					          </div>  
 							      <div class="form-group">
@@ -66,9 +66,13 @@
 							        <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.registerFailedMessage.nameCardCampaign" placeholder="Failed! Namecard is needed!" name="campaignDetail.nameCardCampaign" required="">
 							      </div>
 							      <div class="form-group">
-							        <label class="col-sm-5 control-label">Failed Message in phone number only campaign*</label>
+							        <label class="col-sm-5 control-label">Failed message in phone number only campaign*</label>
 							        <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.registerFailedMessage.phoneNumCampaign" placeholder="Failed! No namecard is needed!" name="campaignDetail.phoneNumCampaign" required="" >
-							      </div>								                            
+							      </div>	
+							      <div class="form-group">
+							        <label class="col-sm-5 control-label">Already registered message*</label>
+							        <input type="text" class="form-control-static" [(ngModel)]="campaignDetail.alreadyRegistered" placeholder="You are already registered!" name="campaignDetail.alreadyRegistered" required="" >
+							      </div>								      							                            
 	                  <div id = edit-button class="form-group">
 	                    <div class="form-group center">
 	                      <label class="col-sm-5 control-label"></label>
@@ -148,7 +152,11 @@
 							          <div class="form-group">
 							            <label class="col-sm-5 control-label">Failed Message in phone number only campaign</label>
 							            <p class="form-control-static">{{ campaign.registerFailedMessage.phoneNumCampaign }}</p>
-							          </div>				                    
+							          </div>	
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Already registered message</label>
+							            <p class="form-control-static">{{ campaign.alreadyRegistered }}</p>
+							          </div>								          			                    
 				                <div id = update-button class="form-group"> 
 				                  <div class="form-group center">
 				                    <label class="col-sm-5 control-label"></label>
@@ -214,7 +222,10 @@
 							            <label class="col-sm-5 control-label">Failed Message in phone number only campaign*</label>
 							            <input type="text" class="form-control-static" [(ngModel)]="newCampaign.registerFailedMessage.phoneNumCampaign" placeholder="Failed! No namecard is needed!" name="newCampaign.phoneNumCampaign"  >
 							          </div>									          
-		                    
+				                <div class="form-group">
+									        <label class="col-sm-5 control-label">Already registered message*</label>
+									        <input type="text" class="form-control-static" [(ngModel)]="newCampaign.alreadyRegistered" placeholder="You are already registered!" name="newCampaign.alreadyRegistered" required="" >
+									      </div>
 			                  <div id = edit-button class="form-group"> 
 			                                    
 			                    <div class="form-group center">
@@ -236,7 +247,7 @@
                       <form (ngSubmit)="exit()">
               
                       <div class="form-group btn-group pull-right no-margin ">
-                        <button type="submit" class="btn btn-default btn-xs" > Exit </button>
+                        <button type="submit" class="btn btn-default btn-xs" > Cancel </button>
                       </div>
                   	  </form>
                   	</div>

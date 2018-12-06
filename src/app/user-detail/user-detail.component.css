@@ -36,6 +36,16 @@
     text-overflow: ellipsis;
 }
 
+#displayImage, #displayGetImage{
+    
+    /*max-height: 20vw;*/
+    /*max-width: 30vw;*/
+    /*display: block;*/
+    margin-left: 5vw;
+    /*margin-right: auto;*/
+    width: 80%;
+}
+
 #return-to-table
 {
     margin-right: 10px;

@@ -20,12 +20,12 @@
 {
     overflow-y: scroll;
     /*height: 250px;*/
-   height: 80vh;
+   height: 85vh;
 }
 
 .box.box-primary.direct-chat.direct-chat-primary
 {
-    /*margin-bottom: 0;*/
+    margin-bottom: 0;
     /*height: 250px;*/
    /*height: 75vh;*/
 
