@@ -1265,8 +1265,10 @@ router.put('/updatecampaignregisterlist/:keyword', auth, function(req, res, next
     });
   } else {
 
-    // console.log("new user list " +req.body.newUser);
-    // console.log("register list " +req.body.registeredUser);
+    console.log("new user list " +req.body.newUser);
+    console.log("register list " +req.body.registeredUser);
+    
+    var jsonMesg = {message:''};
 
     if ((req.body.registeredUser)&&(!req.body.newUser)) {
       console.log("update register list " +req.body.registeredUser);
@@ -1276,7 +1278,7 @@ router.put('/updatecampaignregisterlist/:keyword', auth, function(req, res, next
       });
     }
 
-    if ((req.body.registeredUser)&&(req.body.newUser)){
+    else if ((req.body.registeredUser)&&(req.body.newUser)){
       console.log("update register list and newUser" +req.body.registeredUser);
       Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUser:req.body.registeredUser, newUser:req.body.newUser}}, function (err, campaigns) {
         if (err) return next(err);
@@ -1284,7 +1286,7 @@ router.put('/updatecampaignregisterlist/:keyword', auth, function(req, res, next
       });
     }
 
-    if ((req.body.registeredUserwithNameCard)&&(!req.body.newUser)){
+    else if ((req.body.registeredUserwithNameCard)&&(!req.body.newUser)){
       console.log("update register namecard list " +req.body.registeredUserwithNameCard);      
       Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUserwithNameCard:req.body.registeredUserwithNameCard}}, function (err, campaigns) {
         if (err) return next(err);
@@ -1292,20 +1294,21 @@ router.put('/updatecampaignregisterlist/:keyword', auth, function(req, res, next
       });
     }
 
-    if ((req.body.registeredUserwithNameCard)&&(req.body.newUser)){
+    else if ((req.body.registeredUserwithNameCard)&&(req.body.newUser)){
       console.log("update register namecard list and newUser " +req.body.registeredUserwithNameCard);      
       Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUserwithNameCard:req.body.registeredUserwithNameCard, newUser:req.body.newUser}}, function (err, campaigns) {
         if (err) return next(err);
         res.json(campaigns);
       });
     }
-    // if (req.body.newUser){
-    //   console.log("update register namecard list " +req.body.newUser);      
-    //   Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{newUser:req.body.newUser}}, function (err, campaigns) {
-    //     if (err) return next(err);
-    //     res.json(campaigns);
-    //   });
-    // }    
+
+    else {
+      console.log("update register list failed" );
+
+        jsonMesg.message = "register failed";         
+        res.json(jsonMesg);
+ 
+    }    
   }
 });
 
@@ -1807,7 +1810,7 @@ router.put('/tinkerlog/report', auth, function(req, res, next) {
       "message" : "UnauthorizedError:"
     });
   } else {  
-
+    // console.log("tinker restart log: " +Date.now());
     Tinker.findOneAndUpdate({status:"running"}, {$addToSet:{log:Date.now()}}, function (err, tinkers) {
       if (err) return next(err);
       res.json(tinkers);
