@@ -26,7 +26,7 @@ export class CampaignDetailComponent implements OnInit {
 
   // campaignPeriod = {startTime: '', endTime:''};
   campaignDetail = { startTime: '', endTime:'', type:'', beforeCampaignMessage: '', duringCampaignMessage: {withNameCard:'',withoutNameCard:''} , afterCampaignMessage:'', registerFailedMessage: {nameCardCampaign:'',phoneNumCampaign:''}, keyword:'', eventName:'',createdBy:'',companyName:'', alreadyRegistered:'', newUser:'', updated_at: Date, reserve1:'', reserve2:''};  //campaign detail
-  newCampaign = { startTime:'', endTime: '', type:'', beforeCampaignMessage: '', duringCampaignMessage: {withNameCard:'',withoutNameCard:''} , afterCampaignMessage:'',registerFailedMessage: {nameCardCampaign:'',phoneNumCampaign:''}, keyword:'', eventName:'',createdBy:'',companyName:'', alreadyRegistered:''};  //campaign detail
+  newCampaign = { startTime:'', endTime: '', type:'', beforeCampaignMessage: '', duringCampaignMessage: {withNameCard:'',withoutNameCard:''} , afterCampaignMessage:'',registerFailedMessage: {nameCardCampaign:'',phoneNumCampaign:''}, keyword:'', eventName:'',createdBy:'',companyName:'', alreadyRegistered:'', newUser:''};  //campaign detail
 
  	today = new Date();
 	dd = this.today.getDate();

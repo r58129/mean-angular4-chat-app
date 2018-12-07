@@ -813,6 +813,7 @@ export class ChatService {
     });
   }
 
+  
   copyInfo(searchUser){
     console.log("id: " + searchUser.id);
     console.log("package: " + searchUser.package);

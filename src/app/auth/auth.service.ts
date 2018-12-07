@@ -61,6 +61,8 @@ export class AuthService {
   // public permissions: Array<string>; // Store the staff role 
   public permissions: string; // Store the staff role 
 
+  tinkerKey: string
+
   constructor(private http: HttpClient, private router: Router, private configs: Configs) {}
 
   private serverUrl = this.configs.expressAddr;
@@ -269,21 +271,6 @@ export class AuthService {
         console.log('tinkerloginFormData ID: ' + tinkerloginFormData.get('userID'));
         console.log('tinkerloginFormData PWD: ' + tinkerloginFormData.get('password'));       
 
-        // Display the key/value pairs
-          // for (var pair of tinkerloginFormData.entries()) {
-          //   console.log(pair[0]+ ', ' + pair[1]); 
-          // };
-
-        // this.loginMutliChat();
-        // construct object
-        // var tinkerloginFormData = {userID:'admin', password:'Aptc123456'};
-        // tinkerloginData.userID = 'admin';
-        // tinkerloginData.password = 'Aptc123456';
-
-        
-        // console.log("TinkerloginData: " +tinkerloginData.userID instanceof FormData);
-        // console.log("TinkerloginData.userID: " +tinkerloginFormData.userID);
-        // console.log("TinkerloginData.password: " +tinkerloginFormData.password);
 
         // this.loginTinkerBoard(tinkerloginData).then((result) =>{
         this.http.post(this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/user/login', tinkerloginFormData)   
@@ -328,6 +315,17 @@ export class AuthService {
               .subscribe(
                 res => {
                 console.log('register to tinker');  
+
+                // this.tinkerKey = "running";
+                // this.updateTinkerStatus.restart = "false";
+
+                // this.updateTinker(this.tinkerKey, this.updateTinkerStatus).then((res) =>{
+
+                //   console.log('updated tinker restart status');
+                
+                // }, (err) => {
+                //   console.log(err);
+                // });
               });
 
             if (this.configs.multiChatPort!='')
@@ -618,6 +616,71 @@ export class AuthService {
         // console.error(err);
         reject(err);
       });
+    });
+  }
+
+
+  //get image by room
+  public getTinker() {    //here we use room as phone_number
+    return new Promise((resolve, reject) => {
+      this.http.get(this.serverUrl+'/chat/tinkerstatus/all', { headers: { Authorization: `Bearer ${this.getToken()}` }})
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
+
+  // Save image to DB
+  public saveTinker(data) {
+    return new Promise((resolve, reject) => {
+        this.http.post(this.serverUrl+'/chat/tinker', data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+          // .map(res => res.json())
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }
+
+  
+  public updateTinker(port, data) {
+    return new Promise((resolve, reject) => {
+        this.http.put(this.serverUrl+'/chat/updatetinker/'+port, data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+          // .map(res => res.json())
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }
+
+  public logTinker(data) {
+    return new Promise((resolve, reject) => {
+        this.http.put(this.serverUrl+'/chat/tinkerlog/report', data, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+          // .map(res => res.json())
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
+    });
+  }
+
+  // delete signle image by ID
+  public deleteTinker(port) {
+    return new Promise((resolve, reject) => {
+        this.http.delete(this.serverUrl+'/chat/deletetinker/'+port, { headers: { Authorization: `Bearer ${this.getToken()}` }})
+          .subscribe(res => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
     });
   }
 

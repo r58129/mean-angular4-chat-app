@@ -33,6 +33,7 @@ var Campaign = require('../models/Campaign.js');
 var Group = require('../models/Group.js');
 var Broadcast = require('../models/Broadcast.js');
 var Translate = require('../models/Translate.js');
+var Tinker = require('../models/Tinker.js');
 
 var watchdog = require("watchdog")
 const timeout = 33000;  //33s
@@ -1264,6 +1265,11 @@ router.put('/updatecampaignregisterlist/:keyword', auth, function(req, res, next
     });
   } else {
 
+    console.log("new user list " +req.body.newUser);
+    console.log("register list " +req.body.registeredUser);
+    
+    var jsonMesg = {message:''};
+
     if ((req.body.registeredUser)&&(!req.body.newUser)) {
       console.log("update register list " +req.body.registeredUser);
       Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUser:req.body.registeredUser}}, function (err, campaigns) {
@@ -1272,7 +1278,7 @@ router.put('/updatecampaignregisterlist/:keyword', auth, function(req, res, next
       });
     }
 
-    if ((req.body.registeredUser)&&(req.body.newUser)){
+    else if ((req.body.registeredUser)&&(req.body.newUser)){
       console.log("update register list and newUser" +req.body.registeredUser);
       Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUser:req.body.registeredUser, newUser:req.body.newUser}}, function (err, campaigns) {
         if (err) return next(err);
@@ -1280,7 +1286,7 @@ router.put('/updatecampaignregisterlist/:keyword', auth, function(req, res, next
       });
     }
 
-    if ((req.body.registeredUserwithNameCard)&&(!req.body.newUser)){
+    else if ((req.body.registeredUserwithNameCard)&&(!req.body.newUser)){
       console.log("update register namecard list " +req.body.registeredUserwithNameCard);      
       Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUserwithNameCard:req.body.registeredUserwithNameCard}}, function (err, campaigns) {
         if (err) return next(err);
@@ -1288,20 +1294,21 @@ router.put('/updatecampaignregisterlist/:keyword', auth, function(req, res, next
       });
     }
 
-    if ((req.body.registeredUserwithNameCard)&&(req.body.newUser)){
+    else if ((req.body.registeredUserwithNameCard)&&(req.body.newUser)){
       console.log("update register namecard list and newUser " +req.body.registeredUserwithNameCard);      
       Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUserwithNameCard:req.body.registeredUserwithNameCard, newUser:req.body.newUser}}, function (err, campaigns) {
         if (err) return next(err);
         res.json(campaigns);
       });
     }
-    // if (req.body.newUser){
-    //   console.log("update register namecard list " +req.body.newUser);      
-    //   Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{newUser:req.body.newUser}}, function (err, campaigns) {
-    //     if (err) return next(err);
-    //     res.json(campaigns);
-    //   });
-    // }    
+
+    else {
+      console.log("update register list failed" );
+
+        jsonMesg.message = "register failed";         
+        res.json(jsonMesg);
+ 
+    }    
   }
 });
 
@@ -1528,6 +1535,20 @@ router.post('/group', auth, function(req, res, next) {
  }
 });
 
+// router.post('/user', function(req, res, next) {
+router.put('/updategroup/:groupkey', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Group.findOneAndUpdate({key:req.params.groupkey},req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+ }
+});
+
 /* UPDATE user by user phone number*/
 // router.put('/userupdate/:phone_number', function(req, res, next) {
 router.put('/addgroupuser/:groupkey', auth, function(req, res, next) {
@@ -1739,4 +1760,76 @@ router.delete('/deletetranslate/:id', auth, function(req, res, next) {
     });
   }
 });
+
+/* GET tinker status */
+router.get('/tinkerstatus/all', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Tinker.find(req.body, function (err, tinkers) {
+      if (err) return next(err);
+      res.json(tinkers);
+    });
+  }
+});
+
+
+/* SAVE tinker */
+router.post('/tinker', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Tinker.create(req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+ }
+});
+
+/* UPDATE tinker by port number*/
+router.put('/updatetinker/running', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    Tinker.findOneAndUpdate({status:"running"}, req.body, function (err, tinkers) {
+      if (err) return next(err);
+      res.json(tinkers);
+    });
+  }
+});
+
+router.put('/tinkerlog/report', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    console.log("tinker restart log: " +Date.now());
+    Tinker.findOneAndUpdate({status:"running"}, {$addToSet:{log:Date.now()}}, function (err, tinkers) {
+      if (err) return next(err);
+      res.json(tinkers);
+    });
+  }
+});
+
+/* DELETE tinker */
+router.delete('/deletetinker/:port', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else { 
+    Tinker.findOneAndRemove({port:req.params.port}, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+  }
+});
+
 module.exports = router;
