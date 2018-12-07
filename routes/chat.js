@@ -1810,7 +1810,7 @@ router.put('/tinkerlog/report', auth, function(req, res, next) {
       "message" : "UnauthorizedError:"
     });
   } else {  
-    // console.log("tinker restart log: " +Date.now());
+    console.log("tinker restart log: " +Date.now());
     Tinker.findOneAndUpdate({status:"running"}, {$addToSet:{log:Date.now()}}, function (err, tinkers) {
       if (err) return next(err);
       res.json(tinkers);
