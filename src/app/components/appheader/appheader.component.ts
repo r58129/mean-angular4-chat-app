@@ -9,6 +9,7 @@ import * as $ from 'jquery';
 import { catchError, retry } from 'rxjs/operators';
 
 declare function nonPersistentNotification(string): any;
+declare function persistentNotification(string): any;
 
 const httpOptions = {
   headers: new HttpHeaders({

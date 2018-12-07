@@ -26,7 +26,14 @@ function nonPersistentNotification(newreq) {
   }
   
   try {
-    var notification = new Notification("You have "+newreq+" customer request!");
+    var notification = new Notification("Customer Service Center", { body: "You have "+newreq+" customer request!", icon: "/assets/dist/img/mAI_photo1.jpg" });
+      
+        notification.onclick = function(event) {
+        event.preventDefault(); // prevent the browser from focusing the Notification's tab
+            window.focus();
+//        window.open('http://www.mozilla.org', '_blank');
+      }
+      
   } catch (err) {
     alert('Notification API error: ' + err);
   }
