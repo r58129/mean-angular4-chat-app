@@ -1265,6 +1265,9 @@ router.put('/updatecampaignregisterlist/:keyword', auth, function(req, res, next
     });
   } else {
 
+    // console.log("new user list " +req.body.newUser);
+    // console.log("register list " +req.body.registeredUser);
+
     if ((req.body.registeredUser)&&(!req.body.newUser)) {
       console.log("update register list " +req.body.registeredUser);
       Campaign.findOneAndUpdate({keyword:req.params.keyword}, {$addToSet:{registeredUser:req.body.registeredUser}}, function (err, campaigns) {
@@ -1523,6 +1526,20 @@ router.post('/group', auth, function(req, res, next) {
    });
  } else {  
     Group.create(req.body, function (err, post) {
+      if (err) return next(err);
+      res.json(post);
+    });
+ }
+});
+
+// router.post('/user', function(req, res, next) {
+router.put('/updategroup/:groupkey', auth, function(req, res, next) {
+ if (!req.payload._id) {
+   res.status(401).json({
+     "message" : "UnauthorizedError:"
+   });
+ } else {  
+    Group.findOneAndUpdate({key:req.params.groupkey},req.body, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });
