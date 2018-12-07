@@ -8,6 +8,8 @@ import * as io from 'socket.io-client';
 import * as $ from 'jquery';
 import { catchError, retry } from 'rxjs/operators';
 
+declare function nonPersistentNotification(string): any;
+
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type':  'application/json'
@@ -24,6 +26,7 @@ const httpOptions = {
 export class AppheaderComponent implements OnInit, OnDestroy{
   
   chats: any;
+  previouschats: any;
   requests: any;  //new request
   interval: any;
   timer: any;
@@ -266,6 +269,11 @@ export class AppheaderComponent implements OnInit, OnDestroy{
 	      		// console.log('new requests: ' + this.chats);
 	      		document.getElementById('newRequestCount').textContent = this.chats;
 	      		document.getElementById('newCount').textContent = this.chats;
+                  
+                  if (this.chats!=0 && this.chats!=this.previouschats){
+                  nonPersistentNotification(this.chats);
+                  }
+                  this.previouschats=this.chats;
 	      	}
 
 	      	else {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot } from '@angular/router';
 import { AuthService, UserDetails } from '../../auth/auth.service';
 import { AuthGroup } from '../../auth/auth.type';
+declare function requestPermission(): any;
 
 @Component({
   selector: 'app-appmenu',
@@ -85,7 +86,10 @@ export class AppmenuComponent implements OnInit {
 				this.campaign = true;
 				this.adminSetting = true;            	
 
-      }      
+      }  
+        
+        requestPermission();
+        
     }, (err) => {
       console.error(err);
     });
