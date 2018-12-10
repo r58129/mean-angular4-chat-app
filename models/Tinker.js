@@ -6,6 +6,7 @@ var TinkerSchema = new mongoose.Schema({
   address: String,	
   port: String,
   sessionID: String,
+  whatsappRequestCount: String,
   updated_at: Date,
   log: [{
   	type:Date

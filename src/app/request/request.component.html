@@ -42,7 +42,9 @@
                           ' btn-danger ':r.request_status === 'New',
                           ' btn-warning ':r.request_status === 'Working',
                           ' btn-success ':r.request_status === 'Done',
-                          ' btn-primary ':r.request_status === 'Quit'
+                          ' btn-primary ':r.request_status === 'Quit',
+                          ' btn-info ':r.request_status === 'Timeout',
+                          ' btn-default ':r.request_status === 'Idle'
                           }">
                           {{r.request_status}}</a>
                         <!-- </div> -->

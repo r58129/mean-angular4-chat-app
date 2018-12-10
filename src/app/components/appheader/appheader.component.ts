@@ -39,9 +39,9 @@ export class AppheaderComponent implements OnInit, OnDestroy{
   tinkerKey: string;
 
   newUser = { nickname: '', room: '' };
-  newRequest = { type:'', phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
+  newRequest = { type:'', phone_number: '', socket_id: '', room:'', nickname: '', message: '', request_status:'' };
   CusMsgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
-  newTinker = { status:'', restart:'', address:'', port:'', log:[]};
+  newTinker = { status:'', restart:'', address:'', port:'', whatsappRequestCount:'', log:[]};
   updateTinkerStatus = { restart:''};
   logTinkerRestart = { log: ''};
 
@@ -91,14 +91,14 @@ export class AppheaderComponent implements OnInit, OnDestroy{
      	console.log("print socket_id before saveChat: " +socket_id);
       console.log("print package before saveChat: " +this.package);
       // use status field to classify the new and old request
-      this.newRequest = {type: this.package, phone_number: userid, socket_id: socket_id, room: userid, message: 'Customer service request', request_status:'New' };
+      this.newRequest = {type: this.package, phone_number: userid, socket_id: socket_id, room: userid, nickname: userid, message: 'Customer service request', request_status:'New' };
      	  console.log(this.newRequest.room);
      	  console.log(this.newRequest.phone_number);
      	  console.log(this.newRequest.socket_id);
      	  console.log(this.newRequest.message);
      	  console.log(this.newRequest.request_status);
         console.log(this.newRequest.type);
-   	    // console.log(this.newRequest.updated_at);
+   	    console.log(this.newRequest.nickname);
 
         if (this.newRequest.socket_id!=undefined){
           //check if this socket id exist
@@ -267,7 +267,7 @@ export class AppheaderComponent implements OnInit, OnDestroy{
           // console.log("this.tinkerInfo[0]: " +this.tinkerInfo[0]);
 
           if (this.tinkerInfo[0]==undefined){
-            console.log("this.tinkerStatus is empty, lets create one");        
+            // console.log("this.tinkerStatus is empty, lets create one");        
 
             this.newTinker.status = "running";
             this.newTinker.restart = "false";
@@ -283,18 +283,21 @@ export class AppheaderComponent implements OnInit, OnDestroy{
             });   
           } else {
 
-              // console.log("this.tinker restarted: " + this.tinkerInfo[0].restart);              
+            // console.log("this.tinker restarted: " + this.tinkerInfo[0].restart);   
+            // console.log( "whatsapp count: " +this.tinkerInfo[0].whatsappRequestCount) ;
+            document.getElementById('whatsappRequestCount').textContent = this.tinkerInfo[0].whatsappRequestCount;
+            document.getElementById('peopleInQueue').textContent = this.tinkerInfo[0].whatsappRequestCount;                        
 
             if (this.tinkerInfo[0].restart == 'true' ){
               // window.alert("Please login out and re-login again!!!");
               this.logTinkerRestart.log = "restart";
               this.authService.logTinker(this.logTinkerRestart).then((res) =>{
 
-                    console.log('log tinker restart time');
+                console.log('log tinker restart time');
                   
-                  }, (err) => {
-                    console.log(err);
-                  });
+              }, (err) => {
+                console.log(err);
+              });
 
               this.http.post (this.configs.tinkerboardAddr+":"+this.configs.tinkerport+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 
                 // this.http.post (localStorage.getItem('baseAddress')+":"+localStorage.getItem('tinkerPort')+'/api/csp/register?action=register&sessionID='+localStorage.getItem('res.data.sessionID'), 

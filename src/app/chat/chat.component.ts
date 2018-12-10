@@ -6,6 +6,7 @@ import * as $ from 'jquery';
 import { Buffer } from 'buffer';
 //import { Configs } from '../configurations';
 import { Configs } from '../../environments/environment';
+import { Idle, DEFAULT_INTERRUPTSOURCES} from '@ng-idle/core';
 
 @Component({
   selector: 'app-chat',
@@ -42,8 +43,54 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   // socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
   socket = io(this.configs.socketIoServerAddr,{secure: true});
 
-  constructor(private chatService: ChatService, private route: ActivatedRoute, private configs: Configs) {
+  constructor(private chatService: ChatService, private route: ActivatedRoute, private configs: Configs, private idle: Idle, private router: Router,) {
     // console.log("inside chat constructor" +this.route.snapshot.params);
+    
+    // sets an idle timeout of 50 seconds, for testing purposes.
+    idle.setIdle(10); //290s
+    // sets a timeout period of 10 seconds. after 60 seconds of inactivity, the user will be considered timed out.
+    idle.setTimeout(5);  //10s
+    // sets the default interrupts, in this case, things like clicks, scrolls, touches to the document
+    idle.setInterrupts(DEFAULT_INTERRUPTSOURCES);
+
+    idle.onIdleEnd.subscribe(() => {
+      // this.idleState = 'No longer idle.';
+      console.log('chat no longer idle');
+    });
+    
+    idle.onTimeout.subscribe(() => {
+      
+      if (this.joinned == true){
+        console.log(' Diconnect this chatbox and redirect to /request page!');
+        this.idleAutoLogout();
+
+      } else {
+        console.log('chatbox timeout redirect to /request page!');
+        
+      }
+
+      this.idle.stop();
+      this.idle.onTimeout.observers.length = 0;
+      this.idle.onIdleStart.observers.length = 0;
+      this.idle.onTimeoutWarning.observers.length = 0;
+      this.idle.onIdleEnd.observers.length = 0;
+
+      this.router.navigate(['/chat/request']);
+
+    });
+    
+    idle.onIdleStart.subscribe(() => {
+      console.log('chat box gone idle!');
+      // this.idleState = 'You\'ve gone idle!';
+    });
+    
+    idle.onTimeoutWarning.subscribe((countdown) => {
+      console.log('chat box will time out in ' + countdown + ' seconds!');
+      // this.idleState = 'You will time out in ' + countdown + ' seconds!';
+    });
+
+    this.reset();
+
   }
 
   ngOnInit() {
@@ -507,6 +554,104 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   }
 
+  idleAutoLogout() {
+
+    var date = new Date();
+    var user = JSON.parse(sessionStorage.getItem("user"));
+    this.socket.emit('save-message', { type:user.type, phone_number:user.room, socket_id: user.socket_id, room: user.room, nickname: user.nickname, message: 'Left this room', updated_at: date });
+    sessionStorage.removeItem("user");
+    this.joinned = false;
+
+    //update request_status to Done after logout
+    var db_id = this.newUser.db_id;
+    var currentStatus = this.newUser.request_status;
+    console.log('request_id: ' +db_id);
+    var updateStatus = { request_status:"Idle", people_in_room:"0"};
+
+   if ((currentStatus == "New") || (currentStatus == "Working"))
+    {
+      this.chatService.showChat(db_id).then((res) => {  
+        this.chatRoom =res;  //show number of people in room
+        var peopleNumber = parseInt(this.chatRoom.people_in_room)
+        console.log(" logout this.chatRoom.people_in_room: " +peopleNumber);
+        
+        if (peopleNumber <=2){
+
+          this.chatService.updateChat(db_id, updateStatus).then((res) => {  //from chatService
+            console.log("status updated");
+
+            //send goodbye message when there are only 2 people left
+            var goodbye = "Goodbye";
+            this.SendForm(goodbye);
+            console.log("goodbye");
+            console.log("disconnect customer and logout the room");
+          
+          }, (err) => {
+            console.log(err);
+          });
+
+
+        } else {
+          
+          // var peopleNumber = parseInt(this.chatRoom.people_in_room);
+          peopleNumber =peopleNumber - 1;
+
+          // this.chatRoom.people_in_room = this.chatRoom.people_in_room -1;
+
+          var updatePeopleInRoom ={people_in_room: peopleNumber};
+          
+          this.chatService.updateChat(db_id, updatePeopleInRoom).then((res) => {  //from chatService
+            console.log("people number updated");
+          }, (err) => {
+            console.log(err);
+          });
+
+        }
+
+      }, (err) => {
+        console.log(err);
+      });
+    } else {  //Done and Quit case
+
+      this.chatService.showChat(db_id).then((res) => {  
+        
+        this.chatRoom =res;  //show number of people in room
+        var peopleNumber = parseInt(this.chatRoom.people_in_room)
+        console.log("this.chatRoom.people_in_room: " +peopleNumber);
+                  
+        if (peopleNumber > 0){
+          peopleNumber =peopleNumber - 1;
+
+          // this.chatRoom.people_in_room = this.chatRoom.people_in_room -1;
+
+          var updatePeopleInRoom ={people_in_room: peopleNumber};
+          
+          this.chatService.updateChat(db_id, updatePeopleInRoom).then((res) => {  //from chatService
+            console.log("people number updated");
+          }, (err) => {
+            console.log(err);
+          });
+        } else {
+        console.log("people number is not updated");
+        }
+
+      }, (err) => {
+        console.log(err);
+      });
+
+
+    }
+
+
+    console.log("status is NOT updated");
+
+    //send goodbye message when logout()
+    // var goodbye = "Goodbye";
+    // this.SendForm(goodbye);
+    // console.log("goodbye");
+
+  }
+
   SendForm(message){
     if (this.appName == 'whatsapp'){ 
       console.log("admin is sending a message: " +message);
@@ -769,4 +914,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     // console.log(this.selectedFile.name);
   }
 
+  reset() {
+    this.idle.watch();
+    console.log('idleState = Started');
+    // this.idleState = 'Started.';
+    // this.timedOut = false;
+  }
 }
