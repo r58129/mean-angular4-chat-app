@@ -268,8 +268,8 @@ export class AuthService {
         tinkerloginFormData.append('userID', 'admin');
         tinkerloginFormData.append('password', this.configs.tinkerpassword);
 
-        console.log('tinkerloginFormData ID: ' + tinkerloginFormData.get('userID'));
-        console.log('tinkerloginFormData PWD: ' + tinkerloginFormData.get('password'));       
+        //not support in edge??     console.log('tinkerloginFormData ID: ' + tinkerloginFormData.get('userID'));
+        //not support in edge??     console.log('tinkerloginFormData PWD: ' + tinkerloginFormData.get('password'));       
 
 
         // this.loginTinkerBoard(tinkerloginData).then((result) =>{
