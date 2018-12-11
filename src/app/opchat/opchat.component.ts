@@ -59,15 +59,20 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     private route: ActivatedRoute, private configs: Configs, private idle: Idle) {
     
     // sets an idle timeout of 50 seconds, for testing purposes.
-    idle.setIdle(10); //290s
+    idle.setIdle(290); //290s
     // sets a timeout period of 10 seconds. after 60 seconds of inactivity, the user will be considered timed out.
-    idle.setTimeout(5);  //10s
+    idle.setTimeout(10);  //10s
     // sets the default interrupts, in this case, things like clicks, scrolls, touches to the document
     idle.setInterrupts(DEFAULT_INTERRUPTSOURCES);
 
     idle.onIdleEnd.subscribe(() => {
       // this.idleState = 'No longer idle.';
       console.log('No longer idle.');
+      // this.idle.stop();
+      // this.idle.onTimeout.observers.length = 0;
+      // this.idle.onIdleStart.observers.length = 0;
+      // this.idle.onTimeoutWarning.observers.length = 0;
+      // this.idle.onIdleEnd.observers.length = 0;         
     });
     
     idle.onTimeout.subscribe(() => {

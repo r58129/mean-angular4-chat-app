@@ -26,6 +26,18 @@
 
 }
 
+.btn.btn-xs.btn-purple
+{
+    background-color: #CD5C5C;
+    color: #FFFFFF;
+}
+
+.btn.btn-xs.btn-idle
+{
+    background-color: #696969;
+    color: #FFFFFF;
+}
+
 .table
 {   
     border-collapse:collapse;
