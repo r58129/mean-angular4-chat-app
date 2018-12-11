@@ -662,9 +662,9 @@ router.get('/request/human', auth, function(req, res, next) {
       [ 
         { phone_number: {  $exists: true } }, 
         { socket_id: { $exists: true } }, 
-        { nickname: { $exists: false } },
-        { operator_request: { $exists: false } }
-        // { status: "New" } 
+        { nickname: { $exists: true } },
+        { operator_request: { $exists: false } },
+        { request_status: { $exists: true } } 
       ]
     }, function (err, chats) {
       if (err) return next(err);
@@ -1810,7 +1810,7 @@ router.put('/tinkerlog/report', auth, function(req, res, next) {
       "message" : "UnauthorizedError:"
     });
   } else {  
-    console.log("tinker restart log: " +Date.now());
+    // console.log("tinker restart log: " +Date.now());
     Tinker.findOneAndUpdate({status:"running"}, {$addToSet:{log:Date.now()}}, function (err, tinkers) {
       if (err) return next(err);
       res.json(tinkers);
