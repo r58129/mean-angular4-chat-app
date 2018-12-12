@@ -44,7 +44,8 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ]
-            }
+            },
+
           }
         },
         "serve": {
@@ -54,8 +55,8 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "mean-chat:build:production"
-            }
+              "browserTarget": "mean-chat:build:production"            
+            }            
           }
         },
         "extract-i18n": {

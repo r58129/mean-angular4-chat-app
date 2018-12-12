@@ -37,7 +37,7 @@ export class ReportSearchComponent implements OnInit {
   		
   	}
 
-  	private exportHistory(){
+  	public exportHistory(){
   	  // var operator_request = "true";
   	  this.startNum = parseInt(this.searchRange.start_time);
   		this.endNum = parseInt(this.searchRange.end_time);

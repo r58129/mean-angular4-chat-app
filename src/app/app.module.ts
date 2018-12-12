@@ -9,6 +9,7 @@ import { PathLocationStrategy, LocationStrategy } from '@angular/common';
 
 // this includes the core NgIdleModule but includes keepalive providers for easy wireup
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive'; 
+// import { PickerModule } from '@ctrl/ngx-emoji-mart';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module'
@@ -59,6 +60,8 @@ import { DisableIfUnauthorizedDirective } from './disable-if-unauthorized.direct
 import { HideIfUnauthorizedDirective } from './hide-if-unauthorized.directive';
 import { BroadcastDetailComponent } from './broadcast-detail/broadcast-detail.component';
 import { BroadcastComponent } from './broadcast/broadcast.component';
+
+
 
 // import { EmojiModule } from 'angular-emoji/dist';
 
@@ -121,8 +124,8 @@ import { BroadcastComponent } from './broadcast/broadcast.component';
     HttpClientModule,
     AppRoutingModule,    
     NgIdleKeepaliveModule.forRoot()
-    // UserIdleModule.forRoot({idle: 60, timeout: 30, ping: 10}) // unit: s
-    // EmojiModule
+    // PickerModule
+    // UserIdleModule.forRoot({idle: 60, timeout: 30, ping: 10}) // unit: s    
     // RouterModule.forRoot(ROUTES)
   ],
   providers: [

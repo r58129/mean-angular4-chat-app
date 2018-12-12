@@ -737,13 +737,13 @@ export class ChatService {
   
   //broadcast formdata message to tinker
   // https://airpoint.com.hk:8006/api/whatsapp/listtext
-  broadcastMessage(formdata) {
+  broadcastMessage(formdata, message) {
     return new Promise((resolve, reject) => {
       // console.log("formdata: " +formdata);
       console.log("formdata.sessionID: " +formdata.get('sessionID'));
-      console.log("formdata.message: " +formdata.get('message'));
+      console.log("formdata.message: " +message);
       
-     this.http.post(this.tinkerUrl +'/api/whatsapp/listtext', formdata )
+     this.http.post(this.tinkerUrl +'/api/whatsapp/listtext?message='+message, formdata )
          // .map(res => res.json())
          .subscribe(res => {
            resolve(res);
@@ -757,13 +757,13 @@ export class ChatService {
 
   //broadcast formdata image to tinker
   // https://airpoint.com.hk:8006/api/whatsapp/listimage
-  broadcastImage(formdata) {
+  broadcastImage(formdata, message) {
     return new Promise((resolve, reject) => {
       // console.log("formdata: " +formdata);
       console.log("formdata.sessionID: " +formdata.get('sessionID'));
       console.log("formdata.imagefilename: " +formdata.get('imagefilename'));
       
-     this.http.post(this.tinkerUrl +'/api/whatsapp/listimage', formdata )
+     this.http.post(this.tinkerUrl +'/api/whatsapp/listimage?message='+message, formdata )
          // .map(res => res.json())
          .subscribe(res => {
            resolve(res);

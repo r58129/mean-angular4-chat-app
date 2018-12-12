@@ -70,5 +70,12 @@
 <!-- <script src="assets/dist/js/pages/dashboard2.js"></script> -->
 <!-- AdminLTE for demo purposes -->
 <!-- <script src="assets/dist/js/demo.js"></script> -->
+<!-- https://github.com/aws/aws-amplify/issues/678 fix: -->
+<script>
+  if (global === undefined) {
+    var global = window;
+  }
+</script>
+<!-- https://github.com/aws/aws-amplify/issues/678 fix end-->
 </body>
 </html>

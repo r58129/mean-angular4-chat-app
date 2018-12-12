@@ -12,7 +12,6 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/cli": "^1.7.4",
     "@angular/common": "^5.2.10",
     "@angular/compiler": "^5.2.10",
     "@angular/core": "^5.2.10",
@@ -24,7 +23,6 @@
     "@google-cloud/translate": "^1.1.0",
     "@ng-idle/core": "^2.0.0-beta.15",
     "@ng-idle/keepalive": "^2.0.0-beta.15",
-    "angular-emoji": "^0.1.45",
     "apiai": "^4.0.3",
     "auth0-js": "^9.5.1",
     "axios": "^0.18.0",
@@ -38,6 +36,7 @@
     "express": "^4.16.3",
     "express-jwt": "^5.3.1",
     "file-saver": "^2.0.0-rc.4",
+    "fs-extra": "^7.0.1",
     "fullcalendar": "^3.6.1",
     "googleapis": "^33.0.0",
     "jquery": "^3.3.1",
@@ -46,7 +45,7 @@
     "messaging-api-line": "^0.7.4",
     "messaging-api-wechat": "^0.7.4",
     "mongoose": "^4.9.2",
-    "morgan": "^1.8.1",
+    "morgan": "^1.9.1",
     "ngrok": "^3.0.1",
     "nodemon": "^1.17.4",
     "passport": "^0.4.0",
@@ -63,14 +62,15 @@
     "zone.js": "^0.8.4"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "^0.10.3",
     "@angular-devkit/build-optimizer": "^0.6.8",
-    "@angular/cli": "1.7.4",
+    "@angular/cli": "^7.0.3",
     "@angular/compiler-cli": "^5.2.10",
     "@types/fullcalendar": "^3.8.0",
     "@types/jasmine": "2.5.38",
     "@types/jquery": "^3.2.7",
     "@types/node": "~6.0.60",
-    "codelyzer": "~2.0.0",
+    "codelyzer": "~4.5.0",
     "jasmine-core": "~2.5.2",
     "jasmine-spec-reporter": "~3.2.0",
     "karma": "^3.0.0",
@@ -83,6 +83,6 @@
     "ts-node": "~2.0.0",
     "tslint": "~4.5.0",
     "typescript": "^2.6.2",
-    "webpack": "^3.1.0"
+    "webpack": "^4.6.0"
   }
 }

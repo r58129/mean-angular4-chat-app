@@ -41,7 +41,7 @@ export class AppheaderComponent implements OnInit, OnDestroy{
   newUser = { nickname: '', room: '' };
   newRequest = { type:'', phone_number: '', socket_id: '', room:'', nickname: '', message: '', request_status:'' };
   CusMsgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
-  newTinker = { status:'', restart:'', address:'', port:'', whatsappRequestCount:'', log:[]};
+  newTinker = { status:'', restart:'', address:'', port:'', whatsappRequestCount:'', enableBroadcast:'', enableCampaign:'', enableGroupTranslate:'',log:[]};
   updateTinkerStatus = { restart:''};
   logTinkerRestart = { log: ''};
 
@@ -198,13 +198,12 @@ export class AppheaderComponent implements OnInit, OnDestroy{
      if (status == 'Available'){
       console.log(' operator channel is available');
       document.getElementById('operatorChannel').textContent = "OK";
-      document.getElementById('channelStatusMessage').textContent = "Operator Channel is available";
-      
-      
+      document.getElementById('channelStatusMessage').textContent = "Operator channel is available";
+            
      } else {
       console.log(' operator channel is occupied');
       document.getElementById('operatorChannel').textContent = "NA";
-      document.getElementById('channelStatusMessage').textContent = "Operator Channel is occupied";
+      document.getElementById('channelStatusMessage').textContent = "Operator channel is occupied";
 
       }
 
@@ -273,6 +272,10 @@ export class AppheaderComponent implements OnInit, OnDestroy{
             this.newTinker.restart = "false";
             this.newTinker.address = this.configs.tinkerboardAddr;
             this.newTinker.port = this.configs.tinkerport;
+            this.newTinker.enableBroadcast = "false";
+            this.newTinker.enableCampaign = "false";
+            this.newTinker.enableGroupTranslate = "false";
+
 
             this.authService.saveTinker(this.newTinker).then((res) =>{
             
@@ -285,6 +288,16 @@ export class AppheaderComponent implements OnInit, OnDestroy{
 
             // console.log("this.tinker restarted: " + this.tinkerInfo[0].restart);   
             // console.log( "whatsapp count: " +this.tinkerInfo[0].whatsappRequestCount) ;
+            if (this.tinkerInfo[0].enableBroadcast == "false"){
+
+              document.getElementById('enableBroadcast').textContent = "Broadcasting channel is availble!";
+              document.getElementById('broadcastMode').textContent = "OK";   
+            } else {
+              document.getElementById('enableBroadcast').textContent = "Broadcasting channel is NOT available! Please wait until the job is completed!";
+              document.getElementById('broadcastMode').textContent = "NA";   
+
+            }
+
             document.getElementById('whatsappRequestCount').textContent = this.tinkerInfo[0].whatsappRequestCount;
             document.getElementById('peopleInQueue').textContent = this.tinkerInfo[0].whatsappRequestCount;                        
 

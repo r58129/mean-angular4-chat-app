@@ -6,6 +6,7 @@ import * as $ from 'jquery';
 import { Buffer } from 'buffer';
 //import { Configs } from '../configurations';
 import { Configs } from '../../environments/environment';
+import { AuthService} from '../auth/auth.service';
 
 @Component({
   selector: 'app-broadcast-detail',
@@ -31,7 +32,8 @@ export class BroadcastDetailComponent implements OnInit {
   compressedImage: File;
   csvFile: File;   
   filename: string;
- 
+  urlMessage: string;
+  tinkerKey: string;
 
 
   broadcastDetail = { jobID:'', message: '', contactListCsvName:'', imagefile:'', imagefilename:'', notSendAck:'', prependContactName:'', jobStatus:''
@@ -41,7 +43,9 @@ export class BroadcastDetailComponent implements OnInit {
   
   newBroadcast = { jobID:'', message:'', contactListCsvName: '', imagefile:'', imagefilename:'', notSendAck:'',prependContactName:'', jobStatus:'' };  
 
-  constructor(private chatService: ChatService, private route: ActivatedRoute, private configs: Configs) {}
+  updateTinkerStatus = { enableBroadcast:''};
+
+  constructor(private chatService: ChatService, private authService: AuthService, private route: ActivatedRoute, private configs: Configs) {}
 
   ngOnInit() {
 
@@ -98,7 +102,21 @@ export class BroadcastDetailComponent implements OnInit {
 
 				this.enableBroadcast = res;
 				console.log("Enable broadcast: " +this.enableBroadcast.success);
-				// window.alert(' Broadcast mode is enabled!');
+				
+          if (this.enableBroadcast.success == true){
+
+            this.tinkerKey = "running";
+            this.updateTinkerStatus.enableBroadcast = "true";
+
+            this.authService.updateTinker(this.tinkerKey, this.updateTinkerStatus).then((res) => {
+              
+              console.log("update tinker status");
+            
+            }, (err) => {
+              console.log(err);        
+            });  
+
+          }
 				
 				// check if image is attached and post to tinker 				  
 				if (this.url.length != 0){	//broadcast image
@@ -109,14 +127,16 @@ export class BroadcastDetailComponent implements OnInit {
 			    //construct form data
 			    var boardcastImage = new FormData();
 			    boardcastImage.append('sessionID', sID);
-			    boardcastImage.append('message', this.newBroadcast.message);
+			    // boardcastImage.append('message', this.newBroadcast.message);
 			    boardcastImage.append('prependContactName', this.newBroadcast.prependContactName); 					
 			    boardcastImage.append('contactListCsv', this.csvFile);			    
 			    boardcastImage.append('imagefilename', this.selectedImage.name);
 			    boardcastImage.append('imagefile', this.compressedImage);  				
 
+          this.urlMessage = this.newBroadcast.message;
+
 					//write to DB
-					this.chatService.broadcastImage(boardcastImage).then((res) => {  //from chatService, 
+					this.chatService.broadcastImage(boardcastImage, this.urlMessage).then((res) => {  //from chatService, 
 				  
 				    window.alert('Broadcast job with image is submitted successfully!');
 
@@ -156,12 +176,14 @@ export class BroadcastDetailComponent implements OnInit {
 			    //construct form data
 			    var boardcastMessage = new FormData();
 			    boardcastMessage.append('sessionID', sID);
-			    boardcastMessage.append('message', this.newBroadcast.message);
+			    // boardcastMessage.append('message', this.newBroadcast.message);
 			    boardcastMessage.append('prependContactName', this.newBroadcast.prependContactName); 					
 			    boardcastMessage.append('contactListCsv', this.csvFile);
 
+          this.urlMessage = this.newBroadcast.message;
+
 					//write to DB
-					this.chatService.broadcastMessage(boardcastMessage).then((res) => {  //from chatService, 
+					this.chatService.broadcastMessage(boardcastMessage, this.urlMessage).then((res) => {  //from chatService, 
 				  
 				    window.alert('Broadcast job with message only is submitted successfully!');
 

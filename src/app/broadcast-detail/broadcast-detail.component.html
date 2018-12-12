@@ -18,7 +18,7 @@
                   </div>
               <!-- /.box-body -->
               <div class="box-body" *ngIf="editBroadcastPage; else addBroadcastPage">
-			        	<form (ngSubmit)="updateBroadcastDetail()" #updateBroadcastForm="ngForm"> 
+<!-- 			        	<form (ngSubmit)="updateBroadcastDetail()" #updateBroadcastForm="ngForm"> 
 				        	<div class="form-horizontal" >
 					          <div class="form-group">
 					            <label class="col-sm-5 control-label">Job ID</label>
@@ -37,24 +37,7 @@
                       <img id="displayImage" [src]="url" height="200px"><br/>
                       <input style = "display: none" type="file" class="form-control-static" (change)="onImageFileSelected($event)" #fileInput name="filename" >
                       <button type="button" class="btn btn-success btn-sm" (click)="fileInput.click()">Browse Image</button>					            
-					            <!-- <input type="text" class="form-control-static" [(ngModel)]="broadcastDetail.last_name" placeholder="Optional" name="broadcastDetail.last_name" > -->
 					          </div>
-<!-- 					          <div class="form-group">
-					            <label class="col-sm-5 control-label">Nickname</label>
-					            <input type="text" class="form-control-static" [(ngModel)]="broadcastDetail.nickname" placeholder="Required" name="broadcastDetail.nickname" required="">
-					          </div> -->
-<!-- 					          <div class="form-group">
-					            <label class="col-sm-5 control-label">Servcies</label>
-					            <input type="text" class="form-control-static" [(ngModel)]="userDetail.service" placeholder="translate, namecard" name="user.service" >
-					          </div>
-					          <div class="form-group">
-					            <label class="col-sm-5 control-label">Default Spoken Language</label>
-					            <input type="text" class="form-control-static" [(ngModel)]="userDetail.default_spoken_lang" placeholder="Required for translate" name="user.default_spoken_lang"  >
-					          </div>
-					          <div class="form-group">
-					            <label class="col-sm-5 control-label">Default Text Language</label>
-					            <input type="text" class="form-control-static" [(ngModel)]="userDetail.default_text_lang" placeholder="Required for translate" name="user.default_text_lang"  >
-					          </div> -->
                     
 	                  <div id = edit-button class="form-group">
 	                    <div class="form-group center">
@@ -65,14 +48,15 @@
 				        	</div>
 				        </form>
 
-<!-- 	              <div id = delete-button class="form-group">
+	              <div id = delete-button class="form-group">
 	                <div class="form-group center">
 	                  <label class="col-sm-5 control-label"></label>
 	                  <button  type="submit" class="btn btn-danger btn" (click)="deleteUser()"> Delete User </button>
 	                </div>                        
-	              </div> --> 				        
+	              </div>  -->
+
               </div>                  
-              </div>
+            </div>
 
               <ng-template #viewDetail>
                 <div class="box box-primary direct-chat direct-chat-primary">
@@ -168,6 +152,7 @@
 							          <div class="form-group">
 							            <label class="col-sm-4 control-label">Message</label>
 							            <textarea id="message-box" type="text" class="form-control-static" [(ngModel)]="newBroadcast.message" placeholder="Required" name="newBroadcast.message" required="" ></textarea>
+							            
 							          </div>
 							            <!-- <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.prependContactName" placeholder="Optional" name="last_name" > -->
 							          						          
