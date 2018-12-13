@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 // import { HttpModule } from '@angular/http';
@@ -59,6 +59,7 @@ import { DisableIfUnauthorizedDirective } from './disable-if-unauthorized.direct
 import { HideIfUnauthorizedDirective } from './hide-if-unauthorized.directive';
 import { BroadcastDetailComponent } from './broadcast-detail/broadcast-detail.component';
 import { BroadcastComponent } from './broadcast/broadcast.component';
+//import {Tinycon} from 'tinycon';
 
 // import { EmojiModule } from 'angular-emoji/dist';
 
@@ -132,6 +133,8 @@ import { BroadcastComponent } from './broadcast/broadcast.component';
     // AuthguardGuard,
     ChatService,
     Configs,
+      Title,
+//      Tinycon,
     {provide: LocationStrategy, useClass: PathLocationStrategy}
   ],
   bootstrap: [AppComponent]

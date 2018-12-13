@@ -7,9 +7,17 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
 import { catchError, retry } from 'rxjs/operators';
+import { AppModule } from '../../../app/app.module';
+import { AppComponent } from '../../../app/app.component';
+import { Title }     from '@angular/platform-browser';
+//import {Tinycon} from 'tinycon';
 
 declare function nonPersistentNotification(string): any;
 declare function persistentNotification(string): any;
+
+declare var Tinycon: any;
+//declare function setbubble(string,string): any;
+
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -26,6 +34,7 @@ const httpOptions = {
 })
 export class AppheaderComponent implements OnInit, OnDestroy{
   
+    private tinycon: any;
   chats: any;
   previouschats: any;
   requests: any;  //new request
@@ -56,12 +65,17 @@ export class AppheaderComponent implements OnInit, OnDestroy{
 
   // }
 
-  constructor(public http: HttpClient, public authService: AuthService, private chatService: ChatService, private configs: Configs) {}
+  constructor(public http: HttpClient, public authService: AuthService, private chatService: ChatService, private configs: Configs,private titleService: Title) {
+      this.tinycon=Tinycon;
+  }
   // constructor(public authService: AuthserviceService, public configs: Configs) { }
 
   ngOnInit() {
   	console.log("appheader ngOnInit");
 
+      
+      
+      
   // if (this.authService.isLoggedIn()) {
     this.socket.emit('user','admin');
 
@@ -223,9 +237,14 @@ export class AppheaderComponent implements OnInit, OnDestroy{
 	      		// console.log('new requests: ' + this.chats);
 	      		document.getElementById('newRequestCount').textContent = this.chats;
 	      		document.getElementById('newCount').textContent = this.chats;
-                  
+                  if (this.chats==0){
+                      this.titleService.setTitle( "ChatService" );
+                      this.tinycon.reset();
+                  }else
                   if (this.chats!=0 && this.chats!=this.previouschats){
                   nonPersistentNotification(this.chats);
+                      this.titleService.setTitle( "("+this.chats+") "+"ChatService" );
+                      this.tinycon.setBubble(Number(this.chats));
                   }
                   this.previouschats=this.chats;
 	      	}
