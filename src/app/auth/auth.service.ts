@@ -11,7 +11,6 @@ import { catchError, retry } from 'rxjs/operators';
 import { ChatService } from '../chat.service';
 import { AuthGroup } from './auth.type';
 
-
 export interface UserDetails {
   _id: string;
   email: string;
