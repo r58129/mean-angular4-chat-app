@@ -9,8 +9,8 @@ import { PathLocationStrategy, LocationStrategy } from '@angular/common';
 
 // this includes the core NgIdleModule but includes keepalive providers for easy wireup
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive'; 
-// import { PickerModule } from '@ctrl/ngx-emoji-mart';
-
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
+// import { EmojiPickerModule } from 'ng-emoji-picker';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module'
 
@@ -123,8 +123,10 @@ import { BroadcastComponent } from './broadcast/broadcast.component';
     // HttpModule,
     HttpClientModule,
     AppRoutingModule,    
+    // EmojiPickerModule,
+    PickerModule,
     NgIdleKeepaliveModule.forRoot()
-    // PickerModule
+
     // UserIdleModule.forRoot({idle: 60, timeout: 30, ping: 10}) // unit: s    
     // RouterModule.forRoot(ROUTES)
   ],
