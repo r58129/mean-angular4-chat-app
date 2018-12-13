@@ -7,6 +7,9 @@ var TinkerSchema = new mongoose.Schema({
   port: String,
   sessionID: String,
   whatsappRequestCount: String,
+  enableBroadcast: String,
+  enableCampaign: String,
+  enableGroupTranslate: String,
   updated_at: Date,
   log: [{
   	type:Date

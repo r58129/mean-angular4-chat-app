@@ -20,11 +20,9 @@ export class BroadcastComponent implements OnInit {
 	broadcastDetail: any;  
   disableBroadcastStatus: any = [];
   disableBroadcastService: boolean = true;
-  // whatsappUserList: any;
-  // userContactList: any;
-	// notSearch: boolean = true;
-  // exportUserList: boolean = false;
-  // staffRole: string;    
+  tinkerKey: string;
+
+  updateTinkerStatus = { enableBroadcast:''};
 
   	constructor(private chatService: ChatService, private configs: Configs,private authService: AuthService) {}
 
@@ -90,6 +88,18 @@ export class BroadcastComponent implements OnInit {
       if (this.disableBroadcastStatus.success == true){
         window.alert('Disabled broadcast mode! Other features are now resumed!');
         console.log("disable broadcast");
+
+          this.tinkerKey = "running";
+          this.updateTinkerStatus.enableBroadcast = "false";
+
+          this.authService.updateTinker(this.tinkerKey, this.updateTinkerStatus).then((res) => {
+              
+            console.log("update tinker status");
+            
+          }, (err) => {
+            console.log(err);        
+          });  
+
       } else {
         console.log("disable broadcast failed!");
       }

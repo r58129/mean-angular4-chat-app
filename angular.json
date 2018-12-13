@@ -777,7 +777,7 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "mean-chat:build:production"
+              "browserTarget": "mean-chat:build:production"            
             },
               "blade20bay2": {                                                
      "optimization": true,                                         
