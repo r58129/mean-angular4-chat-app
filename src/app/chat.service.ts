@@ -2,7 +2,7 @@ import { Injectable, Output, EventEmitter } from '@angular/core';
 // import { Http, Headers, ResponseContentType } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import 'rxjs/add/operator/map';
+
 //import { Configs } from './configurations';
 import { Configs } from './../environments/environment';
 // import { AuthserviceService } from './authservice.service'

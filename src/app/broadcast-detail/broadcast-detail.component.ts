@@ -34,6 +34,7 @@ export class BroadcastDetailComponent implements OnInit {
   filename: string;
   urlMessage: string;
   tinkerKey: string;
+  popUpEmoji: boolean = false;
 
 
   broadcastDetail = { jobID:'', message: '', contactListCsvName:'', imagefile:'', imagefilename:'', notSendAck:'', prependContactName:'', jobStatus:''
@@ -442,31 +443,16 @@ export class BroadcastDetailComponent implements OnInit {
 
   } 
 
-  // disableBroadcastMode(){
+  addEmoji(event){
 
-  //   // get admin sessionID
-  //   var sID=localStorage.getItem('res.data.sessionID');
-      
-  //   //construct form data
-  //   var disable = new FormData();
-  //   disable.append('sessionID', sID);
+    // console.log(event.emoji.native);
+    
+    this.newBroadcast.message += event.emoji.native;
+  }
 
-  // 	this.chatService.disableBroadcast(disable).then((res) => {
-  		
-  // 		this.jobDetail = res;
-  		
-  // 		if (this.jobDetail.success =="true"){
-  // 			window.alert('Disabled broadcast mode! Other features is now resumed');
-  // 			console.log("disable broadcast");
-  // 		} else {
-  // 			console.log("disable broadcast failed!");
-  // 		}
+  popUpEmojiBox(){
 
-  // 	}, (err) => {
-		//   console.log(err);
-
-		// });	
-
-  // }
+    this.popUpEmoji = !this.popUpEmoji;
+  }
 
 }

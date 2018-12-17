@@ -10,7 +10,7 @@ import { AppheaderComponent } from './components/appheader/appheader.component';
 import { AppfooterComponent } from './components/appfooter/appfooter.component';
 import { AppmenuComponent } from './components/appmenu/appmenu.component';
 import { AppsettingsComponent } from './components/appsettings/appsettings.component';
-import { ApploginComponent } from './components/applogin/applogin.component';
+// import { ApploginComponent } from './components/applogin/applogin.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AdminComponent } from './admin/admin.component';
 // import { OperatorComponent } from './operator/operator.component';

@@ -1,9 +1,9 @@
 import { Component, OnInit, Output, EventEmitter,HostListener } from '@angular/core';
 import { ChatService } from '../chat.service';
 import { Router } from '@angular/router';
-import { Subject} from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/observable/interval'
+import { Subject} from 'rxjs';
+
+
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
 //import { Configs } from '../configurations';

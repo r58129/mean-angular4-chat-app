@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy, AfterViewChecked, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { ChatService } from '../chat.service';
 import { Router } from '@angular/router';
-import { Subject} from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/observable/interval'
+import { Subject,  Observable } from 'rxjs';
+
+
 import * as io from 'socket.io-client';
 import * as $ from 'jquery';
 //import { Configs } from '../configurations';
@@ -11,10 +11,8 @@ import { Configs } from '../../environments/environment';
 // import { AuthserviceService } from '../authservice.service';
 import { AuthService, TokenPayload } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
-import { catchError, retry } from 'rxjs/operators';
+// import { catchError, retry } from 'rxjs/operators';
 import { HttpHeaders } from '@angular/common/http';
-import 'rxjs/add/observable/throw';
-import { Observable } from 'rxjs/Observable';
 
 
 const httpOptions = {

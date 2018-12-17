@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthserviceService } from '../../authservice.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-appsettings',
@@ -8,7 +8,7 @@ import { AuthserviceService } from '../../authservice.service';
 })
 export class AppsettingsComponent implements OnInit {
 
-  constructor(public authService: AuthserviceService) { }
+  constructor(public authService: AuthService){ }
 
   ngOnInit() {
   }

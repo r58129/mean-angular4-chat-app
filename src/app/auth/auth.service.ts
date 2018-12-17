@@ -1,17 +1,13 @@
+import { Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators/map';
+import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 //import { Configs } from './../configurations';
 import { Configs } from './../../environments/environment';
-import { csRegPath } from './../../environments/environment';
-import { of } from 'rxjs/observable/of';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
-import { catchError, retry } from 'rxjs/operators';
+// import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { ChatService } from '../chat.service';
 import { AuthGroup } from './auth.type';
-
 
 export interface UserDetails {
   _id: string;
@@ -221,10 +217,10 @@ export class AuthService {
     console.log("logout registered user");
   }
 
-  private handleErrorObservable (error: Response | any) {
-    console.error(error.message || error);
-    return Observable.throw(error.message || error);
-  }
+  // private handleErrorObservable (error: Response | any) {
+  //   console.error(error.message || error);
+  //   return observableThrowError(error.message || error);
+  // }
 
   // public loginTinker(port:string) :boolean{
   public loginTinker() {

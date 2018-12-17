@@ -51,6 +51,10 @@
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="assets/dist/css/skins/_all-skins.min.css">
+  
+<!--   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" >
+  <link rel="stylesheet" href="assets/lib/css/emoji.css" > -->
+
 </head>
   <body class="hold-transition skin-blue login-page sidebar-mini boxed">
     <!-- <body class="hold-transition skin-blue sidebar-mini"> -->
@@ -99,11 +103,33 @@
 <!-- AdminLTE for demo purposes -->
 <!-- <script src="assets/dist/js/demo.js"></script> -->
 <!-- https://github.com/aws/aws-amplify/issues/678 fix: -->
+  
+<!-- <script src="assets/lib/js/config.js"></script>
+<script src="assets/lib/js/util.js"></script>
+<script src="assets/lib/js/jquery.emojiarea.js"></script>
+<script src="assets/lib/js/emoji-picker.js"></script> -->
+
 <script>
   if (global === undefined) {
     var global = window;
   }
 </script>
 <!-- https://github.com/aws/aws-amplify/issues/678 fix end-->
+
+<!--     <script>
+      $(function() {
+        // Initializes and creates emoji set from sprite sheet
+        window.emojiPicker = new EmojiPicker({
+          emojiable_selector: '[data-emojiable=true]',
+          assetsPath: '../assets/lib/img/',
+          popupButtonClasses: 'fa fa-smile-o'
+        });
+        // Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
+        // You may want to delay this step if you have dynamically created input fields that appear later in the loading process
+        // It can be called as many times as necessary; previously converted input fields will not be converted again
+        window.emojiPicker.discover();
+      });
+    </script> -->
+    
 </body>
 </html>
