@@ -6,12 +6,16 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 const options =  {
+                user: "airpoint",
+                pass: "Aptc123456",
+                auth: {
+                    authdb:'admin'
+                },
+                authMechanism:'SCRAM-SHA-1',
                 server: {
                     reconnectTries: Number.MAX_VALUE,
                     reconnectInterval: 1000, // reconnect after 1 second(s)
-                },
-                user: "airpoint",
-                pass: "Aptc123456"
+                }
             };
 
 // var fs = require('fs');
