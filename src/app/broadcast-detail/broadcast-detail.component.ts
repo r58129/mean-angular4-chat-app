@@ -34,7 +34,7 @@ export class BroadcastDetailComponent implements OnInit {
   filename: string;
   urlMessage: string;
   tinkerKey: string;
-  public openPopup: Function;
+  popUpEmoji: boolean = false;
 
 
   broadcastDetail = { jobID:'', message: '', contactListCsvName:'', imagefile:'', imagefilename:'', notSendAck:'', prependContactName:'', jobStatus:''
@@ -443,8 +443,16 @@ export class BroadcastDetailComponent implements OnInit {
 
   } 
 
-  setPopupAction(fn: any) {
-    this.openPopup = fn;    
+  addEmoji(event){
+
+    // console.log(event.emoji.native);
+    
+    this.newBroadcast.message += event.emoji.native;
+  }
+
+  popUpEmojiBox(){
+
+    this.popUpEmoji = !this.popUpEmoji;
   }
 
 }
