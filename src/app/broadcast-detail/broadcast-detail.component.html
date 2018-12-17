@@ -90,6 +90,14 @@
 							            <p class="form-control-static">{{ broadcast.contactListCsvName }}</p>
 							          </div>
 							          <div class="form-group">
+							            <label class="col-sm-3 control-label">Group Name </label>
+							            <p class="form-control-static">{{ broadcast.groupName }}</p>
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-3 control-label">Sender Phone Number </label>
+							            <p class="form-control-static">{{ broadcast.senderPhoneNumber }}</p>
+							          </div>							          
+							          <div class="form-group">
 							            <label class="col-sm-3 control-label">Message</label>
 							            <textarea id="message-box" readonly class="form-control-static">{{ broadcast.message }}</textarea>
 							          </div>
@@ -148,7 +156,15 @@
 							          <div class="form-group">
 							            <label class="col-sm-4 control-label">CSV file</label>
 							            <input type="file" class="form-control-static" (change)="onCSVSelected($event)" placeholder="Required" #fileInput name="csvFile" required="" >
-							          </div>												
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-4 control-label">Group Name</label>
+							            <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.groupName" name = "newBroadcast.groupName" placeholder="Optional" >
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-4 control-label">Sender Phone Number</label>
+							            <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.senderPhoneNumber" name="newBroadcast.senderPhoneNumber"placeholder="Optional" >
+							          </div>							          							          												
 							          <div class="form-group">
 							            <label class="col-sm-4 control-label">Message</label>
 							            <textarea id="message-box" type="text" class="form-control-static" [(ngModel)]="newBroadcast.message" placeholder="Required" name="newBroadcast.message" required=""  >						            	
