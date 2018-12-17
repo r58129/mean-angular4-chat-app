@@ -9,7 +9,9 @@ const options =  {
                 server: {
                     reconnectTries: Number.MAX_VALUE,
                     reconnectInterval: 1000, // reconnect after 1 second(s)
-                }
+                },
+                user: "airpoint",
+                pass: "Aptc123456"
             };
 
 // var fs = require('fs');
