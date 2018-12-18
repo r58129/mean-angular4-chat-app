@@ -18,10 +18,10 @@ export class BroadcastDetailComponent implements OnInit {
   @HostBinding('class.view-broadcast') 
   viewBroadcast: any;
   broadcast: any =[];
-  editDetail: boolean = false;
+  viewResult: boolean = false;
   viewDetail: boolean = true;
   addBroadcastPage: boolean = false;
-  editBroadcastPage: boolean = false;
+  viewResultPage: boolean = false;
   notSelected: boolean = true;
   url = '';  
   showImage: boolean = false;
@@ -36,12 +36,11 @@ export class BroadcastDetailComponent implements OnInit {
   tinkerKey: string;
   popUpEmoji: boolean = false;
   fileExtention: string;
+  showResultDetail: boolean = false;
 
-
-  broadcastDetail = { jobID:'', message: '', contactListCsvName:'', imagefile:'', imagefilename:'', notSendAck:'', prependContactName:'', jobStatus:'', groupName:'', senderPhoneNumber:''};  
-  
+  broadcastDetail = { jobID:'', message: '', contactListCsvName:'', imagefile:'', imagefilename:'', notSendAck:'', prependContactName:'', jobStatus:'', groupName:'', senderPhoneNumber:''};    
   newBroadcast = { jobID:'', message:'', contactListCsvName: '', imagefile:'', imagefilename:'', notSendAck:'',prependContactName:'', jobStatus:'', groupName:'', senderPhoneNumber:''};  
-
+  viewResults = {jobID:'', jobStatus:''};
   updateTinkerStatus = { enableBroadcast:''};
 
   constructor(private chatService: ChatService, private authService: AuthService, private route: ActivatedRoute, private configs: Configs) {}
@@ -71,7 +70,17 @@ export class BroadcastDetailComponent implements OnInit {
             this.showImage = true;          
           } else {
             this.showImage = false;          
-          }           
+          }  
+          
+          if (this.broadcast[0].jobStatus == 'Completed'){
+            console.log('this.broadcast.Results' + this.broadcast[0].jobStatus);
+            console.log('this.broadcast.Results' + this.broadcast[0].Results[0].Phone);
+            this.showResultDetail =true;
+          }else {
+            console.log('this.broadcast.Results' + this.broadcast[0].jobStatus);
+            this.showResultDetail = false;
+          }
+
         }
 
 	    }, (err) => {
@@ -132,7 +141,15 @@ export class BroadcastDetailComponent implements OnInit {
 			    boardcastImage.append('imagefilename', this.selectedImage.name);
 			    boardcastImage.append('imagefile', this.compressedImage);  				
 
-          this.urlMessage = this.newBroadcast.message;
+          if ((this.newBroadcast.groupName !=undefined)&&(this.newBroadcast.senderPhoneNumber !=undefined)){
+            // boardcastImage.append('groupName', this.newBroadcast.groupName);
+            boardcastImage.append('senderPhoneNumber', this.newBroadcast.senderPhoneNumber);   
+            this.urlMessage = this.newBroadcast.message + '&groupName=' + this.newBroadcast.groupName;
+
+          } else {
+
+            this.urlMessage = this.newBroadcast.message;
+          }
 
 					//write to DB
 					this.chatService.broadcastImage(boardcastImage, this.urlMessage).then((res) => {  //from chatService, 
@@ -174,12 +191,22 @@ export class BroadcastDetailComponent implements OnInit {
 
 			    //construct form data
 			    var boardcastMessage = new FormData();
+
 			    boardcastMessage.append('sessionID', sID);
 			    // boardcastMessage.append('message', this.newBroadcast.message);
 			    boardcastMessage.append('prependContactName', this.newBroadcast.prependContactName); 					
 			    boardcastMessage.append('contactListCsv', this.csvFile);
 
-          this.urlMessage = this.newBroadcast.message;
+          if ((this.newBroadcast.groupName !=undefined)&&(this.newBroadcast.senderPhoneNumber !=undefined)){
+            // boardcastImage.append('groupName', this.newBroadcast.groupName);
+            boardcastMessage.append('senderPhoneNumber', this.newBroadcast.senderPhoneNumber);   
+            this.urlMessage = this.newBroadcast.message + '&groupName=' + this.newBroadcast.groupName;
+            console.log(this.newBroadcast.message + '&groupName=' + this.newBroadcast.groupName);
+
+          } else {
+
+            this.urlMessage = this.newBroadcast.message;
+          }
 
 					//write to DB
 					this.chatService.broadcastMessage(boardcastMessage, this.urlMessage).then((res) => {  //from chatService, 
@@ -245,19 +272,19 @@ export class BroadcastDetailComponent implements OnInit {
 
   viewBroadcastDetail(){
 
-		this.editDetail = false;
+		this.viewResult = false;
 		this.viewDetail = true;
-		this.editBroadcastPage = false; 
+		this.viewResultPage = false; 
 		this.addBroadcastPage = false;   	
 
   	console.log('view Broadcast detail!');
   }
 
-  editBroadcastDetail(){
+  viewJobResult(){
 
-		this.editDetail = true;
+		this.viewResult = true;
 		this.viewDetail = false;
-		this.editBroadcastPage = true; 
+		this.viewResultPage = true; 
 		this.addBroadcastPage = false; 	
 
   	console.log('edit Broadcast detail!');
@@ -265,9 +292,9 @@ export class BroadcastDetailComponent implements OnInit {
 
   createBroadcast(){
 
-  	this.editDetail = true;
+  	this.viewResult = true;
 		this.viewDetail = false;
-		this.editBroadcastPage = false; 
+		this.viewResultPage = false; 
 		this.addBroadcastPage = true; 
 		this.filename = '';
   	console.log(' add Broadcast!');
@@ -276,7 +303,7 @@ export class BroadcastDetailComponent implements OnInit {
 
   exit() {
     console.log("Exit the Broadcast Detail");
-    this.editDetail = false;
+    this.viewResult = false;
   }    
 
   onImageFileSelected(event) {    
