@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 //import { Configs } from './../configurations';
 import { Configs } from './../../environments/environment';
+import { csRegPath } from './../../environments/environment';
 // import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { ChatService } from '../chat.service';
 import { AuthGroup } from './auth.type';
