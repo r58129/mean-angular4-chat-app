@@ -1,8 +1,8 @@
           <div class="col-xs-6 no-padding" >
-            <div class="box box-primary direct-chat direct-chat-primary" *ngIf="editDetail; else viewDetail">
+            <div class="box box-primary direct-chat direct-chat-primary" *ngIf="viewResult; else viewDetail">
               <!-- <div class="box" *ngIf="joinned; else joinroom"> -->
                   <!-- /.box-header -->
-                  <div class="box-header with-border" *ngIf="editUserPage; else addUserHeader">
+                  <div class="box-header with-border" *ngIf="viewResultPage; else addJobHeader">
                     <!-- <div class="panel-heading"> -->
                       <!-- <span class="glyphicon glyphicon-comment"></span>  -->
                       {{ broadcastDetail.jobID }}
@@ -11,50 +11,27 @@
                       <form (ngSubmit)="exit()">
               
                       <div class="form-group btn-group pull-right no-margin ">
-                        <button type="submit" class="btn btn-default btn-xs" > Cancel </button>
+                        <button type="submit" class="btn btn-default btn-xs" > Exit </button>
                       </div>
                   	  </form>
                   	</div>
                   </div>
               <!-- /.box-body -->
-              <div class="box-body" *ngIf="editBroadcastPage; else addBroadcastPage">
-<!-- 			        	<form (ngSubmit)="updateBroadcastDetail()" #updateBroadcastForm="ngForm"> 
-				        	<div class="form-horizontal" >
-					          <div class="form-group">
-					            <label class="col-sm-5 control-label">Job ID</label>
-					            <input type="text" class="form-control-static" [(ngModel)]="broadcastDetail.jobID" placeholder="Required" name="broadcastDetail.jobID" required="" [disabled]="true" >
-					          </div>
-					          <div class="form-group">
-					            <label class="col-sm-5 control-label">Message</label>
-					            <input type="text" class="form-control-static" [(ngModel)]="broadcastDetail.message" placeholder="Required" name="broadcastDetail.message" required="" >
-					          </div>
-					          <div class="form-group">
-					            <label class="col-sm-5 control-label">CSV file </label>
-					            <input type="text" class="form-control-static" [(ngModel)]="broadcastDetail.contactListCsvName" placeholder="Optional" name="broadcastDetail.contactListCsvName" >
-					          </div>
-					          <div class="form-group" >
-					            <label class="col-sm-5 control-label">Select image</label>
-                      <img id="displayImage" [src]="url" height="200px"><br/>
-                      <input style = "display: none" type="file" class="form-control-static" (change)="onImageFileSelected($event)" #fileInput name="filename" >
-                      <button type="button" class="btn btn-success btn-sm" (click)="fileInput.click()">Browse Image</button>					            
-					          </div>
-                    
-	                  <div id = edit-button class="form-group">
-	                    <div class="form-group center">
-	                      <label class="col-sm-5 control-label"></label>
-	                      <button  type="submit" class="btn btn-warning btn" [disabled]="!updateBroadcastForm.form.valid"> Update </button>
-	                    </div>                        
-	                  </div> 
-				        	</div>
-				        </form>
-
-	              <div id = delete-button class="form-group">
-	                <div class="form-group center">
-	                  <label class="col-sm-5 control-label"></label>
-	                  <button  type="submit" class="btn btn-danger btn" (click)="deleteUser()"> Delete User </button>
-	                </div>                        
-	              </div>  -->
-
+              <div class="box-body" *ngIf="viewResultPage; else addBroadcastPage">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>Phone Number</th>
+                    <th>Status</th>
+                  </tr>
+	                </thead>
+	                <tbody *ngIf="showResultDetail" id="table-body">
+	                  <tr *ngFor="let result of broadcast[0].Results">
+	                  <td>{{result.Phone}}</td>
+	                  <td>{{result.Result}}</td>
+	                  </tr>
+	                </tbody>
+                </table>
               </div>                  
             </div>
 
@@ -72,7 +49,7 @@
                   	</div> 
                   </div>               
                   <div class="box-body">
-                  	<form (ngSubmit)="editBroadcastDetail()">     
+                  	<form (ngSubmit)="viewJobResult()">     
 							        <div class="form-horizontal"  *ngFor="let broadcast of broadcast">
 							          <div class="form-group">
 							            <label class="col-sm-3 control-label">Job ID</label>
@@ -90,38 +67,29 @@
 							            <p class="form-control-static">{{ broadcast.contactListCsvName }}</p>
 							          </div>
 							          <div class="form-group">
+							            <label class="col-sm-3 control-label">Group Name </label>
+							            <p class="form-control-static">{{ broadcast.groupName }}</p>
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-3 control-label">Sender Phone Number </label>
+							            <p class="form-control-static">{{ broadcast.senderPhoneNumber }}</p>
+							          </div>							          
+							          <div class="form-group">
 							            <label class="col-sm-3 control-label">Message</label>
 							            <textarea id="message-box" readonly class="form-control-static">{{ broadcast.message }}</textarea>
 							          </div>
 							          <div class="form-group" *ngIf ="showImage">
 							            <label class="col-sm-3 control-label">Select image</label>
 		                      <img id="displayImage" class="form-control-static" [src]="broadcast.imagefile" ><br/>
-		                      				            
-							            <!-- <input type="text" class="form-control-static" [(ngModel)]="broadcastDetail.last_name" placeholder="Optional" name="broadcastDetail.last_name" > -->
-							          </div>							          
-<!-- 							          <div class="form-group">
-							            <label class="col-sm-5 control-label">Nickname</label>
-							            <p class="form-control-static">{{ broadcast.nickname }}</p>
-							          </div>
-							          <div class="form-group">
-							            <label class="col-sm-5 control-label">Servcies</label>
-							            <p class="form-control-static">{{ user.service }}</p>
-							          </div>
-							          <div class="form-group">
-							            <label class="col-sm-5 control-label">Default Spoken Language</label>
-							            <p class="form-control-static">{{ user.default_spoken_lang }}</p>
-							          </div>
-							          <div class="form-group">
-							            <label class="col-sm-5 control-label">Default Text Language</label>
-							            <p class="form-control-static">{{ user.default_text_lang }}</p>
-							          </div> -->
+							          </div>							         
 				                    
-<!-- 				                <div id = update-button class="form-group"> 
+				                <div id = viewResult-button class="form-group" > 
 				                  <div class="form-group center">
 				                    <label class="col-sm-5 control-label"></label>
-				                    <button  type="submit" class="btn btn-primary btn" > Edit </button>
+				                    <button  *ngIf="showResultDetail" type="submit" class="btn btn-primary btn" > Results </button>
 				                  </div>				                       
-				                </div> --> 
+				                </div> 
+
 							        </div>
 										</form>
                   </div>
@@ -148,7 +116,15 @@
 							          <div class="form-group">
 							            <label class="col-sm-4 control-label">CSV file</label>
 							            <input type="file" class="form-control-static" (change)="onCSVSelected($event)" placeholder="Required" #fileInput name="csvFile" required="" >
-							          </div>												
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-4 control-label">Group Name</label>
+							            <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.groupName" name = "newBroadcast.groupName" placeholder="Optional" >
+							          </div>
+							          <div class="form-group">
+							            <label class="col-sm-4 control-label">Sender Phone Number</label>
+							            <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.senderPhoneNumber" name="newBroadcast.senderPhoneNumber"placeholder="Optional" >
+							          </div>							          							          												
 							          <div class="form-group">
 							            <label class="col-sm-4 control-label">Message</label>
 							            <textarea id="message-box" type="text" class="form-control-static" [(ngModel)]="newBroadcast.message" placeholder="Required" name="newBroadcast.message" required=""  >						            	
@@ -179,29 +155,8 @@
 							            <label class="col-sm-4 control-label"></label>
 	                        <img id="addImage" [src]="url" width="300px"><br/>	                        
 	                      </div>
-							          <!-- <div class="form-group">
-							            <label class="col-sm-5 control-label">Nickname</label>
-							            
-							            <input type="text" class="form-control-static" [(ngModel)]="newUser.nickname" placeholder="Required" name="nickname" >
-							          </div>
-							          <div class="form-group">
-							            <label class="col-sm-5 control-label">Servcies</label>
-							            
-							            <input type="text" class="form-control-static" [(ngModel)]="newUser.service" placeholder="translate, namecard" name="service" >
-							          </div>
-							          <div class="form-group">
-							            <label class="col-sm-5 control-label">Default Spoken Language</label>
-							            
-							            <input type="text" class="form-control-static" [(ngModel)]="newUser.default_spoken_lang" placeholder="Required for translate" name="default_spoken_lang" >
-							          </div>
-							          <div class="form-group">
-							            <label class="col-sm-5 control-label">Default Text Language</label>
-							            
-							            <input type="text" class="form-control-static" [(ngModel)]="newUser.default_text_lang" placeholder="Required for translate" name="default_text_lang" >
-							          </div> -->
 		                    
 			                  <div id = edit-button class="form-group"> 
-			                                    
 			                    <div class="form-group center">
 			                      <label class="col-sm-4 control-label"></label>
 			                      <button  type="submit" class="btn btn-success btn" [disabled]="!addBroadcastForm.form.valid"> Create </button>
@@ -212,7 +167,7 @@
 		              </div>  
               </ng-template>
 
-              <ng-template #addUserHeader>
+              <ng-template #addJobHeader>
               	<div class="box-header with-border"> 
               		<h3 class="box-title">Create Job</h3>
 

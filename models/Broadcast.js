@@ -10,21 +10,13 @@ var BroadcastSchema = new mongoose.Schema({
     imagefilename: String,    
     notSendAck: String,
     prependContactName: String,
-    jobStatus: String,    
-    jobDetail: {
-        success: String,
-        messageID: String,
-        message: String,
-        image: String,
-        jobEntires: [{
-            name:String,
-            number:String,
-            location:String,
-            hasContact:String,
-            sent:String
-        }]
-
-    },
+    groupName: String,
+    senderPhoneNumber: String,
+    jobStatus: String,  
+    Results:[{
+        Phone: String,
+        Result: String
+    }],     
     created_at: { type: Date, default: Date.now },
   	completed_at: { type: Date }
 });
