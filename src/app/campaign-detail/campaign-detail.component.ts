@@ -64,11 +64,12 @@ export class CampaignDetailComponent implements OnInit {
 	      this.campaign = res;
         // console.log("new user: " +this.campaign[0].newUser.length);
         // console.log("registeredUser: " +this.campaign[0].registeredUser.length);
+        if (this.campaign[0] != undefined){
+          this.registeredNamecardUserCount = this.campaign[0].registeredUserwithNameCard.length;
+          this.registeredUserCount = this.campaign[0].registeredUser.length;
+          this.newUserCount = this.campaign[0].newUser.length;
+        }
 
-        this.registeredNamecardUserCount = this.campaign[0].registeredUserwithNameCard.length;
-        this.registeredUserCount = this.campaign[0].registeredUser.length;
-        this.newUserCount = this.campaign[0].newUser.length;
-        
 	    }, (err) => {
 	      console.log(err);
 	    });
