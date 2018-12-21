@@ -21,6 +21,7 @@ export class Configs {
   socketIoServerAddr: string = 'https://airpoint.com.hk:3637';   
   tinkerboardAddr: string = 'https://airpoint.com.hk';
   tinkerport: string = '8006';
+  tinkerpassword: string = 'Aptc123456';
 
   ngrok: boolean = true;  //true = ngrok, false = 443 route server
 
@@ -47,6 +48,7 @@ export class Configs {
  //global.dbName = 'luChatService';
 }
 
+export const csRegPath = "api/registerID/afc-tXO0TlCMMyZUrdf6Ca5_C6PA3rmf7CkKlfwg10w";
 export const environment = {
     
   production: true
