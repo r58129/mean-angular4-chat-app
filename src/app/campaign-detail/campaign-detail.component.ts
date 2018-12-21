@@ -23,6 +23,9 @@ export class CampaignDetailComponent implements OnInit {
   viewDetail: boolean = true;
   addCampaignPage: boolean = false;
   editCampaignPage: boolean = false;
+  newUserCount: string;
+  registeredUserCount: string;
+  registeredNamecardUserCount: string;
 
   // campaignPeriod = {startTime: '', endTime:''};
   campaignDetail = { startTime: '', endTime:'', type:'', beforeCampaignMessage: '', duringCampaignMessage: {withNameCard:'',withoutNameCard:''} , afterCampaignMessage:'', registerFailedMessage: {nameCardCampaign:'',phoneNumCampaign:''}, keyword:'', eventName:'',createdBy:'',companyName:'', alreadyRegistered:'', newUser:'', updated_at: Date, reserve1:'', reserve2:''};  //campaign detail
@@ -59,6 +62,14 @@ export class CampaignDetailComponent implements OnInit {
 
 		this.chatService.showCampaign(keyword).then((res) => {  //from chatService, 
 	      this.campaign = res;
+        // console.log("new user: " +this.campaign[0].newUser.length);
+        // console.log("registeredUser: " +this.campaign[0].registeredUser.length);
+        if (this.campaign[0] != undefined){
+          this.registeredNamecardUserCount = this.campaign[0].registeredUserwithNameCard.length;
+          this.registeredUserCount = this.campaign[0].registeredUser.length;
+          this.newUserCount = this.campaign[0].newUser.length;
+        }
+
 	    }, (err) => {
 	      console.log(err);
 	    });
@@ -128,6 +139,16 @@ export class CampaignDetailComponent implements OnInit {
 
   	console.log('view campaign detail!');
   }
+
+  // viewReportDetail(){
+
+  //   this.editDetail = false;
+  //   this.viewDetail = true;
+  //   this.editCampaignPage = false; 
+  //   this.addCampaignPage = false;     
+
+  //   console.log('view report detail!');
+  // }
 
   editCampaignDetail(){
 

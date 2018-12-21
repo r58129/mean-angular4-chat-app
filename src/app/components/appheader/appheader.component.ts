@@ -50,6 +50,8 @@ export class AppheaderComponent implements OnInit, OnDestroy{
   operatorChannel: any;
   tinkerInfo: any =[];
   tinkerKey: string;
+  staffRole: string;  
+  marketingServices: boolean = false;  
 
   newUser = { nickname: '', room: '' };
   newRequest = { type:'', phone_number: '', socket_id: '', room:'', nickname: '', message: '', request_status:'' };
@@ -216,17 +218,31 @@ export class AppheaderComponent implements OnInit, OnDestroy{
      if (status == 'Available'){
       console.log(' operator channel is available');
       document.getElementById('operatorChannel').textContent = "OK";
-      document.getElementById('channelStatusMessage').textContent = "Operator channel is available";
+      document.getElementById('channelStatusMessage').textContent = "Operator channel is available!";
             
      } else {
       console.log(' operator channel is occupied');
       document.getElementById('operatorChannel').textContent = "NA";
-      document.getElementById('channelStatusMessage').textContent = "Operator channel is occupied";
+      document.getElementById('channelStatusMessage').textContent = "Operator channel is occupied!";
 
       }
 
     });
     
+    this.authService.profile().subscribe(user => {
+      this.staffRole = user.role;
+      // console.log('role in menubar: ' + this.staffRole);      
+
+      if (this.staffRole == 'PREMIUM+'){
+        this.marketingServices = true;  
+      }
+      if (this.staffRole == 'ADMIN'){
+        this.marketingServices = true;  
+      }      
+    }, (err) => {
+      console.error(err);
+    });
+
     	 
 		this.timer = setInterval(() => {
 	    	// this.updateRequestCount();
@@ -316,14 +332,16 @@ export class AppheaderComponent implements OnInit, OnDestroy{
 
             // console.log("this.tinker restarted: " + this.tinkerInfo[0].restart);   
             // console.log( "whatsapp count: " +this.tinkerInfo[0].whatsappRequestCount) ;
-            if (this.tinkerInfo[0].enableBroadcast == "false"){
+            if (this.marketingServices == true ){
+              if (this.tinkerInfo[0].enableBroadcast == "false"){
 
-              document.getElementById('enableBroadcast').textContent = "Broadcasting channel is availble!";
-              document.getElementById('broadcastMode').textContent = "OK";   
-            } else {
-              document.getElementById('enableBroadcast').textContent = "Broadcasting channel is NOT available! Please wait until the job is completed!";
-              document.getElementById('broadcastMode').textContent = "NA";   
+                document.getElementById('enableBroadcast').textContent = "Broadcasting channel is availble!";
+                document.getElementById('broadcastMode').textContent = "OK";   
+              } else {
+                document.getElementById('enableBroadcast').textContent = "Broadcasting channel is NOT available! Please wait until the job is completed!";
+                document.getElementById('broadcastMode').textContent = "NA";   
 
+              }
             }
 
             document.getElementById('whatsappRequestCount').textContent = this.tinkerInfo[0].whatsappRequestCount;

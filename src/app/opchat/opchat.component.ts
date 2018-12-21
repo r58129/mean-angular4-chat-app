@@ -41,7 +41,7 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   requestCount:any;
   timer: any;
 
-  // details: UserDetails;
+  details: UserDetails;
 
   newUser = { type:'', nickname: '',socket_id: '', room: '' , db_id:'', operator_request:'', people_in_room:''};  //for operator
   newOpRequest = { type:'', phone_number: '', socket_id: '', room:'', message: '', operator_request:'', people_in_room:'' };  //for customer
@@ -133,6 +133,17 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
     //     this.newUser.type = params['id2'];
     //     console.log(this.newUser.type);     
     // });
+
+    this.authService.profile().subscribe(user => {
+      this.details = user;
+      // console.log('name: ' +user.name);
+      // console.log('email: ' +user.email);
+      // console.log('role: ' +user.role);
+      this.newUser.nickname = this.details.name;
+    }, (err) => {
+      console.error(err);
+    });
+
 
     var user = JSON.parse(sessionStorage.getItem("user"));
 

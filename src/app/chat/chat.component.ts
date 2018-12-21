@@ -7,6 +7,7 @@ import { Buffer } from 'buffer';
 //import { Configs } from '../configurations';
 import { Configs } from '../../environments/environment';
 import { Idle, DEFAULT_INTERRUPTSOURCES} from '@ng-idle/core';
+import { AuthService, UserDetails } from '../auth/auth.service';
 
 @Component({
   selector: 'app-chat',
@@ -31,6 +32,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   notSelected: boolean = true;
   chatRoom: any;
 
+  details: UserDetails;  
+
   newUser = { type:'', nickname: '', room: '' ,socket_id: '', db_id:'', request_status:'', people_in_room:''};
   msgData = { type:'', phone_number: '', socket_id: '', room: '', nickname: '', message: '' };
   // imgData = { phone_number: '', socket_id: '', room: '', nickname: '', message: '', filename:'', image: { data:Buffer, contentType:'' }};
@@ -43,7 +46,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   // socket = io(this.configs.socketIoServerAddr+":"+sessionStorage.getItem("socketioport"),{secure: true});
   socket = io(this.configs.socketIoServerAddr,{secure: true});
 
-  constructor(private chatService: ChatService, private route: ActivatedRoute, private configs: Configs, private idle: Idle, private router: Router,) {
+  constructor(private chatService: ChatService, private route: ActivatedRoute, private configs: Configs, private idle: Idle, private router: Router, public authService: AuthService) {
     // console.log("inside chat constructor" +this.route.snapshot.params);
     
     // sets an idle timeout of 590 seconds, for testing purposes.
@@ -143,174 +146,185 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     var user = JSON.parse(sessionStorage.getItem("user"));
     // var request = JSON.parse(localStorage.getItem("request"));
 
-  this.socket.on('chat', (msg) =>{
-    // this.socket.on('chat', (userid, msg) =>{
-    // if (sessionStorage.getItem("user")!=null){  
-      var date = new Date();
-      console.log("print customer message object:" +msg);
+    this.socket.on('chat', (msg) =>{
+      // this.socket.on('chat', (userid, msg) =>{
+      // if (sessionStorage.getItem("user")!=null){  
+        var date = new Date();
+        console.log("print customer message object:" +msg);
 
-      // modify this to json object
-      var obj = JSON.parse(msg);
-      var phoneNum = obj.sessionID;
-      var message = obj.message;
-      var filePath = obj.photoPath;
+        // modify this to json object
+        var obj = JSON.parse(msg);
+        var phoneNum = obj.sessionID;
+        var message = obj.message;
+        var filePath = obj.photoPath;
 
-      console.log("print customer phoneNum:" +phoneNum);
-      console.log("print customer message:" +message);
-      console.log("print customer photoPath:" +filePath);
+        console.log("print customer phoneNum:" +phoneNum);
+        console.log("print customer message:" +message);
+        console.log("print customer photoPath:" +filePath);
 
-      // get Apps type
-      // var type=localStorage.getItem('user.type');
+        // get Apps type
+        // var type=localStorage.getItem('user.type');
 
-      if (msg !== 'undefine'){
+        if (msg !== 'undefine'){
 
-        if (!message.includes('\uD83D\uDCF7')){
-          if (filePath == 'nonwhatsapp'){
-          
-            this.appName = 'nonwhatsapp';
-            console.log('filePath in nonwhatsapp : ' +filePath);
-            console.log('text message in nonwhatsapp : ' +this.appName);
-          } else {
-            this.appName = 'whatsapp';
-            console.log('text message from in whatsapp: ' +this.appName);
-          }
-      
-          this.CusMsgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
-          // console.log(this.CusMsgData.room);
-          // console.log(this.CusMsgData.phone_number);
-          // console.log(this.CusMsgData.socket_id);
-          // console.log(this.CusMsgData.message);
+          if (!message.includes('\uD83D\uDCF7')){
+            if (filePath == 'nonwhatsapp'){
+            
+              this.appName = 'nonwhatsapp';
+              console.log('filePath in nonwhatsapp : ' +filePath);
+              console.log('text message in nonwhatsapp : ' +this.appName);
+            } else {
+              this.appName = 'whatsapp';
+              console.log('text message from in whatsapp: ' +this.appName);
+            }
+        
+            this.CusMsgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message };
+            // console.log(this.CusMsgData.room);
+            // console.log(this.CusMsgData.phone_number);
+            // console.log(this.CusMsgData.socket_id);
+            // console.log(this.CusMsgData.message);
+            
+            this.chatService.saveChat(this.CusMsgData).then((result) => {
+              this.socket.emit('save-message', result);
+            }, (err) => {
+              console.log(err);
+            });
+          } else { //else  (message.includes('\uD83D\uDCF7'))
+
+              if ((!filePath) || (filePath == "Timeout")){
+                console.log("filePath is null or Timeout");
+
+                this.CusMsgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: "Sent Photo Failed!" };
+                // console.log(this.CusMsgData.room);
+                // console.log(this.CusMsgData.phone_number);
+                // console.log(this.CusMsgData.socket_id);
+                // console.log(this.CusMsgData.message);
+              
+                this.chatService.saveChat(this.CusMsgData).then((result) => {
+                  this.socket.emit('save-message', result);
+                }, (err) => {
+                  console.log(err);
+                });
+
+              } else {  // else (filePath == 'nonwhatsapp')
+                if (filePath == 'nonwhatsapp'){
+                  // extract non whatsapp image from message
+                  // var base64header = ((message).split(".")[1]);
+                  var base64Image = ((message).split(".")[1]);
+                  console.log('base64Image: ' +base64Image);
+
+                  //save to DB 
+                    this.CusImgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: '', file_path:filePath, image:base64Image };
+                    console.log('receive image from customer');
+                    console.log(this.CusImgData.room);
+                    console.log(this.CusImgData.phone_number);
+                    console.log(this.CusImgData.socket_id);
+                    console.log(this.CusImgData.message);
+                    console.log(this.CusImgData.image);
+                    console.log(this.CusImgData.file_path);
+
+                    this.chatService.saveImage(this.CusImgData).then((result) => {
+                      console.log('save data to DB');
+                      this.socket.emit('save-image', result);
+                    }, (err) => {
+                      console.log(err);
+                    });
+
+                } else {  // whatsapp flow will provide valid file path
+                    // get admin sessionID
+                    var sID=localStorage.getItem('res.data.sessionID');
+                    var fileType = ((filePath).split(".")[1]);
+                    var path = 'sessionID='+sID +'&path='+filePath;
+                    // var completePath = 'https://airpoint.com.hk:'+sessionStorage.getItem("tinkerport")+'/api/csp/getimage?'+path;  //save complete path to db
+                  var completePath = this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/csp/getimage?'+path;  //save complete path to db
+
+                    console.log("sID: " + sID);
+                    console.log("tinkerPath: " + filePath);
+                    console.log("complete path: " + completePath);
+                    console.log("fileType: " + fileType);
+
+                    this.chatService.getImageFromNode(path).then((res) => {  //from chatService
+                      console.log(" get image from tinker");
+                    
+                      var blob = new Blob(
+                          [res],
+                          // Mime type is important for data url
+                          // {type : 'text/html'}
+                          {type : 'image/' +fileType}
+                          );
+
+
+                      var reader = new FileReader();
+                      reader.readAsDataURL(blob);
+                      reader.onloadend =(evt:any) =>{
+                        // Capture result here
+                        var getImage = evt.target.result;
+                        console.log(evt.target.result);
+
+                        this.CusImgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message, file_path:completePath, image:getImage };
+                        console.log('receive image from customer');
+                        console.log(this.CusImgData.room);
+                        console.log(this.CusImgData.phone_number);
+                        console.log(this.CusImgData.socket_id);
+                        console.log(this.CusImgData.message);
+                        console.log(this.CusImgData.image);
+                        console.log(this.CusImgData.file_path);
+
+                        this.chatService.saveImage(this.CusImgData).then((result) => {
+                          console.log('save Image from tinker');
+                          this.socket.emit('save-image', result);
+                        }, (err) => {
+                          console.log(err);
+                        });
+
+                      };
+                   
+
+                    }, (err) => {
+                      console.log(err);
+                    });
+            
+                    //sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
+                }  // end else whatsapp flow will provide valid file path
+              }  // end else (filePath == 'nonwhatsapp')
+          }  //end else (message.includes('\uD83D\uDCF7'))
+        }  // end if (msg !== 'undefine')
+      // }  // end if (sessionStorage.getItem("user")!=null)
+    });
+
+    this.socket.on('disconnect', function(userid){
+      console.log('Disconnect: ' + userid);
+      var message = "User is disconnected!";
+
+      // var goodbye = "Goodbye";
+      // this.SendForm(goodbye);
+      // console.log("goodbye");
+      if (userid != 'transport close'){
+        this.CusMsgData = { type: this.newUser.type, phone_number: userid, socket_id: 'socket_id', room:userid , nickname:userid , message: message };
+          console.log(this.CusMsgData.room);
+          console.log(this.CusMsgData.phone_number);
+          console.log(this.CusMsgData.socket_id);
+          console.log(this.CusMsgData.message);
           
           this.chatService.saveChat(this.CusMsgData).then((result) => {
-            this.socket.emit('save-message', result);
+          this.socket.emit('save-message', result);
           }, (err) => {
             console.log(err);
           });
-        } else { //else  (message.includes('\uD83D\uDCF7'))
+      }
+    }.bind(this));
+    // end of from johnson
 
-            if ((!filePath) || (filePath == "Timeout")){
-              console.log("filePath is null or Timeout");
+    this.authService.profile().subscribe(user => {
+      this.details = user;
+      // console.log('name: ' +user.name);
+      // console.log('email: ' +user.email);
+      // console.log('role: ' +user.role);
 
-              this.CusMsgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: "Sent Photo Failed!" };
-              // console.log(this.CusMsgData.room);
-              // console.log(this.CusMsgData.phone_number);
-              // console.log(this.CusMsgData.socket_id);
-              // console.log(this.CusMsgData.message);
-            
-              this.chatService.saveChat(this.CusMsgData).then((result) => {
-                this.socket.emit('save-message', result);
-              }, (err) => {
-                console.log(err);
-              });
-
-            } else {  // else (filePath == 'nonwhatsapp')
-              if (filePath == 'nonwhatsapp'){
-                // extract non whatsapp image from message
-                // var base64header = ((message).split(".")[1]);
-                var base64Image = ((message).split(".")[1]);
-                console.log('base64Image: ' +base64Image);
-
-                //save to DB 
-                  this.CusImgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: '', file_path:filePath, image:base64Image };
-                  console.log('receive image from customer');
-                  console.log(this.CusImgData.room);
-                  console.log(this.CusImgData.phone_number);
-                  console.log(this.CusImgData.socket_id);
-                  console.log(this.CusImgData.message);
-                  console.log(this.CusImgData.image);
-                  console.log(this.CusImgData.file_path);
-
-                  this.chatService.saveImage(this.CusImgData).then((result) => {
-                    console.log('save data to DB');
-                    this.socket.emit('save-image', result);
-                  }, (err) => {
-                    console.log(err);
-                  });
-
-              } else {  // whatsapp flow will provide valid file path
-                  // get admin sessionID
-                  var sID=localStorage.getItem('res.data.sessionID');
-                  var fileType = ((filePath).split(".")[1]);
-                  var path = 'sessionID='+sID +'&path='+filePath;
-                  // var completePath = 'https://airpoint.com.hk:'+sessionStorage.getItem("tinkerport")+'/api/csp/getimage?'+path;  //save complete path to db
-                  var completePath = this.configs.tinkerboardAddr+':'+this.configs.tinkerport+'/api/csp/getimage?'+path;  //save complete path to db
-
-                  console.log("sID: " + sID);
-                  console.log("tinkerPath: " + filePath);
-                  console.log("complete path: " + completePath);
-                  console.log("fileType: " + fileType);
-
-                  this.chatService.getImageFromNode(path).then((res) => {  //from chatService
-                    console.log(" get image from tinker");
-                  
-                    var blob = new Blob(
-                        [res],
-                        // Mime type is important for data url
-                        // {type : 'text/html'}
-                        {type : 'image/' +fileType}
-                        );
-
-
-                    var reader = new FileReader();
-                    reader.readAsDataURL(blob);
-                    reader.onloadend =(evt:any) =>{
-                      // Capture result here
-                      var getImage = evt.target.result;
-                      console.log(evt.target.result);
-
-                      this.CusImgData = { type: this.newUser.type, phone_number: phoneNum, socket_id: 'socket_id', room:phoneNum , nickname:phoneNum , message: message, file_path:completePath, image:getImage };
-                      console.log('receive image from customer');
-                      console.log(this.CusImgData.room);
-                      console.log(this.CusImgData.phone_number);
-                      console.log(this.CusImgData.socket_id);
-                      console.log(this.CusImgData.message);
-                      console.log(this.CusImgData.image);
-                      console.log(this.CusImgData.file_path);
-
-                      this.chatService.saveImage(this.CusImgData).then((result) => {
-                        console.log('save Image from tinker');
-                        this.socket.emit('save-image', result);
-                      }, (err) => {
-                        console.log(err);
-                      });
-
-                    };
-                 
-
-                  }, (err) => {
-                    console.log(err);
-                  });
-          
-                  //sessionID=193bc1f1-9799-40e7-a899-47b3aa1fbde3&path=/storage/emulated/0/WhatsApp/Media/WhatsApp%20Images/avator105.jpg
-              }  // end else whatsapp flow will provide valid file path
-            }  // end else (filePath == 'nonwhatsapp')
-        }  //end else (message.includes('\uD83D\uDCF7'))
-      }  // end if (msg !== 'undefine')
-    // }  // end if (sessionStorage.getItem("user")!=null)
-  });
-
-  this.socket.on('disconnect', function(userid){
-    console.log('Disconnect: ' + userid);
-    var message = "User is disconnected!";
-
-    // var goodbye = "Goodbye";
-    // this.SendForm(goodbye);
-    // console.log("goodbye");
-    if (userid != 'transport close'){
-      this.CusMsgData = { type: this.newUser.type, phone_number: userid, socket_id: 'socket_id', room:userid , nickname:userid , message: message };
-        console.log(this.CusMsgData.room);
-        console.log(this.CusMsgData.phone_number);
-        console.log(this.CusMsgData.socket_id);
-        console.log(this.CusMsgData.message);
-        
-        this.chatService.saveChat(this.CusMsgData).then((result) => {
-        this.socket.emit('save-message', result);
-        }, (err) => {
-          console.log(err);
-        });
-    }
-  }.bind(this));
-  // end of from johnson
+      this.newUser.nickname = this.details.name;
+    }, (err) => {
+      console.error(err);
+    });
 
 
     if(user!==null) {

@@ -156,7 +156,21 @@
 							          <div class="form-group">
 							            <label class="col-sm-5 control-label">Already registered message</label>
 							            <p class="form-control-static">{{ campaign.alreadyRegistered }}</p>
-							          </div>								          			                    
+							          </div>	
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Registered User count </label>
+							            <p class="form-control-static">{{ registeredUserCount }}</p>
+							          </div>								          							          			
+
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">Registered Name Card User Count</label>
+							            <p class="form-control-static">{{ registeredNamecardUserCount }}</p>
+							          </div>	
+
+							          <div class="form-group">
+							            <label class="col-sm-5 control-label">New User Count</label>
+							            <p class="form-control-static">{{ newUserCount }}</p>
+							          </div>								          							                              
 				                <div id = update-button class="form-group"> 
 				                  <div class="form-group center">
 				                    <label class="col-sm-5 control-label"></label>
@@ -165,6 +179,13 @@
 				                </div> 
 							        </div>
 										</form>
+<!-- 				                <div id = report-button class="form-group"> 
+				                  <div class="form-group center">
+				                    <label class="col-sm-5 control-label"></label>
+				                    <button  type="submit" class="btn btn-primary btn" (click)="viewReportDetail()"> Report </button>
+				                  </div>				                       
+				                </div> -->
+
                   </div>
                 </div>
               </ng-template>

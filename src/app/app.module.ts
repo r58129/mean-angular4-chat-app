@@ -63,7 +63,6 @@ import { BroadcastComponent } from './broadcast/broadcast.component';
 //import {Tinycon} from 'tinycon';
 
 
-
 // import { EmojiModule } from 'angular-emoji/dist';
 
 // import { ApphovertableComponent } from './components/apphovertable/apphovertable.component';
@@ -122,11 +121,10 @@ import { BroadcastComponent } from './broadcast/broadcast.component';
     FormsModule,
     // HttpModule,
     HttpClientModule,
-    AppRoutingModule,    
-    // EmojiPickerModule,
+    AppRoutingModule,        
     PickerModule,
     NgIdleKeepaliveModule.forRoot()
-
+    
     // UserIdleModule.forRoot({idle: 60, timeout: 30, ping: 10}) // unit: s    
     // RouterModule.forRoot(ROUTES)
   ],
