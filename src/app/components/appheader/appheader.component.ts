@@ -34,7 +34,7 @@ const httpOptions = {
 })
 export class AppheaderComponent implements OnInit, OnDestroy{
   
-    private tinycon: any;
+  private tinycon: any;
   chats: any;
   previouschats: any;
   requests: any;  //new request
@@ -253,13 +253,12 @@ export class AppheaderComponent implements OnInit, OnDestroy{
 	      		document.getElementById('newRequestCount').textContent = this.chats;
 	      		document.getElementById('newCount').textContent = this.chats;
                   if (this.chats==0){
-                      this.titleService.setTitle( "ChatService" );
-                      this.tinycon.reset();
-                  }else
-                  if (this.chats!=0 && this.chats!=this.previouschats){
-                  nonPersistentNotification(this.chats);
-                      this.titleService.setTitle( "("+this.chats+") "+"ChatService" );
-                      this.tinycon.setBubble(Number(this.chats));
+                    this.titleService.setTitle( "ChatService" );
+                    this.tinycon.reset();
+                  }else if (this.chats!=0 && this.chats!=this.previouschats){
+                    nonPersistentNotification(this.chats);
+                    this.titleService.setTitle( "("+this.chats+") "+"ChatService" );
+                    this.tinycon.setBubble(Number(this.chats));
                   }
                   this.previouschats=this.chats;
 	      	}
