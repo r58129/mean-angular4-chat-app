@@ -60,6 +60,7 @@ import { DisableIfUnauthorizedDirective } from './disable-if-unauthorized.direct
 import { HideIfUnauthorizedDirective } from './hide-if-unauthorized.directive';
 import { BroadcastDetailComponent } from './broadcast-detail/broadcast-detail.component';
 import { BroadcastComponent } from './broadcast/broadcast.component';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 //import {Tinycon} from 'tinycon';
 
 
@@ -123,6 +124,7 @@ import { BroadcastComponent } from './broadcast/broadcast.component';
     HttpClientModule,
     AppRoutingModule,        
     PickerModule,
+    PdfViewerModule,
     NgIdleKeepaliveModule.forRoot()
     
     // UserIdleModule.forRoot({idle: 60, timeout: 30, ping: 10}) // unit: s    
