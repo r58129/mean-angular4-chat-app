@@ -165,10 +165,11 @@ export class BroadcastDetailComponent implements OnInit {
           } else {
 
             this.urlMessage = this.newBroadcast.message;
+            // console.log('encodeURI: '+encodeURI(this.urlMessage));
           }
 
 					//write to DB
-					this.chatService.broadcastImage(boardcastImage, this.urlMessage).then((res) => {  //from chatService, 
+					this.chatService.broadcastImage(boardcastImage, encodeURI(this.urlMessage)).then((res) => {  //from chatService, 
 				  
 				    // window.alert('Broadcast job with image is submitted successfully!');
 
@@ -213,19 +214,21 @@ export class BroadcastDetailComponent implements OnInit {
 			    boardcastMessage.append('prependContactName', this.newBroadcast.prependContactName); 					
 			    boardcastMessage.append('contactListCsv', this.csvFile);
 
-          if ((this.newBroadcast.groupName !=undefined)&&(this.newBroadcast.senderPhoneNumber !=undefined)){
+          if ((this.newBroadcast.groupName !='')&&(this.newBroadcast.senderPhoneNumber !='')){
             // boardcastImage.append('groupName', this.newBroadcast.groupName);
             boardcastMessage.append('senderPhoneNumber', this.newBroadcast.senderPhoneNumber);   
             this.urlMessage = this.newBroadcast.message + '&groupName=' + this.newBroadcast.groupName;
+            // console.log('group sent encodeURI: '+encodeURI(this.urlMessage));
             console.log(this.newBroadcast.message + '&groupName=' + this.newBroadcast.groupName);
 
           } else {
 
             this.urlMessage = this.newBroadcast.message;
+            // console.log('encodeURI: '+encodeURI(this.urlMessage));
           }
 
 					//write to DB
-					this.chatService.broadcastMessage(boardcastMessage, this.urlMessage).then((res) => {  //from chatService, 
+					this.chatService.broadcastMessage(boardcastMessage, encodeURI(this.urlMessage)).then((res) => {  //from chatService, 
 				  
 				    // window.alert('Broadcast job with message only is submitted successfully!');
 
