@@ -48,6 +48,7 @@
     "messaging-api-wechat": "^0.7.4",
     "mongoose": "^4.9.2",
     "morgan": "^1.9.1",
+    "ng2-pdf-viewer": "^5.2.3",
     "ngrok": "^3.0.1",
     "nodemon": "^1.17.4",
     "passport": "^0.4.0",

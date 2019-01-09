@@ -63,15 +63,15 @@
 							          	</div>
 							          </div>
 							          <div class="form-group">
-							            <label class="col-sm-3 control-label">CSV file </label>
+							            <label class="col-sm-3 control-label">CSV File</label>
 							            <p class="form-control-static">{{ broadcast.contactListCsvName }}</p>
 							          </div>
 							          <div class="form-group">
-							            <label class="col-sm-3 control-label">Group Name </label>
+							            <label class="col-sm-3 control-label">Group Name</label>
 							            <p class="form-control-static">{{ broadcast.groupName }}</p>
 							          </div>
 							          <div class="form-group">
-							            <label class="col-sm-3 control-label">Sender Phone Number </label>
+							            <label class="col-sm-3 control-label">Sender Phone Number</label>
 							            <p class="form-control-static">{{ broadcast.senderPhoneNumber }}</p>
 							          </div>							          
 							          <div class="form-group">
@@ -79,9 +79,13 @@
 							            <textarea id="message-box" readonly class="form-control-static">{{ broadcast.message }}</textarea>
 							          </div>
 							          <div class="form-group" *ngIf ="showImage">
-							            <label class="col-sm-3 control-label">Select image</label>
-		                      <img id="displayImage" class="form-control-static" [src]="broadcast.imagefile" ><br/>
-							          </div>							         
+							            <label class="col-sm-3 control-label">Selected Image</label>
+		                      <img id="displayImage" class="form-control-static" [src]="broadcast.imagefile" ><br/>		                      
+							          </div>
+							          <div class="form-group" *ngIf ="showPdfFilename">
+							            <label class="col-sm-3 control-label">PDF Filename</label>
+		                      <p class="form-control-static">{{broadcast.imagefilename}}</p>		                      
+							          </div>							          							         
 				                    
 				                <div id = viewResult-button class="form-group" > 
 				                  <div class="form-group center">
@@ -123,7 +127,7 @@
 							          </div>
 							          <div class="form-group">
 							            <label class="col-sm-4 control-label">Sender Phone Number</label>
-							            <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.senderPhoneNumber" name="newBroadcast.senderPhoneNumber"placeholder="Optional" >
+							            <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.senderPhoneNumber" name="newBroadcast.senderPhoneNumber"placeholder="85298765432" >
 							          </div>							          							          												
 							          <div class="form-group">
 							            <label class="col-sm-4 control-label">Message</label>
@@ -145,17 +149,23 @@
 												<!-- <emoji-mart [i18n]="{ search: 'Recherche', categories: { search: 'Résultats de recherche', recent: 'Récents' } }"></emoji-mart> -->
 							          						          
 	                      <div class="form-group">
-							            <label class="col-sm-4 control-label">Select Image	          
+							            <label class="col-sm-4 control-label">Select Image or PDF	       
 	                        </label>
-              						<button type="button" class="btn btn-default btn-sm " (click)="fileInput.click()">Browse Image</button>
-              						<input style = "display: none" type="file" class="form-control-static" (change)="onImageFileSelected($event)" placeholder="Optional" #fileInput name="filename" >							                                   
-	                        <!-- <img id="addImage" [src]="url" width="300px"><br/>	                         -->
-	                      </div>	                      
-	                      <div class="form-group">
+              						<button type="button" class="btn btn-default btn-sm " (click)="fileInput.click()">Browse</button>
+              						<input style = "display: none" type="file" class="form-control-static" (change)="onImageFileSelected($event)" placeholder="Optional" #fileInput name="filename" >
+	                      </div>
+
+	                      <div class="form-group" *ngIf ="addImage">
 							            <label class="col-sm-4 control-label"></label>
-	                        <img id="addImage" [src]="url" width="300px"><br/>	                        
+	                        <img id="addImage" [src]="url" width="300px"><br/>
+	                        <label class="col-sm-4 control-label"></label>
 	                      </div>
 		                    
+	                      <div class="form-group" *ngIf ="addPdf">
+							            <!-- <label class="col-sm-4 control-label"></label> -->
+	                        <pdf-viewer id="pdf-viewer" [src]="pdfSrc" [render-text]="true"style="display: block;" [page]="1" [show-all]="false" [zoom]="0.5"></pdf-viewer>							            
+	                      </div>
+
 			                  <div id = edit-button class="form-group"> 
 			                    <div class="form-group center">
 			                      <label class="col-sm-4 control-label"></label>

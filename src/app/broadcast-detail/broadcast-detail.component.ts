@@ -23,8 +23,12 @@ export class BroadcastDetailComponent implements OnInit {
   addBroadcastPage: boolean = false;
   viewResultPage: boolean = false;
   notSelected: boolean = true;
-  url = '';  
+  url = '';
+  pdfSrc = '';  
   showImage: boolean = false;
+  addImage: boolean = false;
+  showPdfFilename: boolean = false;
+  addPdf: boolean = false;
   enableBroadcast: any = [];
   disableBroadcast: any = [];
   jobDetail: any = [];
@@ -70,7 +74,19 @@ export class BroadcastDetailComponent implements OnInit {
             this.showImage = true;          
           } else {
             this.showImage = false;          
-          }  
+          }
+
+          if (this.broadcast[0].imagefilename !=undefined){
+            console.log(this.broadcast[0].imagefilename);  
+
+            this.fileExtention = (this.broadcast[0].imagefilename).split(".")[1];
+
+            if (this.fileExtention == "pdf"){              
+              this.showPdfFilename = true;                      
+            } else {              
+              this.showPdfFilename = false;          
+            }            
+          }    
           
           if (this.broadcast[0].jobStatus == 'Completed'){
             console.log('this.broadcast.Results' + this.broadcast[0].jobStatus);
@@ -127,7 +143,7 @@ export class BroadcastDetailComponent implements OnInit {
           }
 				
 				// check if image is attached and post to tinker 				  
-				if (this.url.length != 0){	//broadcast image
+				if ((this.url.length != 0) || (this.pdfSrc.length !=0)){	//broadcast image
 
 					console.log("newBroadcast.imagefile: " + this.compressedImage);
   				console.log("newBroadcast.imagefilename: " + this.selectedImage.name);
@@ -149,12 +165,13 @@ export class BroadcastDetailComponent implements OnInit {
           } else {
 
             this.urlMessage = this.newBroadcast.message;
+            // console.log('encodeURI: '+encodeURI(this.urlMessage));
           }
 
 					//write to DB
-					this.chatService.broadcastImage(boardcastImage, this.urlMessage).then((res) => {  //from chatService, 
+					this.chatService.broadcastImage(boardcastImage, encodeURI(this.urlMessage)).then((res) => {  //from chatService, 
 				  
-				    window.alert('Broadcast job with image is submitted successfully!');
+				    // window.alert('Broadcast job with image is submitted successfully!');
 
 				    this.jobDetail = res;
 
@@ -197,21 +214,23 @@ export class BroadcastDetailComponent implements OnInit {
 			    boardcastMessage.append('prependContactName', this.newBroadcast.prependContactName); 					
 			    boardcastMessage.append('contactListCsv', this.csvFile);
 
-          if ((this.newBroadcast.groupName !=undefined)&&(this.newBroadcast.senderPhoneNumber !=undefined)){
+          if ((this.newBroadcast.groupName !='')&&(this.newBroadcast.senderPhoneNumber !='')){
             // boardcastImage.append('groupName', this.newBroadcast.groupName);
             boardcastMessage.append('senderPhoneNumber', this.newBroadcast.senderPhoneNumber);   
             this.urlMessage = this.newBroadcast.message + '&groupName=' + this.newBroadcast.groupName;
+            // console.log('group sent encodeURI: '+encodeURI(this.urlMessage));
             console.log(this.newBroadcast.message + '&groupName=' + this.newBroadcast.groupName);
 
           } else {
 
             this.urlMessage = this.newBroadcast.message;
+            // console.log('encodeURI: '+encodeURI(this.urlMessage));
           }
 
 					//write to DB
-					this.chatService.broadcastMessage(boardcastMessage, this.urlMessage).then((res) => {  //from chatService, 
+					this.chatService.broadcastMessage(boardcastMessage, encodeURI(this.urlMessage)).then((res) => {  //from chatService, 
 				  
-				    window.alert('Broadcast job with message only is submitted successfully!');
+				    // window.alert('Broadcast job with message only is submitted successfully!');
 
 				    this.jobDetail = res;
 
@@ -320,10 +339,17 @@ export class BroadcastDetailComponent implements OnInit {
 
     if (event.target.files && event.target.files[0]) {
 
-      var reader = new FileReader();
-      reader.readAsDataURL(this.selectedImage); // read file as data url
-      // reader.readAsArrayBuffer(event.target.files[0]);  //read as Array buffer
-      reader.onload = (event:any) => { // called once readAsDataURL is completed        
+      this.fileExtention = (this.selectedImage.name).split(".")[1];            
+      console.log('file extension: ' +this.fileExtention);      
+
+      if (this.fileExtention != "pdf"){
+        this.addImage = true;
+        this.addPdf = false;
+
+        var reader = new FileReader();
+        reader.readAsDataURL(this.selectedImage); // read file as data url
+        // reader.readAsArrayBuffer(event.target.files[0]);  //read as Array buffer
+        reader.onload = (event:any) => { // called once readAsDataURL is completed        
         // this.url = event.target.result;
         // console.log("url: " +this.url);    //base64
 
@@ -337,12 +363,12 @@ export class BroadcastDetailComponent implements OnInit {
         imageSize = (encodeURI(img.src).split(/%..|./).length - 1)*0.75/1024;
         roundedImageSize = Math.round(imageSize);  
 
-        this.fileExtention = (this.selectedImage.name).split(".")[1];
-        console.log('image size : ' + roundedImageSize +'kB');        
-        console.log('file extension: ' +this.fileExtention); 
+        // this.fileExtention = (this.selectedImage.name).split(".")[1];
+        console.log('file size : ' + roundedImageSize +'kB');        
+        // console.log('file extension: ' +this.fileExtention); 
         // console.log('image: ' + img.src );
 
-        img.onload = () => {
+          img.onload = () => {
            
             var canvas: HTMLCanvasElement = document.createElement("canvas");
             var ctx: CanvasRenderingContext2D = canvas.getContext("2d");
@@ -449,6 +475,20 @@ export class BroadcastDetailComponent implements OnInit {
           },
             reader.onerror = error => console.log(error)
         }
+      } else {
+
+        this.addImage = false;
+        this.addPdf = true;        
+        console.log("pdf flow");
+        var reader = new FileReader();
+        reader.readAsDataURL(this.selectedImage); // read file as data url        
+        reader.onload = (event:any) => { // called once readAsDataURL is completed        
+          this.pdfSrc = event.target.result;
+          this.compressedImage = this.selectedImage;
+          console.log("pdfSrc: " +this.pdfSrc);    //base64       
+        } 
+          this.url = '';
+      }
     
     }
 
