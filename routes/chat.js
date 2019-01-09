@@ -669,7 +669,7 @@ router.get('/request/human', auth, function(req, res, next) {
     }, function (err, chats) {
       if (err) return next(err);
       res.json(chats);
-    });
+    }).sort({updated_at:-1});
   }  //end else
 });
 
@@ -707,7 +707,7 @@ router.get('/request/operator', auth, function(req, res, next) {
     }, function (err, chats) {
       if (err) return next(err);
       res.json(chats);
-    })
+    }).sort({updated_at:-1});
   }
 });
 
@@ -777,7 +777,7 @@ router.get('/staff/all', auth, function(req, res, next) {
     Staff.find(req.body , function (err, staffs) {
       if (err) return next(err);
       res.json(staffs);
-    })
+    }).sort({_id:-1});
   }
 });
 
@@ -988,7 +988,7 @@ router.get('/user/all', auth, function(req, res, next) {
     User.find( req.body, function (err, users) {
       if (err) return next(err);
       res.json(users);
-    });
+    }).sort({updated_at:-1});
  }
 });
 
@@ -1071,7 +1071,7 @@ router.get('/campaign/all', auth, function(req, res, next) {
     Campaign.find( req.body, function (err, campaigns) {
       if (err) return next(err);
       res.json(campaigns);
-    });
+    }).sort({created_at:-1});
  }
 });
 
@@ -1594,15 +1594,28 @@ router.delete('/deletegroup/:groupkey', auth, function(req, res, next) {
 
 /* GET broadcast job list */ 
 router.get('/broadcast/all', auth, function(req, res, next) {
+
+  var last3Year = Date.now() - (3*365*24*3600*1000);  //1 month = 30*24*3600*1000
+  var lastYear = Date.now() - (365*24*3600*1000);  //1 month = 30*24*3600*1000
+  var last3Month = Date.now() - (91*24*3600*1000);  //1 month = 30*24*3600*1000
+  var lastMonth = Date.now() - (30*24*3600*1000);  //1 month = 30*24*3600*1000
+  var lastWeek = Date.now() - (7*24*3600*1000);  //1 month = 30*24*3600*1000
+
  if (!req.payload._id) {
    res.status(401).json({
      "message" : "UnauthorizedError:"
    });
- } else {  
-    Broadcast.find( req.body, function (err, broadcasts) {
+ } else {
+    Broadcast.find({ $and:
+      [        
+        { jobID: { $exists: true } },
+        { created_at: {$gte: lastWeek } }                 
+      ]
+      }, function (err, broadcasts) {
+
       if (err) return next(err);
       res.json(broadcasts);
-    });
+    }).sort({created_at:-1});
  }
 });
 

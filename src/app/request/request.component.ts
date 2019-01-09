@@ -88,7 +88,7 @@ export class RequestComponent implements OnInit, AfterViewChecked, AfterViewInit
   ngAfterViewChecked() {
     // console.log("this.loadList: " +this.loadList);
     // if (this.loadList == false){
-      this.scrollTableToBottom();
+      // this.scrollTableToBottom();
     //   this.loadList = true;
     // } else {
     //   //console.log("do nothing");
