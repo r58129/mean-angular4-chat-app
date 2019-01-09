@@ -57,9 +57,9 @@
 							          </div>
 							          <div class="form-group">
 							            <label class="col-sm-3 control-label">Prepend Contact Name</label>
-							            <div [ngSwitch] = "broadcast.prependContactName">
-								            <p *ngSwitchCase="Y" class="form-control-static">Yes</p>
-								            <p *ngSwitchCase="" class="form-control-static">No</p>
+							            <div >
+								            <p *ngIf ="broadcast.prependContactName =='Y'" class="form-control-static">Yes</p>
+								            <p *ngIf ="broadcast.prependContactName ==''" class="form-control-static">No</p>
 							          	</div>
 							          </div>
 							          <div class="form-group">
@@ -74,7 +74,7 @@
 							            <label class="col-sm-3 control-label">Sender Phone Number</label>
 							            <p class="form-control-static">{{ broadcast.senderPhoneNumber }}</p>
 							          </div>							          
-							          <div class="form-group">
+							          <div class="form-group" *ngIf ="showMessageBox">
 							            <label class="col-sm-3 control-label">Message</label>
 							            <textarea id="message-box" readonly class="form-control-static">{{ broadcast.message }}</textarea>
 							          </div>
@@ -84,9 +84,13 @@
 							          </div>
 							          <div class="form-group" *ngIf ="showPdfFilename">
 							            <label class="col-sm-3 control-label">PDF Filename</label>
-		                      <p class="form-control-static">{{broadcast.imagefilename}}</p>		                      
+		                      <p class="form-control-static">{{broadcast.imagefilename}}</p>
 							          </div>							          							         
-				                    
+	                      <div class="form-group" *ngIf ="showPdfFilename">
+	                        <pdf-viewer id="pdf-viewer" [src]="broadcast.imagefile" [render-text]="true"style="display: block;" [page]="1" [show-all]="false" [zoom]="0.5"></pdf-viewer>							            
+	                      </div>				                    
+
+
 				                <div id = viewResult-button class="form-group" > 
 				                  <div class="form-group center">
 				                    <label class="col-sm-5 control-label"></label>
@@ -129,12 +133,12 @@
 							            <label class="col-sm-4 control-label">Sender Phone Number</label>
 							            <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.senderPhoneNumber" name="newBroadcast.senderPhoneNumber"placeholder="85298765432" >
 							          </div>							          							          												
-							          <div class="form-group">
+							          <div class="form-group" *ngIf ="showMessageBox">
 							            <label class="col-sm-4 control-label">Message</label>
-							            <textarea id="message-box" type="text" class="form-control-static" [(ngModel)]="newBroadcast.message" placeholder="Required" name="newBroadcast.message" required=""  >						            	
+							            <textarea id="message-box" type="text" class="form-control-static" [(ngModel)]="newBroadcast.message" placeholder="Required" name="newBroadcast.message" >						            	
 							            </textarea>							           							            
 							          </div>
-							          <div class="form-group" >
+							          <div class="form-group"  *ngIf ="showMessageBox">
 							          	<label class="col-sm-4 control-label">Emoji</label>
 							          	<div class="input-group form-control-static">
 							          		<div id="emojiBox" class=" emojiBox" (click)="popUpEmojiBox()">
@@ -152,6 +156,7 @@
 							            <label class="col-sm-4 control-label">Select Image or PDF	       
 	                        </label>
               						<button type="button" class="btn btn-default btn-sm " (click)="fileInput.click()">Browse</button>
+              						<button id="button" type="button" class="btn btn-default btn-sm " (click)="clearSelectedFile()">Clear</button>
               						<input style = "display: none" type="file" class="form-control-static" (change)="onImageFileSelected($event)" placeholder="Optional" #fileInput name="filename" >
 	                      </div>
 
