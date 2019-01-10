@@ -41,6 +41,7 @@ export class BroadcastDetailComponent implements OnInit {
   popUpEmoji: boolean = false;
   fileExtention: string;
   showResultDetail: boolean = false;
+  showMessageBox: boolean = true;
 
   broadcastDetail = { jobID:'', message: '', contactListCsvName:'', imagefile:'', imagefilename:'', notSendAck:'', prependContactName:'', jobStatus:'', groupName:'', senderPhoneNumber:''};    
   newBroadcast = { jobID:'', message:'', contactListCsvName: '', imagefile:'', imagefilename:'', notSendAck:'',prependContactName:'', jobStatus:'', groupName:'', senderPhoneNumber:''};  
@@ -69,24 +70,30 @@ export class BroadcastDetailComponent implements OnInit {
 	      this.broadcast = res;
 
         if (this.broadcast[0] !=undefined){
-          if (this.broadcast[0].imagefile !=undefined){
+          if (this.broadcast[0].imagefile != ''){
             console.log(this.broadcast[0].imagefile);          
-            this.showImage = true;          
-          } else {
-            this.showImage = false;          
+                   
+            if (this.broadcast[0].imagefilename !=''){
+              console.log(this.broadcast[0].imagefilename);  
+
+              this.fileExtention = (this.broadcast[0].imagefilename).split(".")[1];
+
+              if (this.fileExtention == "pdf"){              
+                this.showMessageBox = false;
+                this.showPdfFilename = true;
+                this.showImage = false;                      
+              } else {              
+                this.showMessageBox = true;
+                this.showPdfFilename = false;         
+                this.showImage = true;
+              }            
+            }    
+          } else {  //text only
+                this.showMessageBox = true;
+                this.showPdfFilename = false;         
+                this.showImage = false;            
+
           }
-
-          if (this.broadcast[0].imagefilename !=undefined){
-            console.log(this.broadcast[0].imagefilename);  
-
-            this.fileExtention = (this.broadcast[0].imagefilename).split(".")[1];
-
-            if (this.fileExtention == "pdf"){              
-              this.showPdfFilename = true;                      
-            } else {              
-              this.showPdfFilename = false;          
-            }            
-          }    
           
           if (this.broadcast[0].jobStatus == 'Completed'){
             console.log('this.broadcast.Results' + this.broadcast[0].jobStatus);
@@ -178,9 +185,20 @@ export class BroadcastDetailComponent implements OnInit {
 						if (this.jobDetail.jobID !=undefined){
 
 							this.newBroadcast.jobID = this.jobDetail.jobID;
-					  	this.newBroadcast.contactListCsvName = this.csvFile.name;	
-					  	this.newBroadcast.imagefile = this.url;
-					  	this.newBroadcast.imagefilename = this.selectedImage.name;		
+					  	this.newBroadcast.contactListCsvName = this.csvFile.name;						  	
+					  	this.newBroadcast.imagefilename = this.selectedImage.name;
+
+              console.log('this.fileExtention' +this.fileExtention);
+
+              if (this.fileExtention =='pdf'){
+
+                this.newBroadcast.imagefile = this.pdfSrc;
+
+              } else {
+
+                this.newBroadcast.imagefile = this.url;
+
+              }
 				
 
 							//write to DB
@@ -316,6 +334,7 @@ export class BroadcastDetailComponent implements OnInit {
 		this.viewResultPage = false; 
 		this.addBroadcastPage = true; 
 		this.filename = '';
+    this.showMessageBox = true;
   	console.log(' add Broadcast!');
 
   }
@@ -345,6 +364,7 @@ export class BroadcastDetailComponent implements OnInit {
       if (this.fileExtention != "pdf"){
         this.addImage = true;
         this.addPdf = false;
+        this.showMessageBox = true;
 
         var reader = new FileReader();
         reader.readAsDataURL(this.selectedImage); // read file as data url
@@ -478,7 +498,8 @@ export class BroadcastDetailComponent implements OnInit {
       } else {
 
         this.addImage = false;
-        this.addPdf = true;        
+        this.addPdf = true;
+        this.showMessageBox = false;        
         console.log("pdf flow");
         var reader = new FileReader();
         reader.readAsDataURL(this.selectedImage); // read file as data url        
@@ -538,6 +559,18 @@ export class BroadcastDetailComponent implements OnInit {
   popUpEmojiBox(){
 
     this.popUpEmoji = !this.popUpEmoji;
+  }
+
+  clearSelectedFile(){
+
+    console.log("clear selected file");
+    this.url = '';
+    this.pdfSrc = '';
+    this.compressedImage = null;
+    this.addImage = false;
+    this.addPdf = false;
+    this.showMessageBox = true;
+
   }
 
 }

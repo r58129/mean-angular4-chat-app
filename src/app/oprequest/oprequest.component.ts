@@ -67,15 +67,15 @@ export class OprequestComponent implements OnInit {
     // this.scrollTableToBottom();
 
     
-  this.timer = setInterval(() => {
-    this.getOperatorRequest();
-    // console.log("operator refresh requests");
-  }, 3000);
+    this.timer = setInterval(() => {
+      this.getOperatorRequest();
+      // console.log("operator refresh requests");
+    }, 3000);
 
-    this.loadList = setInterval(() => {
-    this.scrollTableToBottom();
-    // console.log("operator refresh requests");
-  }, 5000);
+    // this.loadList = setInterval(() => {
+    //   this.scrollTableToBottom();
+    //   // console.log("operator refresh requests");
+    // }, 5000);
 
   }  //ngOnInit
 
