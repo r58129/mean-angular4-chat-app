@@ -7,7 +7,19 @@ var GroupSchema = new mongoose.Schema({
 	    unique: true,
   	},		 
   	name: String,
-  	phone_number: Array,	//include the phone numbers in particaular groups	
+  	translate_enabled: String,
+  	STT_enabled: String,
+  	TTS_enabled: String,
+  	// phone_number: Array,	//include the phone numbers in particaular groups	
+		phone_number: [{
+			number: String,
+			source_spoken: String,
+		}],
+  	target_text_lang: [{
+  		lang1: String,
+  		lang2: String,
+  		lang3: String,
+  	}],
 		created_at: { type: Date, default: Date.now }  	
   	
 });

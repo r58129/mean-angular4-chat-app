@@ -1505,7 +1505,6 @@ router.get('/group/all', auth, function(req, res, next) {
  }
 });
 
-/* GET SINGLE user BY phone_number */
 // router.get('/userphone/:phone_number', function(req, res, next) {
 router.get('/group/:groupkey', auth, function(req, res, next) {
   if (!req.payload._id) {
@@ -1549,6 +1548,61 @@ router.put('/updategroup/:groupkey', auth, function(req, res, next) {
  }
 });
 
+router.put('/updategrouplang/:groupkey', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    console.log("lang1: " +req.body.target_text_lang.lang1);
+    console.log("lang2: " +req.body.target_text_lang.lang2);
+    console.log("lang3: " +req.body.target_text_lang.lang3);
+    
+    if ((req.body.target_text_lang.lang1 !=undefined) && (req.body.target_text_lang.lang2 ==undefined) && (req.body.target_text_lang.lang3 ==undefined)){
+      Group.findOneAndUpdate({key:req.params.groupkey}, { $set: {'target_text_lang.lang1':req.body.target_text_lang.lang1}}, function (err, groups) {
+        if (err) return next(err);
+        res.json(groups);
+      });
+    }
+    if ((req.body.target_text_lang.lang2 !=undefined) && (req.body.target_text_lang.lang1 ==undefined) && (req.body.target_text_lang.lang3 ==undefined)){
+      Group.findOneAndUpdate({key:req.params.groupkey}, { $set: {'target_text_lang.lang2':req.body.target_text_lang.lang2}}, function (err, groups) {
+        if (err) return next(err);
+        res.json(groups);
+      });
+    }
+    if ((req.body.target_text_lang.lang3 !=undefined) && (req.body.target_text_lang.lang2 ==undefined) && (req.body.target_text_lang.lang1 ==undefined)){
+      Group.findOneAndUpdate({key:req.params.groupkey}, { $set: {'target_text_lang.lang3':req.body.target_text_lang.lang3}}, function (err, groups) {
+        if (err) return next(err);
+        res.json(groups);
+      });
+    }
+    if ((req.body.target_text_lang.lang1 !=undefined) &&(req.body.target_text_lang.lang2 !=undefined) && (req.body.target_text_lang.lang3 ==undefined)){
+      Group.findOneAndUpdate({key:req.params.groupkey}, { $set: {'target_text_lang.lang1':req.body.target_text_lang.lang1,'target_text_lang.lang2':req.body.target_text_lang.lang2}}, function (err, groups) {
+        if (err) return next(err);
+        res.json(groups);
+      });
+    }
+    if ((req.body.target_text_lang.lang2 !=undefined) &&(req.body.target_text_lang.lang3 !=undefined) && (req.body.target_text_lang.lang1 ==undefined)){
+      Group.findOneAndUpdate({key:req.params.groupkey}, { $set: {'target_text_lang.lang2':req.body.target_text_lang.lang2,'target_text_lang.lang3':req.body.target_text_lang.lang3}}, function (err, groups) {
+        if (err) return next(err);
+        res.json(groups);
+      });
+    }
+    if ((req.body.target_text_lang.lang3 !=undefined) &&(req.body.target_text_lang.lang1 !=undefined) && (req.body.target_text_lang.lang2 ==undefined)){
+      Group.findOneAndUpdate({key:req.params.groupkey}, { $set: {'target_text_lang.lang1':req.body.target_text_lang.lang1,'target_text_lang.lang3':req.body.target_text_lang.lang3}}, function (err, groups) {
+        if (err) return next(err);
+        res.json(groups);
+      });
+    }    
+    if ((req.body.target_text_lang.lang3 !=undefined) &&(req.body.target_text_lang.lang1 !=undefined) && (req.body.target_text_lang.lang2 !=undefined)){
+      Group.findOneAndUpdate({key:req.params.groupkey}, { $set: {'target_text_lang.lang1':req.body.target_text_lang.lang1,'target_text_lang.lang2':req.body.target_text_lang.lang2,'target_text_lang.lang3':req.body.target_text_lang.lang3}}, function (err, groups) {
+        if (err) return next(err);
+        res.json(groups);
+      });
+    }
+  }
+});
+
 /* UPDATE user by user phone number*/
 // router.put('/userupdate/:phone_number', function(req, res, next) {
 router.put('/addgroupuser/:groupkey', auth, function(req, res, next) {
@@ -1571,7 +1625,8 @@ router.put('/deletegroupuser/:groupkey', auth, function(req, res, next) {
       "message" : "UnauthorizedError:"
     });
   } else { 
-    Group.findOneAndUpdate({key:req.params.groupkey}, {$pull:{phone_number:req.body.phone_number}}, function (err, post) {
+    console.log("phone_number.number: " +req.body.phone_number.number)
+    Group.findOneAndUpdate({key:req.params.groupkey}, {$pull: { phone_number:{number:req.body.phone_number.number}}},{ multi: true }, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });
