@@ -1664,13 +1664,13 @@ router.get('/broadcast/all', auth, function(req, res, next) {
     Broadcast.find({ $and:
       [        
         { jobID: { $exists: true } },
-        { created_at: {$gte: lastWeek } }                 
+        // { created_at: {$gte: lastWeek } }                 
       ]
       }, function (err, broadcasts) {
 
       if (err) return next(err);
       res.json(broadcasts);
-    }).sort({created_at:-1});
+    }).sort({created_at:-1}).limit(20);
  }
 });
 
