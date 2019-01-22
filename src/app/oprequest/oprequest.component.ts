@@ -38,6 +38,7 @@ export class OprequestComponent implements OnInit {
   newRequest = {type:'', phone_number: '', socket_id: '', room:'', message: '', request_status:'' };
   userInfo = {id:'', name:'', package:'' };
   searchUser:any;
+  op:any;
   // newRequest = { room:'', phone_number: '', message: '', socket_id:'',updated_at:'' };
   // chatRequest = { room: '', admin_name:'', phone_number: '', message: '', updated_at:'' };
   // socket = io('http://localhost:4000');
@@ -58,6 +59,18 @@ export class OprequestComponent implements OnInit {
     console.log('this.searchUser.package: ' + searchUser.package);
 
     this.chatService.copyInfo(searchUser);
+    }
+  }
+
+  @HostListener('click')
+  clickedCopyOp(op) {
+
+    if (op !=undefined){
+
+    console.log('this.op.phone_number: ' +op.phone_number);
+    console.log('this.op.type: ' + op.type);
+
+    this.chatService.OpCopyInfo(op);
     }
   }
 

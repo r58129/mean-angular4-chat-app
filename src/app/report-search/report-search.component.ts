@@ -46,7 +46,7 @@ export class ReportSearchComponent implements OnInit {
   	  console.log ('end Time: ' + this.endNum);
   	  console.log ('today: ' + this.todayNum);
   	  
-  	  if ((this.endNum > this.todayNum) ||(this.endNum < this.startNum)){
+  	  if ((this.endNum > this.todayNum) || (this.endNum < this.startNum) || (this.todayNum < this.startNum)){
 
   	  	console.log('There is something wrong with the input date!');
   	  	window.alert('There is something wrong with the input date!');

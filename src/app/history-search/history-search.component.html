@@ -28,6 +28,26 @@
               <!-- /.box-header -->
 
               <div #scrollTable class="box-body no-padding" *ngIf="notSearch; else searchPage">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Apps</th>
+                      <th>Name</th>
+                      <th>ID</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                <tbody id="table-body">
+                  <tr *ngFor="let searchUser of allContacts">
+                  <td>{{searchUser.package}}</td>
+                  <td>{{searchUser.name }}</td>
+                  <td>{{searchUser.id}}</td>
+                  <td>       
+                      <button type="button" class="btn btn-primary btn-xs" id="copy-info" (click)="clickedCopy(searchUser)"> Copy </button>
+                    </td>
+                    </tr>
+                  </tbody>
+                </table>             
               </div>
               <!-- /.box-body -->
               <ng-template #searchPage>
