@@ -42,6 +42,11 @@ export class BroadcastDetailComponent implements OnInit {
   fileExtention: string;
   showResultDetail: boolean = false;
   showMessageBox: boolean = true;
+  showGroupName: boolean = true;
+  showSenderPhoneNumber: boolean = true;
+  basic = null;
+  flash = null;
+  group = null;
 
   broadcastDetail = { jobID:'', message: '', contactListCsvName:'', imagefile:'', imagefilename:'', notSendAck:'', prependContactName:'', jobStatus:'', groupName:'', senderPhoneNumber:''};    
   newBroadcast = { jobID:'', message:'', contactListCsvName: '', imagefile:'', imagefilename:'', notSendAck:'',prependContactName:'', jobStatus:'', groupName:'', senderPhoneNumber:''};  
@@ -573,4 +578,25 @@ export class BroadcastDetailComponent implements OnInit {
 
   }
 
+  clickBasic(){
+
+    this.showGroupName = false;
+    this.showSenderPhoneNumber = false;
+    this.flash = null;
+    this.group = null;
+  }
+
+  clickFlash(){
+    this.showGroupName = true;
+    this.showSenderPhoneNumber = false;
+    this.basic = null;
+    this.group = null;
+  }
+
+  clickGroup(){
+    this.showGroupName = true;
+    this.showSenderPhoneNumber = true;
+    this.basic = null;
+    this.flash = null;
+  }
 }

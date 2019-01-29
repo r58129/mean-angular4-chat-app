@@ -113,6 +113,17 @@
 							            <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.jobID" placeholder="Required" name="jobID" >
 							          </div> -->
 							          <div class="form-group">
+							            <label class="col-sm-4 control-label">Broadcast Mode</label>						
+							            <div class="input-group form-control-static">
+										        <input id = "radio-button" type="radio" [(ngModel)]="basic" (click)="clickBasic()" name="basic" class="minimal" value="basic">
+										        Basic Mode
+										        <input id = "radio-button" type="radio" [(ngModel)]="flash" (click)="clickFlash()" name="flash" class="minimal" value="flash">
+										        Flash Mode										        
+										        <input id = "radio-button" type="radio" [(ngModel)]="group" (click)="clickGroup()" name="group" class="minimal" value="group">
+										        Group Mode<br>
+									        </div>
+												</div>								          
+							          <div class="form-group">
 							            <label class="col-sm-4 control-label">Prepend Contact Name</label>							
 							            <div class="input-group form-control-static">
 										        <input id = "radio-button" type="radio" [(ngModel)]="newBroadcast.prependContactName" name="prepend" class="minimal" value="Y">
@@ -124,12 +135,12 @@
 							          <div class="form-group">
 							            <label class="col-sm-4 control-label">CSV file</label>
 							            <input type="file" class="form-control-static" (change)="onCSVSelected($event)" placeholder="Required" #fileInput name="csvFile" required="" >
-							          </div>
-							          <div class="form-group">
+							          </div>						          
+							          <div class="form-group" *ngIf ="showGroupName">
 							            <label class="col-sm-4 control-label">Group Name</label>
-							            <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.groupName" name = "newBroadcast.groupName" placeholder="Optional" >
+							            <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.groupName" name = "newBroadcast.groupName" placeholder="Group Name" >
 							          </div>
-							          <div class="form-group">
+							          <div class="form-group" *ngIf ="showSenderPhoneNumber">
 							            <label class="col-sm-4 control-label">Sender Phone Number</label>
 							            <input type="text" class="form-control-static" [(ngModel)]="newBroadcast.senderPhoneNumber" name="newBroadcast.senderPhoneNumber"placeholder="85298765432" >
 							          </div>							          							          												

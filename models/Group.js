@@ -15,11 +15,11 @@ var GroupSchema = new mongoose.Schema({
 			number: String,
 			source_spoken: String,
 		}],
-  	target_text_lang: [{
+  	target_text_lang: {
   		lang1: String,
   		lang2: String,
   		lang3: String,
-  	}],
+  	},
 		created_at: { type: Date, default: Date.now }  	
   	
 });
