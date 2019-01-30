@@ -9,9 +9,11 @@ import { ChatService } from '../chat.service';
 export class HistorySearchComponent implements OnInit {
 
   contacts: any;  //contacts
+  allContacts: any;
   searchName: any;
   notSearch: boolean = true;
   searchUser:any;
+  listUser:any;
   userInfo = {id:'', name:'', package:'' };
 
   constructor(private chatService: ChatService) {}
@@ -29,6 +31,12 @@ export class HistorySearchComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.chatService.getAllContact().then((res) => {  //from chatService, 
+        this.allContacts = res;
+      }, (err) => {
+        console.log(err);
+      });    
   }
 
   returnToTable(){

@@ -874,6 +874,43 @@ router.get('/roomhistory/:room', auth, function(req, res, next) {
   }
 });
 
+/* GET ALL CHATS in the room 192.168.0.102:4080/chat/roomhistory/phone#*/ 
+router.get('/rangedroomhistory/:startTime/:endTime/:room', auth, function(req, res, next) {
+  var currentTime = Date.now();
+  var startTime = req.params.startTime;
+  var startYear = startTime.substring(0,4);
+  var startMonth = startTime.substring(4,6);
+  var startDay = startTime.substring(6,8);
+  var startDate = new Date(startYear, startMonth-1, startDay).getTime();
+  
+  var endTime = req.params.endTime;
+  var endYear = endTime.substring(0,4);
+  var endMonth = endTime.substring(4,6);
+  var endDay = endTime.substring(6,8);
+  var endDate = new Date(endYear, endMonth-1, endDay).getTime();
+
+
+  console.log('startNum: ' + startDate);
+  console.log('endNum: ' +endDate);
+  console.log('currentTime: '+currentTime);
+
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {
+    Chat.find({ $and:
+      [ 
+        { room: req.params.room },
+        { updated_at: { $gte: startDate } },
+        { updated_at: { $lt: endDate} }
+      ]
+    }, function (err, chats) {
+      if (err) return next(err);
+      res.json(chats);
+    });
+  }
+});
 
 /* SAVE REQUEST */
 // router.post('/request', function(req, res, next) {
@@ -1505,7 +1542,6 @@ router.get('/group/all', auth, function(req, res, next) {
  }
 });
 
-/* GET SINGLE user BY phone_number */
 // router.get('/userphone/:phone_number', function(req, res, next) {
 router.get('/group/:groupkey', auth, function(req, res, next) {
   if (!req.payload._id) {
@@ -1549,6 +1585,61 @@ router.put('/updategroup/:groupkey', auth, function(req, res, next) {
  }
 });
 
+router.put('/updategrouplang/:groupkey', auth, function(req, res, next) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError:"
+    });
+  } else {  
+    console.log("lang1: " +req.body.target_text_lang.lang1);
+    console.log("lang2: " +req.body.target_text_lang.lang2);
+    console.log("lang3: " +req.body.target_text_lang.lang3);
+    
+    if ((req.body.target_text_lang.lang1 !=undefined) && (req.body.target_text_lang.lang2 ==undefined) && (req.body.target_text_lang.lang3 ==undefined)){
+      Group.findOneAndUpdate({key:req.params.groupkey}, { $set: {'target_text_lang.lang1':req.body.target_text_lang.lang1}}, function (err, groups) {
+        if (err) return next(err);
+        res.json(groups);
+      });
+    }
+    if ((req.body.target_text_lang.lang2 !=undefined) && (req.body.target_text_lang.lang1 ==undefined) && (req.body.target_text_lang.lang3 ==undefined)){
+      Group.findOneAndUpdate({key:req.params.groupkey}, { $set: {'target_text_lang.lang2':req.body.target_text_lang.lang2}}, function (err, groups) {
+        if (err) return next(err);
+        res.json(groups);
+      });
+    }
+    if ((req.body.target_text_lang.lang3 !=undefined) && (req.body.target_text_lang.lang2 ==undefined) && (req.body.target_text_lang.lang1 ==undefined)){
+      Group.findOneAndUpdate({key:req.params.groupkey}, { $set: {'target_text_lang.lang3':req.body.target_text_lang.lang3}}, function (err, groups) {
+        if (err) return next(err);
+        res.json(groups);
+      });
+    }
+    if ((req.body.target_text_lang.lang1 !=undefined) &&(req.body.target_text_lang.lang2 !=undefined) && (req.body.target_text_lang.lang3 ==undefined)){
+      Group.findOneAndUpdate({key:req.params.groupkey}, { $set: {'target_text_lang.lang1':req.body.target_text_lang.lang1,'target_text_lang.lang2':req.body.target_text_lang.lang2}}, function (err, groups) {
+        if (err) return next(err);
+        res.json(groups);
+      });
+    }
+    if ((req.body.target_text_lang.lang2 !=undefined) &&(req.body.target_text_lang.lang3 !=undefined) && (req.body.target_text_lang.lang1 ==undefined)){
+      Group.findOneAndUpdate({key:req.params.groupkey}, { $set: {'target_text_lang.lang2':req.body.target_text_lang.lang2,'target_text_lang.lang3':req.body.target_text_lang.lang3}}, function (err, groups) {
+        if (err) return next(err);
+        res.json(groups);
+      });
+    }
+    if ((req.body.target_text_lang.lang3 !=undefined) &&(req.body.target_text_lang.lang1 !=undefined) && (req.body.target_text_lang.lang2 ==undefined)){
+      Group.findOneAndUpdate({key:req.params.groupkey}, { $set: {'target_text_lang.lang1':req.body.target_text_lang.lang1,'target_text_lang.lang3':req.body.target_text_lang.lang3}}, function (err, groups) {
+        if (err) return next(err);
+        res.json(groups);
+      });
+    }    
+    if ((req.body.target_text_lang.lang3 !=undefined) &&(req.body.target_text_lang.lang1 !=undefined) && (req.body.target_text_lang.lang2 !=undefined)){
+      Group.findOneAndUpdate({key:req.params.groupkey}, { $set: {'target_text_lang.lang1':req.body.target_text_lang.lang1,'target_text_lang.lang2':req.body.target_text_lang.lang2,'target_text_lang.lang3':req.body.target_text_lang.lang3}}, function (err, groups) {
+        if (err) return next(err);
+        res.json(groups);
+      });
+    }
+  }
+});
+
 /* UPDATE user by user phone number*/
 // router.put('/userupdate/:phone_number', function(req, res, next) {
 router.put('/addgroupuser/:groupkey', auth, function(req, res, next) {
@@ -1571,7 +1662,8 @@ router.put('/deletegroupuser/:groupkey', auth, function(req, res, next) {
       "message" : "UnauthorizedError:"
     });
   } else { 
-    Group.findOneAndUpdate({key:req.params.groupkey}, {$pull:{phone_number:req.body.phone_number}}, function (err, post) {
+    console.log("phone_number.number: " +req.body.phone_number.number)
+    Group.findOneAndUpdate({key:req.params.groupkey}, {$pull: { phone_number:{number:req.body.phone_number.number}}},{ multi: true }, function (err, post) {
       if (err) return next(err);
       res.json(post);
     });
@@ -1609,13 +1701,13 @@ router.get('/broadcast/all', auth, function(req, res, next) {
     Broadcast.find({ $and:
       [        
         { jobID: { $exists: true } },
-        { created_at: {$gte: lastWeek } }                 
+        // { created_at: {$gte: lastWeek } }                 
       ]
       }, function (err, broadcasts) {
 
       if (err) return next(err);
       res.json(broadcasts);
-    }).sort({created_at:-1});
+    }).sort({created_at:-1}).limit(20);
  }
 });
 

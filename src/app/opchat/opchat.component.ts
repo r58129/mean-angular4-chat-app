@@ -25,6 +25,9 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   @HostBinding('class.search-user') 
   searchUser: any;
 
+  @HostBinding('class.op') 
+  op: any;
+
   url = '';
   ImageObject = {};
   displayImage = '';
@@ -115,14 +118,34 @@ export class OpchatComponent implements OnInit, AfterViewChecked {
   ngOnInit() {
 
     this.chatService.change.subscribe(searchUser => {
-      console.log("this.searchUser.id: "+searchUser.id);
-      console.log("this.searchUser.package: "+searchUser.package);
-      this.newUser.room = searchUser.id;
-      this.newUser.type = searchUser.package;
 
+      if ((searchUser.id !=undefined)&&(searchUser.package!=undefined)){
+        console.log("this.searchUser.id in chat: "+searchUser.id);
+        console.log("this.searchUser.package in chat: "+searchUser.package);
+        this.newUser.room = searchUser.id;
+        this.newUser.type = searchUser.package;  
+
+      } else {
+        console.log("this.searchUser is undefined");  
+      }
+      
       // console.log("this.searchUser.name: "+this.searchUser.name);
     });
 
+    this.chatService.change.subscribe(op => {
+
+      if ((op.type !=undefined) &&(op.phone_number !=undefined)){
+        console.log("this.op.phone_number in chat: "+op.phone_number);
+        console.log("this.op.type in chat: "+op.type);        
+        this.newUser.room = op.phone_number;
+        this.newUser.type = op.type;        
+      }else {
+        console.log("this.op is undefined");  
+      }
+      
+
+      // console.log("this.searchUser.name: "+this.searchUser.name);
+    });
     // this.route.params.subscribe(params =>{
     //     // console.log(params);
     //     this.newUser.room = params['id'];

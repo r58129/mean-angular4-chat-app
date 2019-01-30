@@ -275,6 +275,20 @@ export class ChatService {
     });
   }
 
+    // get all chats in room
+  getRangedChatHistory(startTime, endTime,phoneNum){
+    return new Promise((resolve, reject) => {
+        // this.updateUrl();
+      this.http.get(this.serverUrl+'/chat/rangedroomhistory/' +startTime+'/'+endTime+'/'+phoneNum, { headers: { Authorization: `Bearer ${this.getToken()}` }} )
+        // .map(res => res.json())
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+    });
+  }
+
 
   saveRequest(data) {
     return new Promise((resolve, reject) => {
@@ -818,6 +832,12 @@ export class ChatService {
     console.log("id: " + searchUser.id);
     console.log("package: " + searchUser.package);
     this.change.emit(searchUser);
+  }
+
+  OpCopyInfo(op){
+    console.log("phone_number: " + op.phone_number);
+    console.log("type: " + op.type);
+    this.change.emit(op);
   }
 
   viewUserInfo(viewUser){    

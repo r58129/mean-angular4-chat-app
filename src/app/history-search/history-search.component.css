@@ -36,9 +36,14 @@
     text-overflow: ellipsis;
 }
 
-#return-to-table{
+#return-to-table {
     margin-right: 10px;
     margin-left: 10px;
+}
+
+ #copy-info{
+    margin-right: 5px;
+    margin-left: 5px;
 }
 
 #search-by-name

@@ -35,7 +35,7 @@
                     <th>Apps</th>
                     <th>Customer</th>
                     <th>Time</th>
-                    <th>Status</th>
+                    <th class="pull-right">Status</th>
                   </tr>
                 </thead>
                 <tbody id="table-body">
@@ -45,16 +45,16 @@
       				    <td>{{op.phone_number }}</td>
                   <td>{{op.updated_at | date: 'medium'}}</td>
                   <td>
-                    <div class="pull-right">    
-                          <div class="btn btn-xs disabled" 
+                    <!-- <div class="pull-right">  -->   
+                          <button type="button"class="btn btn-xs pull-right" (click)="clickedCopyOp(op)"
                           [ngClass]="{
                           ' btn-warning ':op.operator_request == 'Working',
                           ' btn-success ':op.operator_request == 'Done',
                           ' btn-danger ':op.operator_request == 'Timeout'
                           }">
-                          {{op.operator_request}}</div>
+                          {{op.operator_request}}</button>
                         <!-- </div> -->
-                      </div>            
+                      <!-- </div> -->            
                     </td>
                   </tr>
                 </tbody>
