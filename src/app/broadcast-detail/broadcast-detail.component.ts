@@ -58,6 +58,8 @@ export class BroadcastDetailComponent implements OnInit {
   ngOnInit() {
 
   	this.newBroadcast.prependContactName = "Y";	//Yes
+    this.flash = "flash";
+    this.showSenderPhoneNumber = false;
 
     this.chatService.change.subscribe(viewBroadcast => {
       console.log("this.viewBroadcast.jobID: "+viewBroadcast.jobID);
