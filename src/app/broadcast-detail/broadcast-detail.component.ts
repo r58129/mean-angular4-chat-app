@@ -57,6 +57,7 @@ export class BroadcastDetailComponent implements OnInit {
 
   ngOnInit() {
 
+//    this.newBroadcast = { jobID:'', message:'', contactListCsvName: '', imagefile:'', imagefilename:'', notSendAck:'',prependContactName:'', jobStatus:'', groupName:'', senderPhoneNumber:''};  
   	this.newBroadcast.prependContactName = "Y";	//Yes
     this.flash = "flash";
     this.showSenderPhoneNumber = false;
@@ -86,7 +87,7 @@ export class BroadcastDetailComponent implements OnInit {
               this.fileExtention = (this.broadcast[0].imagefilename).split(".")[1];
 
               if (this.fileExtention == "pdf"){              
-                this.showMessageBox = false;
+                this.showMessageBox = true;  //Lu test
                 this.showPdfFilename = true;
                 this.showImage = false;                      
               } else {              
@@ -336,6 +337,14 @@ export class BroadcastDetailComponent implements OnInit {
 
   createBroadcast(){
 
+          this.newBroadcast = { jobID:'', message:'', contactListCsvName: '', imagefile:'', imagefilename:'', notSendAck:'',prependContactName:'', jobStatus:'', groupName:'', senderPhoneNumber:''};  
+        	this.newBroadcast.prependContactName = "Y";	//Yes
+    this.flash = "flash";
+    this.basic = "null";
+      this.group ="null";
+    this.showSenderPhoneNumber = false;
+      this.clearSelectedFile();
+      
   	this.viewResult = true;
 		this.viewDetail = false;
 		this.viewResultPage = false; 
@@ -506,7 +515,7 @@ export class BroadcastDetailComponent implements OnInit {
 
         this.addImage = false;
         this.addPdf = true;
-        this.showMessageBox = false;        
+        this.showMessageBox = true;  //Lu test        
         console.log("pdf flow");
         var reader = new FileReader();
         reader.readAsDataURL(this.selectedImage); // read file as data url        
@@ -582,6 +591,10 @@ export class BroadcastDetailComponent implements OnInit {
 
   clickBasic(){
 
+      if (this.basic!="basic"){
+      this.createBroadcast();
+      }
+      this.basic="basic";
     this.showGroupName = false;
     this.showSenderPhoneNumber = false;
     this.flash = null;
@@ -589,6 +602,10 @@ export class BroadcastDetailComponent implements OnInit {
   }
 
   clickFlash(){
+      if (this.flash!="flash"){
+      this.createBroadcast();
+      }
+      this.flash="flash";
     this.showGroupName = true;
     this.showSenderPhoneNumber = false;
     this.basic = null;
@@ -596,6 +613,10 @@ export class BroadcastDetailComponent implements OnInit {
   }
 
   clickGroup(){
+      if (this.group!="group"){
+      this.createBroadcast();
+      }
+      this.group="group";
     this.showGroupName = true;
     this.showSenderPhoneNumber = true;
     this.basic = null;
