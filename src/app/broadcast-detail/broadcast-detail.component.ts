@@ -47,6 +47,8 @@ export class BroadcastDetailComponent implements OnInit {
   basic = null;
   flash = null;
   group = null;
+    
+  @ViewChild('myCsv') myInputVariable: ElementRef;
 
   broadcastDetail = { jobID:'', message: '', contactListCsvName:'', imagefile:'', imagefilename:'', notSendAck:'', prependContactName:'', jobStatus:'', groupName:'', senderPhoneNumber:''};    
   newBroadcast = { jobID:'', message:'', contactListCsvName: '', imagefile:'', imagefilename:'', notSendAck:'',prependContactName:'', jobStatus:'', groupName:'', senderPhoneNumber:''};  
@@ -343,8 +345,13 @@ export class BroadcastDetailComponent implements OnInit {
     this.basic = "null";
     this.group ="null";
     this.showSenderPhoneNumber = false;
-    this.clearSelectedFile();    
+
+      //this.csvFile=null;
+//      this.myInputVariable.nativeElement.value = "";
       
+      //this.csvData=null;
+      this.clearSelectedFile();
+     
   	this.viewResult = true;
 		this.viewDetail = false;
 		this.viewResultPage = false; 
@@ -372,6 +379,8 @@ export class BroadcastDetailComponent implements OnInit {
     console.log("onFileSelected name: " +this.selectedImage.name);
     // console.log("event.target.files: " +event.target.files);  //file list
 
+    
+      
     if (event.target.files && event.target.files[0]) {
 
       this.fileExtention = (this.selectedImage.name).split(".")[1];            
@@ -528,6 +537,7 @@ export class BroadcastDetailComponent implements OnInit {
       }
     
     }
+        event.target.value='';
 
   } 
 
@@ -562,6 +572,8 @@ export class BroadcastDetailComponent implements OnInit {
 
       reader.onerror = error => console.log(error)    
     }
+      
+    //  event.target.value='';
 
   } 
 
@@ -580,7 +592,9 @@ export class BroadcastDetailComponent implements OnInit {
   clearSelectedFile(){
 
     console.log("clear selected file");
-    this.url = '';
+      
+    this.selectedImage =null;
+      this.url = '';
     this.pdfSrc = '';
     this.compressedImage = null;
     this.addImage = false;
@@ -599,6 +613,9 @@ export class BroadcastDetailComponent implements OnInit {
     this.showSenderPhoneNumber = false;
     this.flash = null;
     this.group = null;
+      this.csvFile = null;
+//      this.csvFile.name="";
+      this.myInputVariable.nativeElement.value = "";
   }
 
   clickFlash(){
@@ -610,6 +627,9 @@ export class BroadcastDetailComponent implements OnInit {
     this.showSenderPhoneNumber = false;
     this.basic = null;
     this.group = null;
+      this.csvFile = null;
+//      this.csvFile.name="";
+      this.myInputVariable.nativeElement.value = "";
   }
 
   clickGroup(){
@@ -621,5 +641,8 @@ export class BroadcastDetailComponent implements OnInit {
     this.showSenderPhoneNumber = true;
     this.basic = null;
     this.flash = null;
+      this.csvFile = null;
+//      this.csvFile.name="";
+      this.myInputVariable.nativeElement.value = "";
   }
 }
