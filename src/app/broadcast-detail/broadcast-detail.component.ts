@@ -337,13 +337,13 @@ export class BroadcastDetailComponent implements OnInit {
 
   createBroadcast(){
 
-          this.newBroadcast = { jobID:'', message:'', contactListCsvName: '', imagefile:'', imagefilename:'', notSendAck:'',prependContactName:'', jobStatus:'', groupName:'', senderPhoneNumber:''};  
-        	this.newBroadcast.prependContactName = "Y";	//Yes
+    this.newBroadcast = { jobID:'', message:'', contactListCsvName: '', imagefile:'', imagefilename:'', notSendAck:'',prependContactName:'', jobStatus:'', groupName:'', senderPhoneNumber:''};  
+    this.newBroadcast.prependContactName = "Y";	//Yes
     this.flash = "flash";
     this.basic = "null";
-      this.group ="null";
+    this.group ="null";
     this.showSenderPhoneNumber = false;
-      this.clearSelectedFile();
+    this.clearSelectedFile();    
       
   	this.viewResult = true;
 		this.viewDetail = false;
@@ -591,10 +591,10 @@ export class BroadcastDetailComponent implements OnInit {
 
   clickBasic(){
 
-      if (this.basic!="basic"){
-      this.createBroadcast();
-      }
-      this.basic="basic";
+    if (this.basic!="basic"){
+       this.createBroadcast();
+    }
+    this.basic="basic";
     this.showGroupName = false;
     this.showSenderPhoneNumber = false;
     this.flash = null;
@@ -602,10 +602,10 @@ export class BroadcastDetailComponent implements OnInit {
   }
 
   clickFlash(){
-      if (this.flash!="flash"){
+    if (this.flash!="flash"){
       this.createBroadcast();
-      }
-      this.flash="flash";
+    }
+    this.flash="flash";
     this.showGroupName = true;
     this.showSenderPhoneNumber = false;
     this.basic = null;
@@ -613,10 +613,10 @@ export class BroadcastDetailComponent implements OnInit {
   }
 
   clickGroup(){
-      if (this.group!="group"){
+    if (this.group!="group"){
       this.createBroadcast();
-      }
-      this.group="group";
+    }
+    this.group="group";
     this.showGroupName = true;
     this.showSenderPhoneNumber = true;
     this.basic = null;
