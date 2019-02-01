@@ -134,7 +134,7 @@
 												</div>
 							          <div class="form-group">
 							            <label class="col-sm-4 control-label">CSV file</label>
-							            <input type="file" class="form-control-static" (change)="onCSVSelected($event)" placeholder="Required" #fileInput name="csvFile" required="" >
+							            <input #myCsv type="file" class="form-control-static" (change)="onCSVSelected($event)" placeholder="Required" #fileInput name="csvFile" required="" >
 							          </div>						          
 							          <div class="form-group" *ngIf ="showGroupName">
 							            <label class="col-sm-4 control-label">Group Name</label>
