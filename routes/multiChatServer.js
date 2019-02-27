@@ -1108,15 +1108,34 @@ app.get('/api/csp/refreshSocketIo', (req, res) => {
 
 app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res) => {
   var jsonMesg = {};
+  var userNotFound = [];
+  var userSendFail = [];
+
   //console.log(req.body);
   if (req.body.sessionID === serverConfig.cspToken) {
     req.body.contactListJson.contactList.forEach(function(table) {
       var name = table.name;
-      console.log('name: '+name);
       var wechatId = table.wechatId;
-      console.log('wechatId: '+wechatId);
+      var found = false;
+      if (userData != null){
+        for(var i = 0; i < userData.user.length; i++) {
+          if (userData.user[i].id == wechatId) {
+            found = true;
+            console.log(userData.user[i].id + " " + userData.user[i].name + " " + userData.user[i].package + " found");
+            break;
+          }
+        }
+      }
 
-      if ((name)&&(wechatId)){
+      if (found===false){
+        userNotFound.push(wechatId);
+      }
+
+
+      if ((name)&&(wechatId)&&(found)){
+        console.log('name: '+name);
+        console.log('wechatId: '+wechatId);
+
         if ((req.body.imagefilename) && (req.body.imagefileBase64)&&(req.body.imagefilename!="")&&((req.body.imagefileBase64)!="")){
           var filename = "routes/image/"+req.body.imagefilename;
           console.log('filename: ' + filename);
@@ -1128,7 +1147,9 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
             } else {
               uploadImageToWechat(filename, function(reply,media_id){
                 if (reply != "error"){
-                      wechatClient.sendImage(wechatId, media_id);
+                      wechatClient.sendImage(wechatId, media_id).catch(error => {
+                        userSendFail.push(wechatId);
+                      });
                 } else {
                   jsonMesg.success = false;
                   jsonMesg.error = "upload image to wechat server fails";
@@ -1145,7 +1166,10 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
             finalMessage = req.body.message;
           }
 
-          wechatClient.sendText(wechatId, finalMessage);
+          wechatClient.sendText(wechatId, finalMessage).catch(error => {
+            userSendFail.push(wechatId);
+          });
+
         }
       }
 
@@ -1154,7 +1178,21 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
 
     //console.log(req.body.imagefileBase64);
 
-    jsonMesg.success = true;
+    if ((userNotFound.length>0)||(userSendFail.length>0)){
+      jsonMesg.success = false;
+      var userNotFoundMesg = "User not found in this group: "
+      for(var j = 0 , len = userNotFound.length ; j < len ; j++){
+        userNotFoundMesg += userNotFound[j] + ", ";
+      }
+      var userSendFailMesg = ", User send failed: "
+      for(var j = 0 , len = userSendFail.length ; j < len ; j++){
+        userSendFailMesg += userSendFail[j] + ", ";
+      }
+
+      jsonMesg.error = userNotFoundMesg + userSendFailMesg;
+    } else {
+      jsonMesg.success = true;
+    }
     res.send(jsonMesg)
   } else {
     jsonMesg.success = false;
@@ -1280,7 +1318,7 @@ function getWechatUsersOpenId(callback){
               if (err) {
                 console.log("error in http get");
                 callback("error", err)
-              }else {
+              } else {
                 //console.log(body);
                  var obj = JSON.parse(body.body);
                  for(var j = 0 , len = obj.data.openid.length ; j < len ; j++){
@@ -1349,7 +1387,7 @@ function getLineUserDetail(userid, callback){
 
 function readUserJsonFile(){
   try {
-     userData = require(serverConfig.userDataFilename);
+     userData = require("../"+serverConfig.userDataFilename);
      console.log(userData);
   } catch ( err ) {
      console.log(serverConfig.userDataFilename + " not found");
