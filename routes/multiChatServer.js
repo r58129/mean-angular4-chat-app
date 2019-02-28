@@ -1169,7 +1169,6 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
           wechatClient.sendText(wechatId, finalMessage).catch(error => {
             userSendFail.push(wechatId);
           });
-
         }
       }
 
@@ -1177,25 +1176,158 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
     });
 
     //console.log(req.body.imagefileBase64);
-
     if ((userNotFound.length>0)||(userSendFail.length>0)){
       jsonMesg.success = false;
-      var userNotFoundMesg = "User not found in this group: "
-      for(var j = 0 , len = userNotFound.length ; j < len ; j++){
-        userNotFoundMesg += userNotFound[j] + ", ";
-      }
-      var userSendFailMesg = ", User send failed: "
-      for(var j = 0 , len = userSendFail.length ; j < len ; j++){
-        userSendFailMesg += userSendFail[j] + ", ";
+      
+      var userNotFoundMesg = "";
+      if (userNotFound.length>0){
+        userNotFoundMesg = "User not found in this group: "
+        for(var j = 0 , len = userNotFound.length ; j < len ; j++){
+          userNotFoundMesg += userNotFound[j];
+          if (j<len-1){
+            userNotFoundMesg += ", "
+          }
+        }
+        jsonMesg.error = userNotFoundMesg;
       }
 
-      jsonMesg.error = userNotFoundMesg + userSendFailMesg;
+      var userSendFailMesg = "User send failed: "
+      if (userSendFail.length>0){
+        var userSendFailMesg = ""
+        for(var j = 0 , len = userSendFail.length ; j < len ; j++){
+          userSendFailMesg += userSendFail[j];
+          if (j<len-1){
+            userSendFailMesg += ", "
+          }
+        }
+        if (userNotFound.length>0){
+          jsonMesg.error += ", ";
+        }
+        jsonMesg.error += userSendFailMesg;
+      }
     } else {
       jsonMesg.success = true;
     }
     res.send(jsonMesg)
   } else {
     jsonMesg.success = false;
+    jsonMesg.error = "Token is not correct";
+    res.send(jsonMesg)
+  }
+});
+
+app.post('/lineBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res) => {
+  var jsonMesg = {};
+  var userNotFound = [];
+  var userSendFail = [];
+
+  //console.log(req.body);
+  if (req.body.sessionID === serverConfig.cspToken) {
+    req.body.contactListJson.contactList.forEach(function(table) {
+      var name = table.name;
+      var lineId = table.lineId;
+      var found = false;
+      if (userData != null){
+        for(var i = 0; i < userData.user.length; i++) {
+          if (userData.user[i].id == lineId) {
+            found = true;
+            console.log(userData.user[i].id + " " + userData.user[i].name + " " + userData.user[i].package + " found");
+            break;
+          }
+        }
+      }
+
+      if (found===false){
+        userNotFound.push(lineId);
+      }
+
+
+      if ((name)&&(lineId)&&(found)){
+        console.log('name: '+name);
+        console.log('lineId: '+lineId);
+
+        if ((req.body.imagefilename) && (req.body.imagefileBase64)&&(req.body.imagefilename!="")&&((req.body.imagefileBase64)!="")){
+          var filename = "routes/image/"+req.body.imagefilename;
+          console.log('filename: ' + filename);
+    
+          require("fs").writeFile(filename, req.body.imagefileBase64, 'base64', function(err) {
+            if (err){
+                  jsonMesg.success = false;
+                  jsonMesg.error = "Unable to decode/save base64 image";
+            } else {
+                if (ngrokURL === ""){
+                  var url = lineConfig.serverUrl+"/"+req.body.imagefilename
+                  console.log(url);
+                  lineClient.pushImage(lineId, {
+                      originalContentUrl: url,
+                      previewImageUrl: url
+                  });                  
+                } else {
+                  var url = ngrokURL+filename
+                  console.log(url);
+                  lineClient.pushImage(lineId, {
+                      originalContentUrl: url,
+                      previewImageUrl: url
+                  });                  
+                }
+
+            }
+          });
+        } else if (req.body.message){
+          var finalMessage = "";
+          if (req.body.prependContactName==="Y"){
+            finalMessage = "Dear " + name + ",\n\n" + req.body.message;
+
+          } else {
+            finalMessage = req.body.message;
+          }
+
+          lineClient.pushText(lineId, finalMessage).catch(error => {
+            userSendFail.push(lineId);
+          });
+        }
+      }
+
+
+    });
+
+    //console.log(req.body.imagefileBase64);
+    if ((userNotFound.length>0)||(userSendFail.length>0)){
+      jsonMesg.success = false;
+      
+      var userNotFoundMesg = "";
+      if (userNotFound.length>0){
+        userNotFoundMesg = "User not found in this group: "
+        for(var j = 0 , len = userNotFound.length ; j < len ; j++){
+          userNotFoundMesg += userNotFound[j];
+          if (j<len-1){
+            userNotFoundMesg += ", "
+          }
+        }
+        jsonMesg.error = userNotFoundMesg;
+      }
+
+      var userSendFailMesg = "User send failed: "
+      if (userSendFail.length>0){
+        var userSendFailMesg = ""
+        for(var j = 0 , len = userSendFail.length ; j < len ; j++){
+          userSendFailMesg += userSendFail[j];
+          if (j<len-1){
+            userSendFailMesg += ", "
+          }
+        }
+        if (userNotFound.length>0){
+          jsonMesg.error += ", ";
+        }
+        jsonMesg.error += userSendFailMesg;
+      }
+    } else {
+      jsonMesg.success = true;
+    }
+    res.send(jsonMesg)
+  } else {
+    jsonMesg.success = false;
+    jsonMesg.error = "Token is not correct";
     res.send(jsonMesg)
   }
 });
