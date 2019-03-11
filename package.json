@@ -63,7 +63,8 @@
     "twilio": "^3.19.1",
     "watchdog": "^0.8.15",
     "wechat": "^2.1.0",
-    "zone.js": "^0.8.4"
+    "zone.js": "^0.8.4",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.12.1",
