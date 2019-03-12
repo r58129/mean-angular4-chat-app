@@ -623,7 +623,7 @@ function postTextMessageToMongooseDB(sender, text, incomingApp, nickname) {
   jsonMesg.phone_number = sender;
   jsonMesg.message = text;
   jsonMesg.nickname = nickname;
-  var postData = querystring.stringify(jsonMesg)
+  var postData = JSON.stringify(jsonMesg)
   //console.log(postData);
 
   var options = {
@@ -632,7 +632,7 @@ function postTextMessageToMongooseDB(sender, text, incomingApp, nickname) {
     path: '/chat/request',
     method: 'POST',
     headers: {
-         'Content-Type': 'application/x-www-form-urlencoded',
+         'Content-Type': 'application/json',
          'Content-Length': postData.length,
          'Authorization': 'Bearer '+serverConfig.meanToken
        },
@@ -696,7 +696,7 @@ function postUserDataToMongooseDB(id, name, package) {
   jsonMesg.id = id;
   jsonMesg.name = name;
   jsonMesg.package = package;
-  var postData = querystring.stringify(jsonMesg)
+  var postData = JSON.stringify(jsonMesg)
   console.log(postData);
 
   var options = {
@@ -705,7 +705,7 @@ function postUserDataToMongooseDB(id, name, package) {
     path: '/chat/contact',
     method: 'POST',
     headers: {
-         'Content-Type': 'application/x-www-form-urlencoded',
+         'Content-Type': 'application/json',
          'Content-Length': postData.length,
          'Authorization': 'Bearer '+serverConfig.meanToken
        },
@@ -731,7 +731,8 @@ function postUserDataToMongooseDB(id, name, package) {
 
 function putBroadcastResultToMongooseDB(jsonMesg,jobId) {
   console.log(jsonMesg);
-  var putData = querystring.stringify(jsonMesg);
+  //var putData = querystring.stringify(jsonMesg);
+  var putData = JSON.stringify(jsonMesg);
   console.log(putData);
 
   var options = {
@@ -740,7 +741,7 @@ function putBroadcastResultToMongooseDB(jsonMesg,jobId) {
     path: '/chat/updatebroadcast/'+jobId,
     method: 'PUT',
     headers: {
-         'Content-Type': 'application/x-www-form-urlencoded',
+         'Content-Type': 'application/json',
          'Content-Length': putData.length,
          'Authorization': 'Bearer '+serverConfig.meanToken
        },
@@ -1325,6 +1326,7 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
               jsonMesg.Results = jsonResultArray;
               jsonMesg.jobStatus = "Image save/decode failed";
               res.send(jsonMesg)
+              putBroadcastResultToMongooseDB(jsonMesg, jobId);
             } else {
                 var promiseToken = refreshWeChatToken();
                 promiseToken.then(function(weChatToken){
@@ -1489,6 +1491,7 @@ app.post('/lineBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res) =
               jsonMesg.Results = jsonResultArray;
               jsonMesg.jobStatus = "Image save/decode failed";
               res.send(jsonMesg)
+              putBroadcastResultToMongooseDB(jsonMesg, jobId);
             } else {
                 var promiseToken = refreshWeChatToken();
                 var url;
