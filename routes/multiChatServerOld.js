@@ -35,7 +35,7 @@ var currentActiveOperatorUser;
 
 const twilioClient = require('twilio')(twilioConfig.accountSid, twilioConfig.authToken);
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
-const uuidv1 = require('uuid/v1');
+
 
 var ChatUser = function(package, socket, sender, state, operatorRequest, pendingMessage){
   this.package = package,
@@ -194,7 +194,7 @@ function setupOperatorChannel(){
     
         // admin send message to user
     socketOperator.on('operatorToUserNonAndroid', function(data){
-      //console.log(data);
+      console.log(data);
       if (data.type === "text"){
           console.log(socketOperator.id + ": " + data.message);
           if (data.package === "messenger"){
@@ -248,49 +248,19 @@ function setupOperatorChannel(){
 
               }
               if (data.package === "wechat"){
-                var promiseToken = refreshWeChatToken();
-                promiseToken.then(function(weChatToken){
-                    var promiseUpload = uploadImageToWechat(filename, weChatToken);
-                    promiseUpload.then(function(media_id) {
-                          var promiseSendImage = sendImageWeChat(data.sender, media_id).then(function(result) {
-                            console.log("Wechat Image sent to user: "+data.sender);
-                          }, function(err) {
-                          var jsonMesg = {};
-                          jsonMesg.sessionID = data.sender;
-                          jsonMesg.photoPath = "nonwhatsapp";
-                          jsonMesg.message = serverConfig.serviceTempNotAvailable;
-                          socketOperator.emit("chatMessageOperatorSessionNonAndroid", JSON.stringify(jsonMesg, null, 4));
-                          });
-                    }, function(err) {
-                          var jsonMesg = {};
-                          jsonMesg.sessionID = data.sender;
-                          jsonMesg.photoPath = "nonwhatsapp";
-                          jsonMesg.message = serverConfig.serviceTempNotAvailable;
-                          socketOperator.emit("chatMessageOperatorSessionNonAndroid", JSON.stringify(jsonMesg, null, 4));
-                    });
+                uploadImageToWechat(filename, function(reply,media_id){
+                    if (reply != "error"){
+                      wechatClient.sendImage(data.sender, media_id);
+                    } else {
+                            var jsonMesg = {};
+                            jsonMesg.sessionID = data.sender;
+                            jsonMesg.photoPath = "nonwhatsapp";
+                            jsonMesg.message = serverConfig.serviceTempNotAvailable;
+                            socketOperator.emit("chatMessageOperatorSessionNonAndroid", JSON.stringify(jsonMesg, null, 4));
 
-                }, function(err) {
-                      var jsonMesg = {};
-                      jsonMesg.sessionID = data.sender;
-                      jsonMesg.photoPath = "nonwhatsapp";
-                      jsonMesg.message = serverConfig.serviceTempNotAvailable;
-                      socketOperator.emit("chatMessageOperatorSessionNonAndroid", JSON.stringify(jsonMesg, null, 4));
-                });
-
-
-                // uploadImageToWechat(filename, function(reply,media_id){
-                //     if (reply != "error"){
-                //       wechatClient.sendImage(data.sender, media_id);
-                //     } else {
-                //             var jsonMesg = {};
-                //             jsonMesg.sessionID = data.sender;
-                //             jsonMesg.photoPath = "nonwhatsapp";
-                //             jsonMesg.message = serverConfig.serviceTempNotAvailable;
-                //             socketOperator.emit("chatMessageOperatorSessionNonAndroid", JSON.stringify(jsonMesg, null, 4));
-
-                //     }
-                //   }
-                // );
+                    }
+                  }
+                );
               }
               if (data.package === "messenger"){
                 sendImageMessageToMessenger(data.sender, filename, function(error, message){
@@ -662,7 +632,7 @@ function postUserDataToMongooseDB(id, name, package) {
   jsonMesg.name = name;
   jsonMesg.package = package;
   var postData = querystring.stringify(jsonMesg)
-  console.log(postData);
+  //console.log(postData);
 
   var options = {
     hostname: serverConfig.mongooseUrl,
@@ -691,43 +661,6 @@ function postUserDataToMongooseDB(id, name, package) {
   });
 
   req.write(postData);
-  req.end();
-}
-
-function putBroadcastResultToMongooseDB(jsonMesg,jobId) {
-  console.log(jsonMesg);
-  var putData = querystring.stringify(jsonMesg);
-  console.log(putData);
-
-  var options = {
-    hostname: serverConfig.mongooseUrl,
-    port: serverConfig.mongoosePort,
-    path: '/chat/updatebroadcast/'+jobId,
-    method: 'PUT',
-    headers: {
-         'Content-Type': 'application/x-www-form-urlencoded',
-         'Content-Length': putData.length,
-         'Authorization': 'Bearer '+serverConfig.meanToken
-       },
-    rejectUnauthorized: false, 
-  };
-
-  console.log(options);
-
-  var req = https.request(options, (res) => {
-    //console.log('statusCode:', res.statusCode);
-    //console.log('headers:', res.headers);
-
-    res.on('data', (d) => {
-      //process.stdout.write(d);
-    });
-  });
-
-  req.on('error', (e) => {
-    console.error(e);
-  });
-
-  req.write(putData);
   req.end();
 }
 
@@ -932,25 +865,10 @@ function connectToCsServer(package, sender, text){
 
               }
               if (data.package === "wechat"){
-                var promiseToken = refreshWeChatToken();
-                promiseToken.then(function(weChatToken){
-                    var promiseUpload = uploadImageToWechat(filename, weChatToken);
-                    promiseUpload.then(function(media_id) {
-                          var promiseSendImage = sendImageWeChat(data.sender, media_id).then(function(result) {
-                            console.log("Wechat Image sent to user: "+data.sender);
-                          }, function(err) {
-                            for(var j = 0 , len = incomingChatUser.length ; j < len ; j++){
-                                if (incomingChatUser[j].socket.id === socket.id) {
-                                  var jsonMesg = {};
-                                  jsonMesg.sessionID = sender;
-                                  jsonMesg.photoPath = "nonwhatsapp";
-                                  jsonMesg.message = serverConfig.serviceTempNotAvailable;
-                                  socket.emit("chat message", JSON.stringify(jsonMesg, null, 4));
-                                  break;
-                                }
-                            }
-                          });
-                    }, function(err) {
+                uploadImageToWechat(filename, function(reply,media_id){
+                    if (reply != "error"){
+                      wechatClient.sendImage(sender, media_id);
+                    } else {
                       for(var j = 0 , len = incomingChatUser.length ; j < len ; j++){
                           if (incomingChatUser[j].socket.id === socket.id) {
                             var jsonMesg = {};
@@ -961,38 +879,9 @@ function connectToCsServer(package, sender, text){
                             break;
                           }
                       }
-                    });
-
-                }, function(err) {
-                      for(var j = 0 , len = incomingChatUser.length ; j < len ; j++){
-                          if (incomingChatUser[j].socket.id === socket.id) {
-                            var jsonMesg = {};
-                            jsonMesg.sessionID = sender;
-                            jsonMesg.photoPath = "nonwhatsapp";
-                            jsonMesg.message = serverConfig.serviceTempNotAvailable;
-                            socket.emit("chat message", JSON.stringify(jsonMesg, null, 4));
-                            break;
-                          }
-                      }
-                });
-
-                // uploadImageToWechat(filename, function(reply,media_id){
-                //     if (reply != "error"){
-                //       wechatClient.sendImage(sender, media_id);
-                //     } else {
-                //       for(var j = 0 , len = incomingChatUser.length ; j < len ; j++){
-                //           if (incomingChatUser[j].socket.id === socket.id) {
-                //             var jsonMesg = {};
-                //             jsonMesg.sessionID = sender;
-                //             jsonMesg.photoPath = "nonwhatsapp";
-                //             jsonMesg.message = serverConfig.serviceTempNotAvailable;
-                //             socket.emit("chat message", JSON.stringify(jsonMesg, null, 4));
-                //             break;
-                //           }
-                //       }
-                //     }
-                //   }
-                // );
+                    }
+                  }
+                );
               }
               if (data.package === "messenger"){
                 sendImageMessageToMessenger(sender, filename, function(error, message){
@@ -1126,7 +1015,6 @@ tokenManager.on('error', function(error) {
   // maybe network error or wechat return errcode
   console.error(error);
 });
-
 tokenManager.refresh(function(token) {});
  
 // make token manager start work
@@ -1175,10 +1063,6 @@ setupOperatorChannel();
 //   }
 // })
 
-function sleep(millis) {
-    return new Promise(resolve => setTimeout(resolve, millis));
-}
-
 // CSP register and unregister routes
 app.post('/api/csp/register', jsonParser, (req, res) => {
   var jsonMesg = {};
@@ -1223,24 +1107,14 @@ app.get('/api/csp/refreshSocketIo', (req, res) => {
 
 app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res) => {
   var jsonMesg = {};
-  var jobId = uuidv1();
+  var userNotFound = [];
+  var userSendFail = [];
 
+  //console.log(req.body);
   if (req.body.sessionID === serverConfig.cspToken) {
-    var jsonResultArray = [];
-
-    jsonMesg.jobID = jobId;
-    jsonMesg.jobStatus = "Success";
-    res.send(jsonMesg);
-    var j = 0;
-    var promiseSleep = sleep(1000);
-    promiseSleep.then(result=>{
-      //for (var j = 0; j < req.body.contactListJson.contactList.length; j++) {
-      req.body.contactListJson.contactList.forEach(function(table) {
-      //var table = req.body.contactListJson.contactList[j];
-
+    req.body.contactListJson.contactList.forEach(function(table) {
       var name = table.name;
       var wechatId = table.wechatId;
-
       var found = false;
       if (userData != null){
         for(var i = 0; i < userData.user.length; i++) {
@@ -1253,109 +1127,33 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
       }
 
       if (found===false){
-        jsonResultElement.Phone = wechatId;
-        jsonResultElement.Result = "User not found in this group";
-        jsonResultArray.push(jsonResultElement);
-        if (j===req.body.contactListJson.contactList.length){
-          jsonMesg.jobID = jobId;
-          jsonMesg.Results = jsonResultArray;
-          jsonMesg.jobStatus = "Completed";
-          putBroadcastResultToMongooseDB(jsonMesg, jobId);
-          // jsonMesg.jobID = uuidv1();
-          // jsonMesg.Results = jsonResultArray;
-          // jsonMesg.jobStatus = "Completed";
-          // res.send(jsonMesg)
-        }
-      } else if ((name)&&(wechatId)){
+        userNotFound.push(wechatId);
+      }
+
+
+      if ((name)&&(wechatId)&&(found)){
+        console.log('name: '+name);
+        console.log('wechatId: '+wechatId);
+
         if ((req.body.imagefilename) && (req.body.imagefileBase64)&&(req.body.imagefilename!="")&&((req.body.imagefileBase64)!="")){
           var filename = "routes/image/"+req.body.imagefilename;
           console.log('filename: ' + filename);
     
           require("fs").writeFile(filename, req.body.imagefileBase64, 'base64', function(err) {
             if (err){
-              jsonMesg.jobID = uuidv1();
-              jsonMesg.Results = jsonResultArray;
-              jsonMesg.jobStatus = "Image save/decode failed";
-              res.send(jsonMesg)
+                  jsonMesg.success = false;
+                  jsonMesg.error = "Unable to decode/save base64 image";
             } else {
-                var promiseToken = refreshWeChatToken();
-                promiseToken.then(function(weChatToken){
-                    var promiseUpload = uploadImageToWechat(filename, weChatToken);
-                    promiseUpload.then(function(media_id) {
-                          var promiseSendImage = sendImageWeChat(wechatId, media_id).then(function(result) {
-                            console.log("Wechat Image sent to user: "+wechatId);
-                            var jsonResultElement = {};
-                            jsonResultElement.Phone = wechatId;
-                            jsonResultElement.Result = "Success";
-                            jsonResultArray.push(jsonResultElement);
-                            j++;
-                            console.log("j="+j);
-
-                            if (j===req.body.contactListJson.contactList.length){
-                              jsonMesg.jobID = jobId;
-                              jsonMesg.Results = jsonResultArray;
-                              jsonMesg.jobStatus = "Completed";
-                              putBroadcastResultToMongooseDB(jsonMesg, jobId);
-                              // console.log(jsonResultArray);
-                              // jsonMesg.jobID = uuidv1();
-                              // jsonMesg.Results = jsonResultArray;
-                              // jsonMesg.jobStatus = "Completed";
-                              // res.send(jsonMesg)
-                            }
-                          }, function(err) {
-                            var jsonResultElement = {};
-                            jsonResultElement.Phone = wechatId;
-                            jsonResultElement.Result = "Send Image Failed";
-                            jsonResultArray.push(jsonResultElement);
-                            j++;
-                            if (j===req.body.contactListJson.contactList.length){
-                              jsonMesg.jobID = jobId;
-                              jsonMesg.Results = jsonResultArray;
-                              jsonMesg.jobStatus = "Completed";
-                              putBroadcastResultToMongooseDB(jsonMesg, jobId);
-                                        // jsonMesg.jobID = uuidv1();
-                              // jsonMesg.Results = jsonResultArray;
-                              // jsonMesg.jobStatus = "Completed";
-                              // res.send(jsonMesg)
-                            }
-                          });
-                    }, function(err) {
-                      var jsonResultElement = {};
-                      jsonResultElement.Phone = wechatId;
-                      jsonResultElement.Result = "Upload Image to Wechat Server Failed";
-                      jsonResultArray.push(jsonResultElement);
-                      j++;
-
-                      if (j===req.body.contactListJson.contactList.length){
-                        jsonMesg.jobID = jobId;
-                        jsonMesg.Results = jsonResultArray;
-                        jsonMesg.jobStatus = "Completed";
-                        putBroadcastResultToMongooseDB(jsonMesg, jobId);
-                        // jsonMesg.jobID = uuidv1();
-                        // jsonMesg.Results = jsonResultArray;
-                        // jsonMesg.jobStatus = "Completed";
-                        // res.send(jsonMesg)
-                      }
-
-                  });
-
-                }, function(err) {
-                  var jsonResultElement = {};
-                  jsonResultElement.Phone = wechatId;
-                  jsonResultElement.Result = "Wechat Token Refresh failed";
-                  jsonResultArray.push(jsonResultElement);
-                  j++;
-                  if (j===req.body.contactListJson.contactList.length){
-                    jsonMesg.jobID = jobId;
-                    jsonMesg.Results = jsonResultArray;
-                    jsonMesg.jobStatus = "Completed";
-                    putBroadcastResultToMongooseDB(jsonMesg, jobId);
-                    // jsonMesg.jobID = uuidv1();
-                    // jsonMesg.Results = jsonResultArray;
-                    // jsonMesg.jobStatus = "Completed";
-                    // res.send(jsonMesg)
-                  }
-                });
+              uploadImageToWechat(filename, function(reply,media_id){
+                if (reply != "error"){
+                      wechatClient.sendImage(wechatId, media_id).catch(error => {
+                        userSendFail.push(wechatId);
+                      });
+                } else {
+                  jsonMesg.success = false;
+                  jsonMesg.error = "upload image to wechat server fails";
+                }
+              });
             }
           });
         } else if (req.body.message){
@@ -1366,53 +1164,53 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
           } else {
             finalMessage = req.body.message;
           }
-          var promiseToken = refreshWeChatToken();
-          promiseToken.then(function(weChatToken){
-              var promiseSendText = sendTextWeChat(wechatId, finalMessage).then(function(result) {
-                            console.log("Wechat Text sent to user: "+wechatId);
-                            var jsonResultElement = {};
-                            jsonResultElement.Phone = wechatId;
-                            jsonResultElement.Result = "Success";
-                            jsonResultArray.push(jsonResultElement);
-                            j++;
-                            console.log("j="+j);
 
-                            if (j===req.body.contactListJson.contactList.length){
-                              jsonMesg.jobID = jobId;
-                              jsonMesg.Results = jsonResultArray;
-                              jsonMesg.jobStatus = "Completed";
-                              putBroadcastResultToMongooseDB(jsonMesg, jobId);
-                              // console.log(jsonResultArray);
-                              // jsonMesg.jobID = uuidv1();
-                              // jsonMesg.Results = jsonResultArray;
-                              // jsonMesg.jobStatus = "Completed";
-                              // res.send(jsonMesg)
-                            }
-                          }, function(err) {
-                            var jsonResultElement = {};
-                            jsonResultElement.Phone = wechatId;
-                            jsonResultElement.Result = "Send Text Failed";
-                            jsonResultArray.push(jsonResultElement);
-                            j++;
-                            if (j===req.body.contactListJson.contactList.length){
-                              jsonMesg.jobID = jobId;
-                              jsonMesg.Results = jsonResultArray;
-                              jsonMesg.jobStatus = "Completed";
-                              putBroadcastResultToMongooseDB(jsonMesg, jobId);
-                              // jsonMesg.jobID = uuidv1();
-                              // jsonMesg.Results = jsonResultArray;
-                              // jsonMesg.jobStatus = "Completed";
-                              // res.send(jsonMesg)
-                            }
-              });
-            });
+          wechatClient.sendText(wechatId, finalMessage).catch(error => {
+            userSendFail.push(wechatId);
+          });
+        }
+      }
+
+
+    });
+
+    //console.log(req.body.imagefileBase64);
+    if ((userNotFound.length>0)||(userSendFail.length>0)){
+      jsonMesg.success = false;
+      
+      var userNotFoundMesg = "";
+      if (userNotFound.length>0){
+        userNotFoundMesg = "User not found in this group: "
+        for(var j = 0 , len = userNotFound.length ; j < len ; j++){
+          userNotFoundMesg += userNotFound[j];
+          if (j<len-1){
+            userNotFoundMesg += ", "
           }
         }
-      });
-    });
+        jsonMesg.error = userNotFoundMesg;
+      }
+
+      var userSendFailMesg = "User send failed: "
+      if (userSendFail.length>0){
+        var userSendFailMesg = ""
+        for(var j = 0 , len = userSendFail.length ; j < len ; j++){
+          userSendFailMesg += userSendFail[j];
+          if (j<len-1){
+            userSendFailMesg += ", "
+          }
+        }
+        if (userNotFound.length>0){
+          jsonMesg.error += ", ";
+        }
+        jsonMesg.error += userSendFailMesg;
+      }
+    } else {
+      jsonMesg.success = true;
+    }
+    res.send(jsonMesg)
   } else {
-    jsonMesg.jobID = jobId;
-    jsonMesg.jobStatus = "Wrong token";
+    jsonMesg.success = false;
+    jsonMesg.error = "Token is not correct";
     res.send(jsonMesg)
   }
 });
@@ -1453,7 +1251,7 @@ app.post('/lineBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res) =
     
           require("fs").writeFile(filename, req.body.imagefileBase64, 'base64', function(err) {
             if (err){
-                  jsonMesg.jobStatus = false;
+                  jsonMesg.success = false;
                   jsonMesg.error = "Unable to decode/save base64 image";
             } else {
                 if (ngrokURL === ""){
@@ -1494,7 +1292,7 @@ app.post('/lineBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res) =
 
     //console.log(req.body.imagefileBase64);
     if ((userNotFound.length>0)||(userSendFail.length>0)){
-      jsonMesg.jobStatus = false;
+      jsonMesg.success = false;
       
       var userNotFoundMesg = "";
       if (userNotFound.length>0){
@@ -1523,11 +1321,11 @@ app.post('/lineBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res) =
         jsonMesg.error += userSendFailMesg;
       }
     } else {
-      jsonMesg.jobStatus = true;
+      jsonMesg.success = true;
     }
     res.send(jsonMesg)
   } else {
-    jsonMesg.jobStatus = false;
+    jsonMesg.success = false;
     jsonMesg.error = "Token is not correct";
     res.send(jsonMesg)
   }
@@ -1613,60 +1411,32 @@ app.post('/messengerwebhook', jsonParser, function (req, res) {
     res.sendStatus(200)
 })
 
-function refreshWeChatToken(){
-    return new Promise(function(resolve, reject) {
-      // Do async job
-      wechatClient._refreshTokenWhenExpired();
-      resolve(wechatClient._accessToken);
-      //console.log("wechattoken="+wechatClient._accessToken);
-    })
-}
-
-function sendImageWeChat(sender,media_id){
-    return new Promise(function(resolve, reject) {
-      // Do async job
-      wechatClient.sendImage(sender, media_id).catch(error=> {
-          reject(error);
-      })
-      resolve(true);
-    })
-}
-
-function sendTextWeChat(sender,message){
-    return new Promise(function(resolve, reject) {
-      // Do async job
-      wechatClient.sendText(sender, message).catch(error=> {
-          reject(error);
-      })
-      resolve(true);
-    })
-}
-
-function uploadImageToWechat(filename, accessToken){
+function uploadImageToWechat(filename, callback){
+  wechatClient._refreshTokenWhenExpired().then(function () {
+      if (wechatClient._accessToken){
         var formData = {
           media: require("fs").createReadStream(filename),
         };
-
-        var options = {
-                url:'https://api.weixin.qq.com/cgi-bin/media/upload?access_token='+ accessToken +'&type=image',
-                formData: formData
-        };
-
-        // Return new promise 
-        return new Promise(function(resolve, reject) {
-          // Do async job
-          request.post(options, function (err, resp, body) {
-                if (err) {
-                  reject(err);
-                  //console.log("error in http post");
-                } else {
-                  resolve(JSON.parse(body).media_id);
-                  //var obj = JSON.parse(body);
-                  //console.log(obj.media_id);
-                  //callback("ok", obj.media_id);
-                }
-            });
-        })
+        request.post({
+          url:'https://api.weixin.qq.com/cgi-bin/media/upload?access_token='+ wechatClient._accessToken +'&type=image',
+          formData: formData
+          },
+          function optionalCallback(err, resForMediaId, body) {
+              if (err) {
+                console.log("error in http post");
+                callback("error", err)
+              }else {
+                //console.log(body);
+                var obj = JSON.parse(body);
+                //console.log(obj.media_id);
+                callback("ok", obj.media_id);
+              }
+          });
+      } else {
+        console.log("'token refresh failed");
+        callback("error", "access token not valid");
+      }
+  });
 }
 
 function getWechatUsersOpenId(callback){
