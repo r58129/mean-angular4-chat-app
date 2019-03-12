@@ -656,6 +656,41 @@ function postTextMessageToMongooseDB(sender, text, incomingApp, nickname) {
   req.end();
 }
 
+function deleteUserDataToMongooseDB(id) {
+  var jsonMesg = {};
+  jsonMesg.id = id;
+  var postData = querystring.stringify(jsonMesg)
+
+  var options = {
+    hostname: serverConfig.mongooseUrl,
+    port: serverConfig.mongoosePort,
+    path: '/chat/contact/'+id,
+    method: 'DELETE',
+    headers: {
+         'Content-Type': 'application/x-www-form-urlencoded',
+         'Content-Length': postData.length,
+         'Authorization': 'Bearer '+serverConfig.meanToken
+       },
+    rejectUnauthorized: false, 
+  };
+
+  var req = https.request(options, (res) => {
+    //console.log('statusCode:', res.statusCode);
+    //console.log('headers:', res.headers);
+
+    res.on('data', (d) => {
+      //process.stdout.write(d);
+    });
+  });
+
+  req.on('error', (e) => {
+    console.error(e);
+  });
+
+  req.write(postData);
+  req.end();
+}
+
 function postUserDataToMongooseDB(id, name, package) {
   var jsonMesg = {};
   jsonMesg.id = id;
@@ -1095,7 +1130,7 @@ function processLineMessage() {
   });
 
   lineBot.on('follow',   function (event) {
-    //console.log(event);
+    console.log(event);
     if (event.type === "follow"){
       var follower = event.source.userId;
       getLineUserDetail(follower, function(err, userId, displayName){
@@ -1106,10 +1141,29 @@ function processLineMessage() {
     }
   });
   lineBot.on('unfollow', function (event) {
-    //console.log(event);
+    console.log(event);
     if (event.type === "unfollow"){
       var follower = event.source.userId;
       console.log("User " + follower + " unfollows");
+      
+      deleteUserDataToMongooseDB(follower);
+      var index = 0;
+      var found = false;
+      if (userData != null){
+        for(var i = 0; i < userData.user.length; i++) {
+          if (userData.user[i].id == follower) {
+            found = true;
+            index = i;
+            console.log("delete user: " + userData.user[i].id + " " + userData.user[i].name + " " + userData.user[i].package);
+            break;
+          }
+        }
+        if (found){
+          userData.user.splice(index, 1);
+          writeUserJsonFile();
+        }
+      }
+
     }
   });
 
@@ -1234,9 +1288,7 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
     var j = 0;
     var promiseSleep = sleep(1000);
     promiseSleep.then(result=>{
-      //for (var j = 0; j < req.body.contactListJson.contactList.length; j++) {
       req.body.contactListJson.contactList.forEach(function(table) {
-      //var table = req.body.contactListJson.contactList[j];
 
       var name = table.name;
       var wechatId = table.wechatId;
@@ -1261,10 +1313,6 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
           jsonMesg.Results = jsonResultArray;
           jsonMesg.jobStatus = "Completed";
           putBroadcastResultToMongooseDB(jsonMesg, jobId);
-          // jsonMesg.jobID = uuidv1();
-          // jsonMesg.Results = jsonResultArray;
-          // jsonMesg.jobStatus = "Completed";
-          // res.send(jsonMesg)
         }
       } else if ((name)&&(wechatId)){
         if ((req.body.imagefilename) && (req.body.imagefileBase64)&&(req.body.imagefilename!="")&&((req.body.imagefileBase64)!="")){
@@ -1296,11 +1344,6 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
                               jsonMesg.Results = jsonResultArray;
                               jsonMesg.jobStatus = "Completed";
                               putBroadcastResultToMongooseDB(jsonMesg, jobId);
-                              // console.log(jsonResultArray);
-                              // jsonMesg.jobID = uuidv1();
-                              // jsonMesg.Results = jsonResultArray;
-                              // jsonMesg.jobStatus = "Completed";
-                              // res.send(jsonMesg)
                             }
                           }, function(err) {
                             var jsonResultElement = {};
@@ -1313,10 +1356,6 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
                               jsonMesg.Results = jsonResultArray;
                               jsonMesg.jobStatus = "Completed";
                               putBroadcastResultToMongooseDB(jsonMesg, jobId);
-                                        // jsonMesg.jobID = uuidv1();
-                              // jsonMesg.Results = jsonResultArray;
-                              // jsonMesg.jobStatus = "Completed";
-                              // res.send(jsonMesg)
                             }
                           });
                     }, function(err) {
@@ -1331,10 +1370,6 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
                         jsonMesg.Results = jsonResultArray;
                         jsonMesg.jobStatus = "Completed";
                         putBroadcastResultToMongooseDB(jsonMesg, jobId);
-                        // jsonMesg.jobID = uuidv1();
-                        // jsonMesg.Results = jsonResultArray;
-                        // jsonMesg.jobStatus = "Completed";
-                        // res.send(jsonMesg)
                       }
 
                   });
@@ -1350,10 +1385,6 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
                     jsonMesg.Results = jsonResultArray;
                     jsonMesg.jobStatus = "Completed";
                     putBroadcastResultToMongooseDB(jsonMesg, jobId);
-                    // jsonMesg.jobID = uuidv1();
-                    // jsonMesg.Results = jsonResultArray;
-                    // jsonMesg.jobStatus = "Completed";
-                    // res.send(jsonMesg)
                   }
                 });
             }
@@ -1382,11 +1413,6 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
                               jsonMesg.Results = jsonResultArray;
                               jsonMesg.jobStatus = "Completed";
                               putBroadcastResultToMongooseDB(jsonMesg, jobId);
-                              // console.log(jsonResultArray);
-                              // jsonMesg.jobID = uuidv1();
-                              // jsonMesg.Results = jsonResultArray;
-                              // jsonMesg.jobStatus = "Completed";
-                              // res.send(jsonMesg)
                             }
                           }, function(err) {
                             var jsonResultElement = {};
@@ -1399,10 +1425,6 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
                               jsonMesg.Results = jsonResultArray;
                               jsonMesg.jobStatus = "Completed";
                               putBroadcastResultToMongooseDB(jsonMesg, jobId);
-                              // jsonMesg.jobID = uuidv1();
-                              // jsonMesg.Results = jsonResultArray;
-                              // jsonMesg.jobStatus = "Completed";
-                              // res.send(jsonMesg)
                             }
               });
             });
@@ -1419,14 +1441,22 @@ app.post('/wechatBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res)
 
 app.post('/lineBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res) => {
   var jsonMesg = {};
-  var userNotFound = [];
-  var userSendFail = [];
+  var jobId = uuidv1();
 
-  //console.log(req.body);
   if (req.body.sessionID === serverConfig.cspToken) {
-    req.body.contactListJson.contactList.forEach(function(table) {
+    var jsonResultArray = [];
+
+    jsonMesg.jobID = jobId;
+    jsonMesg.jobStatus = "Success";
+    res.send(jsonMesg);
+    var j = 0;
+    var promiseSleep = sleep(1000);
+    promiseSleep.then(result=>{
+      req.body.contactListJson.contactList.forEach(function(table) {
+
       var name = table.name;
       var lineId = table.lineId;
+
       var found = false;
       if (userData != null){
         for(var i = 0; i < userData.user.length; i++) {
@@ -1439,39 +1469,64 @@ app.post('/lineBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res) =
       }
 
       if (found===false){
-        userNotFound.push(lineId);
-      }
-
-
-      if ((name)&&(lineId)&&(found)){
-        console.log('name: '+name);
-        console.log('lineId: '+lineId);
-
+        jsonResultElement.Phone = lineId;
+        jsonResultElement.Result = "User not found in this group";
+        jsonResultArray.push(jsonResultElement);
+        if (j===req.body.contactListJson.contactList.length){
+          jsonMesg.jobID = jobId;
+          jsonMesg.Results = jsonResultArray;
+          jsonMesg.jobStatus = "Completed";
+          putBroadcastResultToMongooseDB(jsonMesg, jobId);
+        }
+      } else if ((name)&&(lineId)){
         if ((req.body.imagefilename) && (req.body.imagefileBase64)&&(req.body.imagefilename!="")&&((req.body.imagefileBase64)!="")){
           var filename = "routes/image/"+req.body.imagefilename;
           console.log('filename: ' + filename);
     
           require("fs").writeFile(filename, req.body.imagefileBase64, 'base64', function(err) {
             if (err){
-                  jsonMesg.jobStatus = false;
-                  jsonMesg.error = "Unable to decode/save base64 image";
+              jsonMesg.jobID = uuidv1();
+              jsonMesg.Results = jsonResultArray;
+              jsonMesg.jobStatus = "Image save/decode failed";
+              res.send(jsonMesg)
             } else {
+                var promiseToken = refreshWeChatToken();
+                var url;
                 if (ngrokURL === ""){
-                  var url = lineConfig.serverUrl+"/"+req.body.imagefilename
-                  console.log(url);
-                  lineClient.pushImage(lineId, {
-                      originalContentUrl: url,
-                      previewImageUrl: url
-                  });                  
+                  url = lineConfig.serverUrl+"/"+req.body.imagefilename
                 } else {
-                  var url = ngrokURL+filename
-                  console.log(url);
-                  lineClient.pushImage(lineId, {
-                      originalContentUrl: url,
-                      previewImageUrl: url
-                  });                  
+                  url = ngrokURL+filename
                 }
 
+
+                var promiseSendImage = sendImageLine(lineId, url).then(function(result) {
+                            console.log("Line Image sent to user: "+lineId);
+                            var jsonResultElement = {};
+                            jsonResultElement.Phone = lineId;
+                            jsonResultElement.Result = "Success";
+                            jsonResultArray.push(jsonResultElement);
+                            j++;
+                            console.log("j="+j);
+
+                            if (j===req.body.contactListJson.contactList.length){
+                              jsonMesg.jobID = jobId;
+                              jsonMesg.Results = jsonResultArray;
+                              jsonMesg.jobStatus = "Completed";
+                              putBroadcastResultToMongooseDB(jsonMesg, jobId);
+                            }
+                          }, function(err) {
+                            var jsonResultElement = {};
+                            jsonResultElement.Phone = lineId;
+                            jsonResultElement.Result = "Send Image Failed";
+                            jsonResultArray.push(jsonResultElement);
+                            j++;
+                            if (j===req.body.contactListJson.contactList.length){
+                              jsonMesg.jobID = jobId;
+                              jsonMesg.Results = jsonResultArray;
+                              jsonMesg.jobStatus = "Completed";
+                              putBroadcastResultToMongooseDB(jsonMesg, jobId);
+                            }
+                });
             }
           });
         } else if (req.body.message){
@@ -1482,56 +1537,46 @@ app.post('/lineBroadcastwebhook', bodyParser.json({limit: '16mb'}), (req, res) =
           } else {
             finalMessage = req.body.message;
           }
+          var promiseToken = refreshWeChatToken();
+          var promiseSendText = sendTextLine(lineId, finalMessage).then(function(result) {
+                            console.log("Line Text sent to user: "+lineId);
+                            var jsonResultElement = {};
+                            jsonResultElement.Phone = lineId;
+                            jsonResultElement.Result = "Success";
+                            jsonResultArray.push(jsonResultElement);
+                            j++;
+                            console.log("j="+j);
 
-          lineClient.pushText(lineId, finalMessage).catch(error => {
-            userSendFail.push(lineId);
-          });
+                            if (j===req.body.contactListJson.contactList.length){
+                              jsonMesg.jobID = jobId;
+                              jsonMesg.Results = jsonResultArray;
+                              jsonMesg.jobStatus = "Completed";
+                              putBroadcastResultToMongooseDB(jsonMesg, jobId);
+                            }
+                          }, function(err) {
+                            var jsonResultElement = {};
+                            jsonResultElement.Phone = lineId;
+                            jsonResultElement.Result = "Send Text Failed";
+                            jsonResultArray.push(jsonResultElement);
+                            j++;
+                            if (j===req.body.contactListJson.contactList.length){
+                              jsonMesg.jobID = jobId;
+                              jsonMesg.Results = jsonResultArray;
+                              jsonMesg.jobStatus = "Completed";
+                              putBroadcastResultToMongooseDB(jsonMesg, jobId);
+                            }
+            });
+          }
         }
-      }
-
-
+      });
     });
-
-    //console.log(req.body.imagefileBase64);
-    if ((userNotFound.length>0)||(userSendFail.length>0)){
-      jsonMesg.jobStatus = false;
-      
-      var userNotFoundMesg = "";
-      if (userNotFound.length>0){
-        userNotFoundMesg = "User not found in this group: "
-        for(var j = 0 , len = userNotFound.length ; j < len ; j++){
-          userNotFoundMesg += userNotFound[j];
-          if (j<len-1){
-            userNotFoundMesg += ", "
-          }
-        }
-        jsonMesg.error = userNotFoundMesg;
-      }
-
-      var userSendFailMesg = "User send failed: "
-      if (userSendFail.length>0){
-        var userSendFailMesg = ""
-        for(var j = 0 , len = userSendFail.length ; j < len ; j++){
-          userSendFailMesg += userSendFail[j];
-          if (j<len-1){
-            userSendFailMesg += ", "
-          }
-        }
-        if (userNotFound.length>0){
-          jsonMesg.error += ", ";
-        }
-        jsonMesg.error += userSendFailMesg;
-      }
-    } else {
-      jsonMesg.jobStatus = true;
-    }
-    res.send(jsonMesg)
   } else {
-    jsonMesg.jobStatus = false;
-    jsonMesg.error = "Token is not correct";
+    jsonMesg.jobID = jobId;
+    jsonMesg.jobStatus = "Wrong token";
     res.send(jsonMesg)
   }
 });
+
 
 // Twilio Routes
 app.post('/twiliowebhook', urlencodedParser, (req, res) => {
@@ -1636,6 +1681,29 @@ function sendTextWeChat(sender,message){
     return new Promise(function(resolve, reject) {
       // Do async job
       wechatClient.sendText(sender, message).catch(error=> {
+          reject(error);
+      })
+      resolve(true);
+    })
+}
+
+function sendImageLine(lineId,url){
+    return new Promise(function(resolve, reject) {
+      // Do async job
+      lineClient.pushImage(lineId, {
+        originalContentUrl: url,
+        previewImageUrl: url
+      }).catch(error=> {
+          reject(error);
+      })
+      resolve(true);
+    })
+}
+
+function sendTextLine(lineId,finalMessage){
+    return new Promise(function(resolve, reject) {
+      // Do async job
+      lineClient.pushText(lineId, finalMessage).catch(error=> {
           reject(error);
       })
       resolve(true);
@@ -1815,6 +1883,26 @@ app.use('/wechatwebhook', wechat(wechatConfigurations,
     console.log("event: " + info.Event);
     if (info.Event === "subscribe"){
       res.reply(serverConfig.subscribeMesg);
+    } else if (info.Event === "unsubscribe"){
+      deleteUserDataToMongooseDB(info.FromUserName);
+      var index = 0;
+      var found = false;
+      if (userData != null){
+        for(var i = 0; i < userData.user.length; i++) {
+          if (userData.user[i].id == info.FromUserName) {
+            found = true;
+            index = i;
+            console.log("delete user: " + userData.user[i].id + " " + userData.user[i].name + " " + userData.user[i].package);
+            break;
+          }
+        }
+        if (found){
+          userData.user.splice(index, 1);
+          writeUserJsonFile();
+        }
+      }
+
+
     } else {
       res.reply(serverConfig.notSupport);
     }
